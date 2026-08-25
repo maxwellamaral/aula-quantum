@@ -1,7 +1,0 @@
-/.quarto/
-.venv/
-.agents/
-.pytest_cache/
-_site/
-.env
-__pycache__/

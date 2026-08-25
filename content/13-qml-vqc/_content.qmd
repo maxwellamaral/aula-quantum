@@ -59,7 +59,7 @@ pip install qiskit-machine-learning qiskit-algorithms scikit-learn
 
 #### Passo 1: O Script (Comentado passo a passo)
 
-```{python}
+```{python} {pyodide-python}
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.datasets import make_classification
@@ -67,12 +67,20 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 
 # Qiskit Imports
+```
+
+::: {.callout-note collapse="true"}
+## 🔒 Imports do Qiskit (requerem execução local)
+Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
+
+```python .qiskit-static
 from qiskit.circuit.library import ZZFeatureMap, RealAmplitudes
 from qiskit_algorithms.optimizers import COBYLA
 from qiskit_machine_learning.algorithms import VQC
 from qiskit_aer import AerSimulator
-
 ```
+:::
+
 
 #### ⚠️ Nota sobre Versões do Qiskit
 
@@ -88,7 +96,8 @@ from qiskit.circuit.library import zz_feature_map, real_amplitudes
 
 Para este notebook educacional, continuaremos usando a sintaxe atual por ser mais amplamente compatível e documentada. A lógica e conceitos permanecem os mesmos!
 
-```{python}
+```{python} {pyodide-python}
+
 
 # --- 1. PREPARAÇÃO DOS DADOS (O mundo clássico) ---
 # Vamos criar um dataset sintético simples (2 classes, 2 features para caber em 2 qubits)
@@ -113,7 +122,8 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_
 
 ```
 
-```{python}
+```{python} {pyodide-python}
+
 # Visualizando os vetores de dados em modo texto
 print("Primeiras 5 amostras do conjunto de treino:")
 for i in range(5):
@@ -131,7 +141,8 @@ Amostra 5: Features = [1.07994911 2.02835397], Classe = 0
 
 ```
 
-```{python}
+```{python} {pyodide-python}
+
 # --- VISUALIZAÇÃO DOS DADOS ---
 # Vamos ver como são os dados que vamos classificar
 plt.figure(figsize=(10, 4))
@@ -334,7 +345,8 @@ O **ZZFeatureMap** é um ótimo ponto de partida: equilibra expressividade e efi
 
 **Resumo:** O Feature Map é a "rampa de acesso" ao mundo quântico, e o ZZFeatureMap faz isso de forma eficiente usando emaranhamento ZZ para capturar interações não-lineares entre suas features!
 
-```{python}
+```{python} .qiskit-static
+
 
 # --- 2. O FEATURE MAP (Tradutor Dados -> Quantum) ---
 # ZZFeatureMap é famoso por criar emaranhamento entre os dados,
@@ -354,7 +366,8 @@ C:\Users\Max\AppData\Local\Temp\ipykernel_20596\1784461025.py:5: DeprecationWarn
 
 O **Feature Map** é a "ponte" entre o mundo clássico e o quântico. Vamos visualizar o circuito:
 
-```{python}
+```{python} {pyodide-python}
+
 # Visualizar o Feature Map com dados reais
 print("Feature Map - Circuito de Codificação dos Dados")
 print("=" * 60)
@@ -705,7 +718,8 @@ Isso dá controle total sobre a arquitetura!
 
 **Resumo em uma frase:** O Ansatz é o circuito parametrizado que "aprende" a classificar dados ajustando ângulos de rotação θ, exatamente como uma rede neural clássica ajusta pesos W!
 
-```{python}
+```{python} .qiskit-static
+
 
 # --- 3. O ANSATZ (O Modelo Treinável) ---
 # RealAmplitudes é um circuito simples com rotações RY e emaranhamento.
@@ -724,7 +738,8 @@ C:\Users\Max\AppData\Local\Temp\ipykernel_20596\2137702756.py:4: DeprecationWarn
 
 O **Ansatz** é o "modelo treinável" - equivalente aos pesos de uma rede neural clássica:
 
-```{python}
+```{python} {pyodide-python}
+
 # Visualizar o Ansatz
 print("Ansatz - Modelo Treinável (Rede Neural Quântica)")
 print("=" * 60)
@@ -751,7 +766,8 @@ assim como os pesos W em uma rede neural clássica.
 
 ```
 
-```{python}
+```{python} .qiskit-static
+
 
 # --- 4. O MODELO VQC (Variational Quantum Classifier) ---
 # Aqui juntamos tudo.
@@ -780,7 +796,8 @@ No gradient function provided, creating a gradient function. If your Sampler req
 
 ```
 
-```{python}
+```{python} {pyodide-python}
+
 
 # --- 5. AVALIAÇÃO ---
 score_train = vqc.score(X_train, y_train)
@@ -813,7 +830,8 @@ Acurácia no Teste:  0.47
 - Aumentar `reps` no Feature Map e Ansatz
 - Rodar múltiplas vezes com diferentes inicializações
 
-```{python}
+```{python} .qiskit-static
+
 # 🔧 MELHORANDO O VQC - Vamos tentar otimizar melhor
 print("="*60)
 print("TENTATIVA DE OTIMIZAÇÃO MELHORADA")
@@ -899,7 +917,8 @@ Ansatz reps                    1               3
 
 Agora vamos visualizar graficamente a diferença entre o modelo original (que não convergiu bem) e o modelo otimizado:
 
-```{python}
+```{python} .qiskit-static
+
 # --- VISUALIZAÇÃO COMPARATIVA: VQC Original vs Otimizado ---
 # Vamos ver visualmente a diferença entre os dois modelos
 
@@ -1029,7 +1048,8 @@ O `ZZFeatureMap` projeta seus dados 2D em um espaço de dimensão **2^n = 4** (p
 
 Agora vamos comparar o **VQC otimizado** (que alcançou 80% de acurácia) com um classificador clássico SVM. Esta é uma comparação justa para entender quando cada abordagem é vantajosa:
 
-```{python}
+```{python} .qiskit-static
+
 # Importar classificador clássico para comparação
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score, classification_report
@@ -1099,7 +1119,8 @@ Calculando fronteira de decisão do SVM...
 
 Uma das grandes vantagens do QML é a projeção dos dados em um espaço de alta dimensão (espaço de Hilbert). Vamos tentar visualizar isso de forma simplificada:
 
-```{python}
+```{python} .qiskit-static
+
 # Visualização conceitual do mapeamento para espaço de Hilbert
 from mpl_toolkits.mplot3d import Axes3D
 
@@ -1168,7 +1189,8 @@ print("   • É como 'desenrolar' um problema complexo em um espaço maior!")
 
 Vamos analisar mais a fundo o desempenho do classificador quântico:
 
-```{python}
+```{python} .qiskit-static
+
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 # Fazer predições
@@ -1317,7 +1339,8 @@ Para começar: use o mesmo número de qubits que features (como fizemos: 2 featu
 
 Agora vamos ver o verdadeiro poder do QML! Vamos criar um dataset onde dados estão organizados em círculos concêntricos - um problema que é difícil para classificadores lineares:
 
-```{python}
+```{python} .qiskit-static
+
 from sklearn.datasets import make_circles
 from sklearn.linear_model import LogisticRegression
 
@@ -1428,7 +1451,8 @@ VQC Quântico (Não-Linear):    0.8500
 
 ```
 
-```{python}
+```{python} .qiskit-static
+
 # Visualizar as fronteiras de decisão
 fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 

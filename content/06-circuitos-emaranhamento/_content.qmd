@@ -16,7 +16,8 @@ Este notebook demonstra os conceitos fundamentais de programação quântica usa
 
 Primeiro, vamos importar as bibliotecas que usaremos:
 
-```{python}
+```{python} .qiskit-static
+
 from qiskit import QuantumCircuit, transpile
 from qiskit_aer import AerSimulator
 from qiskit.visualization import plot_histogram, plot_bloch_multivector, plot_state_qsphere
@@ -36,7 +37,8 @@ Vamos criar nosso primeiro circuito quântico com **2 qubits** e **2 bits cláss
 
 ### Passo 1: Criar o circuito base
 
-```{python}
+```{python} .qiskit-static
+
 # 1. CONSTRUÇÃO DO CIRCUITO
 # Criamos um circuito com 2 Qubits e 2 Bits Clássicos (para guardar o resultado)
 qc = QuantumCircuit(2, 2)
@@ -60,7 +62,8 @@ Statevector([1.+0.j, 0.+0.j, 0.+0.j, 0.+0.j],
 
 ```
 
-```{python}
+```{python} .qiskit-static
+
 # Esfera de Bloch - Estado inicial
 plot_bloch_multivector(estado_inicial)
 ```
@@ -74,7 +77,8 @@ $$H|0\rangle = \frac{|0\rangle + |1\rangle}{\sqrt{2}} = |+\rangle$$
 
 Isso significa 50% de probabilidade de medir 0 e 50% de medir 1.
 
-```{python}
+```{python} .qiskit-static
+
 # Aplicamos a porta Hadamard (H) no qubit 0
 # Matematicamente: Leva |0> para uma superposição (50% 0, 50% 1)
 qc.h(0)
@@ -94,7 +98,8 @@ Statevector([0.70710678+0.j, 0.70710678+0.j, 0.        +0.j,
 
 ```
 
-```{python}
+```{python} .qiskit-static
+
 # Esfera de Bloch - Após Hadamard
 plot_bloch_multivector(estado_apos_h)
 
@@ -114,7 +119,8 @@ $$|\Phi^+\rangle = \frac{|00\rangle + |11\rangle}{\sqrt{2}}$$
 
 Isso significa: ou **ambos são 0**, ou **ambos são 1** - nunca 01 ou 10!
 
-```{python}
+```{python} .qiskit-static
+
 # Aplicamos a porta CNOT (Control-NOT)
 # O Qubit 0 é o controle, o Qubit 1 é o alvo.
 # Se o Qubit 0 for 1, ele inverte o Qubit 1.
@@ -136,7 +142,8 @@ Statevector([0.70710678+0.j, 0.        +0.j, 0.        +0.j,
 
 ```
 
-```{python}
+```{python} .qiskit-static
+
 # Q-Sphere - Melhor para visualizar o estado emaranhado completo
 print("\n🌐 Q-Sphere - Mostra todas as amplitudes do estado emaranhado:")
 plot_state_qsphere(estado_apos_cnot)
@@ -156,7 +163,8 @@ A medição **colapsa** o estado quântico para um resultado clássico:
 
 Após a medição, teremos apenas 0s e 1s (não mais superposição).
 
-```{python}
+```{python} {pyodide-python}
+
 # Medimos os qubits
 # Qubit 0 -> guarda no Bit 0
 # Qubit 1 -> guarda no Bit 1
@@ -179,7 +187,8 @@ Agora vamos **executar** o circuito usando um simulador quântico. Rodaremos 100
 2. **Execução**: Roda 1000 vezes (shots)
 3. **Análise**: Coleta os resultados estatísticos
 
-```{python}
+```{python} .qiskit-static
+
 
 # 2. EXECUÇÃO (SIMULAÇÃO)
 simulador = AerSimulator()
@@ -263,7 +272,8 @@ Onde:
 
 Vamos visualizar três estados fundamentais na Esfera de Bloch:
 
-```{python}
+```{python} .qiskit-static
+
 %matplotlib inline
 
 # --- 1. Estado Inicial (|0>) ---
@@ -289,7 +299,8 @@ Gerando imagem do Estado Zero (Pólo Norte)...
 
 Um circuito vazio sempre começa com todos os qubits em |0⟩:
 
-```{python}
+```{python} .qiskit-static
+
 # --- 2. Estado de Superposição (Apicando Hadamard) ---
 qc_super = QuantumCircuit(1)
 qc_super.h(0) # Aplica H
@@ -309,7 +320,8 @@ Gerando imagem da Superposição (Equador)...
 
 Aplicando a porta Hadamard, movemos o estado do pólo norte para o equador:
 
-```{python}
+```{python} .qiskit-static
+
 
 # --- 3. Estado Invertido (Aplicando X) ---
 qc_inv = QuantumCircuit(1)

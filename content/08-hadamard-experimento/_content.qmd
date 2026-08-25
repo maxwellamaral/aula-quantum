@@ -6,13 +6,15 @@ Você pode replicar esse experimento físico agora mesmo no Qiskit. É a prova d
 
 Matematicamente, aplicar dois Hadamards é igual a não fazer nada (Identidade), pois as superposições se cancelam e voltam ao estado original.
 
-```{python}
+```{python} .qiskit-static
+
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Statevector
 from qiskit.visualization import plot_bloch_multivector, plot_state_qsphere
 ```
 
-```{python}
+```{python} .qiskit-static
+
 
 qc = QuantumCircuit(1)
 
@@ -24,7 +26,8 @@ qc.h(0)
 
 ### Visualização após o primeiro Hadamard (Espelho Semitransparente 1)
 
-```{python}
+```{python} .qiskit-static
+
 # Esfera de Bloch após o primeiro H
 vetor_apos_h1 = Statevector(qc)
 display(plot_bloch_multivector(vetor_apos_h1))
@@ -37,12 +40,14 @@ Estado após primeiro H: Statevector([0.70710678+0.j, 0.70710678+0.j],
 
 ```
 
-```{python}
+```{python} .qiskit-static
+
 # Q-Sphere após o primeiro H
 display(plot_state_qsphere(vetor_apos_h1))
 ```
 
-```{python}
+```{python} {pyodide-python}
+
 
 # Passo 2: O fóton viaja pelos caminhos e encontra o SEGUNDO espelho
 # A interferência acontece aqui.
@@ -52,7 +57,8 @@ qc.h(0)
 
 ### Visualização após o segundo Hadamard (Espelho Semitransparente 2 - Interferência)
 
-```{python}
+```{python} .qiskit-static
+
 # Esfera de Bloch após o segundo H
 vetor_apos_h2 = Statevector(qc)
 display(plot_bloch_multivector(vetor_apos_h2))
@@ -65,14 +71,16 @@ Estado após segundo H: Statevector([1.+0.j, 0.+0.j],
 
 ```
 
-```{python}
+```{python} .qiskit-static
+
 # Q-Sphere após o segundo H
 display(plot_state_qsphere(vetor_apos_h2))
 ```
 
 ### Visualização do Circuito Completo
 
-```{python}
+```{python} .qiskit-static
+
 
 # Verificação
 vetor = Statevector(qc)
@@ -85,7 +93,8 @@ Statevector([1.+0.j, 0.+0.j],
 
 ```
 
-```{python}
+```{python} {pyodide-python}
+
 # Desenho do circuito quântico
 qc.draw('mpl')
 ```

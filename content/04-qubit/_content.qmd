@@ -25,9 +25,9 @@ Então você está pronto para começar! Não se preocupe se alguns conceitos pa
 **Dica**: Execute cada célula na ordem para acompanhar os exemplos interativos!
 
 > Observação
-> Para instalar as bibliotecas abaixo, você deve abrir um terminal e rodar `uv sync` na raiz deste repositório.
+> As células com borda verde executam **direto no seu navegador** (Pyodide/WASM). > As células Qiskit requerem execução local: abra um terminal e rode `uv sync` na raiz deste repositório, depois `uv run jupyter lab`.
 
-```{python}
+```{python} {pyodide-python}
 # Importando as bibliotecas necessárias
 # Não se preocupe se não entender todas agora - vamos usá-las ao longo do notebook
 
@@ -35,11 +35,19 @@ import numpy as np                      # Para operações com matrizes e vetore
 import sympy as sp                      # Para matemática simbólica (fórmulas bonitas)
 from sympy import Matrix, symbols       # Para criar matrizes e símbolos matemáticos
 from IPython.display import Markdown    # Para exibir fórmulas formatadas
-from qiskit.quantum_info import Statevector  # Para trabalhar com estados quânticos
 from matplotlib import pyplot as plt    # Para criar gráficos
-from qiskit.visualization import plot_bloch_multivector, plot_state_qsphere  # Visualizações quânticas
-
 ```
+
+::: {.callout-note collapse="true"}
+## 🔒 Imports do Qiskit (requerem execução local)
+Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
+
+```python .qiskit-static
+from qiskit.quantum_info import Statevector  # Para trabalhar com estados quânticos
+from qiskit.visualization import plot_bloch_multivector, plot_state_qsphere  # Visualizações quânticas
+```
+:::
+
 
 ## 🔬 Estados Quânticos Básicos
 
@@ -78,7 +86,8 @@ Assim:
 
 **Por que vetores?** Porque podemos aplicar transformações matemáticas (matrizes) neles, e isso é exatamente o que as portas quânticas naturalmente fazem!
 
-```{python}
+```{python} {pyodide-python}
+
 # Vamos criar esses estados básicos usando SymPy (biblioteca de matemática simbólica)
 # Isso nos permite trabalhar com fórmulas matemáticas de forma elegante
 
@@ -103,7 +112,8 @@ print("\n✅ Estados básicos criados com sucesso!")
 
 ```
 
-```{python}
+```{python} {pyodide-python}
+
 # Agora vamos criar os MESMOS estados usando NumPy (só para fins de comparação de bibliotecas)
 # NumPy é mais eficiente para cálculos numéricos (com números reais)
 
@@ -184,7 +194,8 @@ $$|ψ⟩ = 𝛼|0⟩ + 𝛽|1⟩$$
 
 Simples assim! O primeiro número é a amplitude para |0⟩, o segundo para |1⟩.
 
-```{python}
+```{python} {pyodide-python}
+
 # Vamos criar um estado genérico em superposição!
 # Usamos símbolos 𝛼 (alpha) e 𝛽 (beta) para representar valores desconhecidos
 
@@ -316,7 +327,8 @@ $$X|1⟩ = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix} \begin{bmatrix} 0 \\ 1 \
 
 **Dica:** Multiplicação de matrizes é só "linha × coluna e somar"!
 
-```{python}
+```{python} {pyodide-python}
+
 # Vamos testar a porta X na prática com Python!
 
 # Definir a matriz da porta X
@@ -357,7 +369,8 @@ Teste 2: X|1⟩ deve dar |0⟩
 
 ```
 
-```{python}
+```{python} {pyodide-python}
+
 # Agora vamos definir a porta X usando NumPy (outra maneira de fazer a mesma coisa)
 
 gate_x = np.array([
@@ -380,7 +393,8 @@ Porta X definida com NumPy:
 
 ```
 
-```{python}
+```{python} {pyodide-python}
+
 # Vamos aplicar a porta X ao estado |0⟩ e ver o resultado numérico
 
 print("=== Aplicando Porta X ao estado |0⟩ ===\n")
@@ -451,7 +465,8 @@ $$H|1⟩ = \frac{1}{\sqrt{2}} \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix} \beg
 
 Note que a porta Hadamard é **auto-adjunta** (igual à sua transposta conjugada), propriedade fundamental das portas quânticas reversíveis.
 
-```{python}
+```{python} {pyodide-python}
+
 # Exemplo de aplicação da porta H (Hadamard)
 
 # Definir a porta H
@@ -505,7 +520,8 @@ Resultado detalhado:
 
 ```
 
-```{python}
+```{python} {pyodide-python}
+
 # Outra maneira de definir a porta H usando NumPy (faz a mesma coisa que o código anterior)
 # Porta H (Hadamard): Cria superposição
 # Matriz: (1/√2) * [[1, 1], [1, -1]]
@@ -560,7 +576,8 @@ Se $|ψ⟩ = \begin{bmatrix} 𝛼 \\ 𝛽 \end{bmatrix}$ e $|φ⟩ = \begin{bmat
 
 $⟨ψ|φ⟩ = \begin{bmatrix} 𝛼 & 𝛽 \end{bmatrix} * \begin{bmatrix} γ \\ δ \end{bmatrix} = 𝛼*γ +𝛽*δ$
 
-```{python}
+```{python} {pyodide-python}
+
 # Exemplo de produto interno
 
 bra_0 = ket_0.T
@@ -592,7 +609,8 @@ Exemplo:
 
 $$|0\rangle \otimes |0\rangle = \begin{bmatrix} 1 \\ 0 \end{bmatrix} \otimes \begin{bmatrix} 1 \\ 0 \end{bmatrix} = \begin{bmatrix} 1 \cdot \begin{bmatrix} 1 \\ 0 \end{bmatrix} \\ 0 \cdot \begin{bmatrix} 1 \\ 0 \end{bmatrix} \end{bmatrix} = \begin{bmatrix} 1 \\ 0 \\ 0 \\ 0 \end{bmatrix}$$
 
-```{python}
+```{python} {pyodide-python}
+
 # Exemplo de produto tensorial
 
 # |0⟩ ⊗ |0⟩
@@ -657,7 +675,8 @@ Por exemplo:
 
 $$\text{CNOT}|11⟩ = \begin{bmatrix} 1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & 1 & 0 \end{bmatrix} * \begin{bmatrix} 0 \\ 0 \\ 0 \\ 1 \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \\ 1 \\ 0 \end{bmatrix} = |10⟩$$
 
-```{python}
+```{python} {pyodide-python}
+
 # Implementação do uso da porta CNOT
 
 # Definindo a porta CNOT
@@ -757,7 +776,8 @@ $$
 -|11⟩
 $$
 
-```{python}
+```{python} {pyodide-python}
+
 # Implementação da porta CZ (Controlled-Z)
 
 CZ = np.array([
@@ -861,7 +881,8 @@ $$
 = -|01⟩
 $$
 
-```{python}
+```{python} {pyodide-python}
+
 # Implementação da Porta ZZ
 
 ZZ = np.array([
@@ -902,7 +923,8 @@ Esperamos -|01>, obtivemos:
  
 Ao final, calculamos o quadrado desses números (0.707² ≈ 0.5). Isso diz ao computador: "Jogue uma moeda. Tem 50% de chance de dar Cara (0) e 50% de dar Coroa (1)". É aqui que a computação quântica deixa de ser determinística (como a clássica) e passa a ser probabilística.
 
-```{python}
+```{python} {pyodide-python}
+
 
 # A Medição (O Colapso)
 # Na teoria: A probabilidade de medir 0 ou 1 é o quadrado da amplitude (módulo ao quadrado).

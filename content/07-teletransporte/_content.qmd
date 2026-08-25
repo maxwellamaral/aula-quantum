@@ -27,13 +27,21 @@ Imagine que Alice quer enviar uma informação quântica para Bob que está muit
 
 ## Passo 0: Importar bibliotecas
 
-```{python}
+```{python} {pyodide-python}
+from numpy import pi
+```
+
+::: {.callout-note collapse="true"}
+## 🔒 Imports do Qiskit (requerem execução local)
+Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
+
+```python .qiskit-static
 from qiskit import QuantumRegister, ClassicalRegister, QuantumCircuit
 from qiskit.quantum_info import Statevector
 from qiskit.visualization import plot_bloch_multivector, plot_state_qsphere, plot_state_city
-from numpy import pi
-
 ```
+:::
+
 
 ## 1️⃣ Passo 1: Montar o "Palco" do Teletransporte
 
@@ -57,7 +65,8 @@ No início, todos os qubits estão em $|0\rangle$:
 
 $$|\psi_{\text{inicial}}\rangle = |q_0\rangle \otimes |q_1\rangle \otimes |q_2\rangle = |0\rangle \otimes |0\rangle \otimes |0\rangle = |000\rangle$$
 
-```{python}
+```{python} .qiskit-static
+
 
 qreg_q = QuantumRegister(3, 'q')
 creg_c = ClassicalRegister(3, 'c')
@@ -102,7 +111,8 @@ Aplicando no qubit 0:
 
 $$|\psi_1\rangle = (X \otimes I \otimes I)|000\rangle = |100\rangle = |1\rangle \otimes |0\rangle \otimes |0\rangle$$
 
-```{python}
+```{python} .qiskit-static
+
 
 circuit.x(qreg_q[0])
 circuit.barrier(qreg_q[0], qreg_q[1], qreg_q[2])
@@ -157,7 +167,8 @@ $$H|0\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle)$$
 Estado após H:
 $$|\psi_2\rangle = |1\rangle \otimes \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle) \otimes |0\rangle = \frac{1}{\sqrt{2}}(|100\rangle + |110\rangle) = 0.7071 (|100\rangle + |110\rangle)$$
 
-```{python}
+```{python} .qiskit-static
+
 circuit.h(qreg_q[1])
 
 state3 = Statevector.from_instruction(circuit)
@@ -200,7 +211,8 @@ $$|\psi_3\rangle = \frac{1}{\sqrt{2}}(|100\rangle + |111\rangle)$$
 
 **🔗 Estado de Bell criado!** Os qubits 1 e 2 agora estão **emaranhados** - medindo um, sabemos instantaneamente o outro!
 
-```{python}
+```{python} .qiskit-static
+
 circuit.cx(qreg_q[1], qreg_q[2])
 
 state4 = Statevector.from_instruction(circuit)
@@ -216,7 +228,8 @@ Statevector([0.        +0.j, 0.70710678+0.j, 0.        +0.j,
 
 ```
 
-```{python}
+```{python} .qiskit-static
+
 
 # Visualização na Q-Sphere - melhor para ver emaranhamento!
 print("\n🌐 Q-Sphere (mostra amplitudes e fases do estado completo):")
@@ -229,7 +242,8 @@ plot_state_qsphere(state4)
 
 ```
 
-```{python}
+```{python} {pyodide-python}
+
 # 🌐 Visualização INTERATIVA da Q-Sphere
 # Importar a função do módulo quantum_viz (localizado em ../src)
 import sys
@@ -323,7 +337,8 @@ $$|\psi_4\rangle = \frac{1}{\sqrt{2}}(|110\rangle + |101\rangle)$$
 
 **✨ Emaranhamento triplo!** Agora os 3 qubits estão interconectados quanticamente.
 
-```{python}
+```{python} .qiskit-static
+
 circuit.cx(qreg_q[0], qreg_q[1])
 
 state5 = Statevector.from_instruction(circuit)
@@ -424,7 +439,8 @@ $$|\psi_5\rangle = \frac{1}{2}(|010\rangle - |110\rangle + |001\rangle - |101\ra
 Podemos reescrever agrupando os estados de Alice (q[0]q[1]) e Bob (q[2]):
 $$|\psi_5\rangle = \frac{1}{2}[|00\rangle(|0\rangle - |1\rangle) + |01\rangle(|1\rangle - |0\rangle) + |10\rangle(|0\rangle + |1\rangle) + |11\rangle(|1\rangle + |0\rangle)]$$
 
-```{python}
+```{python} .qiskit-static
+
 circuit.h(qreg_q[0])
 circuit.barrier(qreg_q[0], qreg_q[1], qreg_q[2])
 circuit.draw('mpl')
@@ -478,7 +494,8 @@ Do estado $|\psi_5\rangle = \frac{1}{2}(|010\rangle - |110\rangle + |001\rangle 
 - A medição colapsa o estado para um dos 4 cenários com igual probabilidade
 - O estado de Bob está "embaralhado" - precisa das correções para recuperar $|1\rangle$
 
-```{python}
+```{python} {pyodide-python}
+
 circuit.measure(qreg_q[0], creg_c[0])
 circuit.measure(qreg_q[1], creg_c[1])
 circuit.barrier(qreg_q[0], qreg_q[1], qreg_q[2])
@@ -544,7 +561,8 @@ Aplica Z ao qubit alvo se o controle for |1⟩.
 
 🎉 **SUCESSO!** Em todos os casos, Bob recupera $|1\rangle$ - o estado foi teletransportado!
 
-```{python}
+```{python} {pyodide-python}
+
 # Aplicar as correções de Bob e fazer a medição final
 circuit.cx(qreg_q[1], qreg_q[2])  # Correção X condicional
 circuit.cz(qreg_q[0], qreg_q[2])  # Correção Z condicional
@@ -556,9 +574,8 @@ circuit.draw('mpl')
 
 Vamos simular cada um dos 4 possíveis cenários para confirmar matematicamente que Bob sempre recebe |1⟩:
 
-```{python}
+```{python} {pyodide-python}
 import numpy as np
-from qiskit.quantum_info import Statevector, Operator
 
 # Estados de Bob após medição de Alice (da tabela do Passo 4)
 cenarios = [
@@ -608,6 +625,16 @@ print("\n" + "="*70)
 print("✨ Conclusão: Em TODOS os 4 cenários, Bob recupera |1⟩!")
 print("   O teletransporte quântico funcionou perfeitamente! 🚀")
 ```
+
+::: {.callout-note collapse="true"}
+## 🔒 Imports do Qiskit (requerem execução local)
+Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
+
+```python .qiskit-static
+from qiskit.quantum_info import Statevector, Operator
+```
+:::
+
 
 ```
 🔬 Simulando os 4 cenários de teletransporte:
@@ -704,18 +731,27 @@ A Parte 2 é um **privilégio educacional** do simulador! 🎯
 
 Vamos construir o circuito do teletransporte passo a passo, visualizando o estado quântico após cada operação:
 
-```{python}
-from qiskit_aer import Aer
-from qiskit.quantum_info import Statevector
-from qiskit.visualization import plot_bloch_multivector
-
+```{python} {pyodide-python}
 # Criar circuito (começando vazio)
 final_circuit = QuantumCircuit(3)
 ```
 
+::: {.callout-note collapse="true"}
+## 🔒 Imports do Qiskit (requerem execução local)
+Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
+
+```python .qiskit-static
+from qiskit_aer import Aer
+from qiskit.quantum_info import Statevector
+from qiskit.visualization import plot_bloch_multivector
+```
+:::
+
+
 #### 🔹 Etapa 0: Estado Inicial (todos qubits em |0⟩)
 
-```{python}
+```{python} .qiskit-static
+
 # Visualizar estado inicial (circuito vazio)
 state_0 = Statevector.from_instruction(final_circuit)
 print("Estado: |000⟩ (todos qubits em |0⟩)")
@@ -731,13 +767,15 @@ Statevector([1.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j,
 
 ```
 
-```{python}
+```{python} .qiskit-static
+
 plot_bloch_multivector(state_0)
 ```
 
 #### 🔹 Etapa 1: Preparar o estado a teletransportar (X no qubit 0)
 
-```{python}
+```{python} .qiskit-static
+
 # Aplicar X no qubit 0 (preparar |1⟩)
 final_circuit.x(0)
 final_circuit.barrier()
@@ -757,13 +795,15 @@ Statevector([0.+0.j, 1.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j,
 
 ```
 
-```{python}
+```{python} .qiskit-static
+
 plot_bloch_multivector(state_1)
 ```
 
 #### 🔹 Etapa 2: Criar par de Bell (H + CNOT nos qubits 1 e 2)
 
-```{python}
+```{python} .qiskit-static
+
 # Criar par de Bell entre qubits 1 e 2
 final_circuit.h(1)
 final_circuit.cx(1, 2)
@@ -784,7 +824,8 @@ Statevector([0.        +0.j, 0.70710678+0.j, 0.        +0.j,
 
 ```
 
-```{python}
+```{python} .qiskit-static
+
 print("\n🌐 Q-Sphere - Visualizando o emaranhamento:")
 plot_state_qsphere(state_2)
 ```
@@ -795,13 +836,15 @@ plot_state_qsphere(state_2)
 
 ```
 
-```{python}
+```{python} .qiskit-static
+
 plot_bloch_multivector(state_2)
 ```
 
 #### 🔹 Etapa 3: Medição de Bell (CNOT + H nos qubits de Alice)
 
-```{python}
+```{python} .qiskit-static
+
 # Aplicar medição de Bell (sem as medições clássicas)
 final_circuit.cx(0, 1)
 final_circuit.h(0)
@@ -822,7 +865,8 @@ Statevector([ 0. +0.j,  0. +0.j,  0.5+0.j, -0.5+0.j,  0.5+0.j, -0.5+0.j,
 
 ```
 
-```{python}
+```{python} .qiskit-static
+
 print("\n🌐 Q-Sphere - Superposição dos 4 cenários possíveis:")
 plot_state_qsphere(state_3)
 ```
@@ -833,13 +877,15 @@ plot_state_qsphere(state_3)
 
 ```
 
-```{python}
+```{python} .qiskit-static
+
 plot_bloch_multivector(state_3)
 ```
 
 #### 📊 Resumo do Estado Final (antes das correções de Bob)
 
-```{python}
+```{python} .qiskit-static
+
 # Estado completo antes das correções de Bob
 state_final = Statevector.from_instruction(final_circuit)
 print("Estado completo antes das correções:")
@@ -860,7 +906,8 @@ Este estado representa os 4 cenários possíveis com igual probabilidade (25% ca
 
 ```
 
-```{python}
+```{python} {pyodide-python}
+
 print("\n🏙️ State City - Estrutura completa do estado emaranhado:")
 plot_state_city(state_final)
 ```
@@ -871,7 +918,8 @@ plot_state_city(state_final)
 
 ```
 
-```{python}
+```{python} .qiskit-static
+
 print("\n🌐 Q-Sphere - Todas as amplitudes:")
 plot_state_qsphere(state_final)
 ```
@@ -906,9 +954,8 @@ Vamos executar o circuito completo 1000 vezes e ver os resultados!
 
 💡 **Se você ver principalmente '100':** PARABÉNS! O teletransporte funcionou!
 
-```{python}
+```{python} {pyodide-python}
 # Executar o circuito completo e verificar os resultados
-from qiskit_aer import AerSimulator
 
 # Criar simulador
 simulator = AerSimulator()
@@ -922,6 +969,16 @@ print("Resultados das medições (1000 execuções):")
 print(counts)
 print("\nO resultado esperado é '100' (qubit 2 = |1⟩, demonstrando o teletransporte)")
 ```
+
+::: {.callout-note collapse="true"}
+## 🔒 Imports do Qiskit (requerem execução local)
+Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
+
+```python .qiskit-static
+from qiskit_aer import AerSimulator
+```
+:::
+
 
 ```
 Resultados das medições (1000 execuções):

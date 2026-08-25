@@ -393,7 +393,7 @@ end
 function enablePyodideCodeCell(el)
       
   -- Let's see what's going on here:
-  -- quarto.log.output(el)
+    -- quarto.log.output(el)
   
   -- Should display the following elements:
   -- https://pandoc.org/lua-filters.html#type-codeblock
@@ -407,7 +407,12 @@ function enablePyodideCodeCell(el)
   -- Check for the new engine syntax that allows for the cell to be 
   -- evaluated in VS Code or RStudio editor views, c.f.
   -- https://github.com/quarto-dev/quarto-cli/discussions/4761#discussioncomment-5338631
-  if not el.attr.classes:includes("{pyodide-python}") then
+  -- Quarto >=1.7 entrega "engine class" como string única "{python} {pyodide-python}"
+  local hasPyodideClass = false
+  for _, c in ipairs(el.attr.classes) do
+    if c:find("pyodide%%-python") then hasPyodideClass = true end
+  end
+  if not hasPyodideClass then
     return el
   end
 
@@ -440,8 +445,19 @@ function enablePyodideCodeCell(el)
 end
 
 local function stitchDocument(doc)
-
-  -- Do not attach webR as the page lacks any active webR cells
+  -- Quarto >=1.7: o estado local não persiste entre os passes do filtro.
+  -- Detecta células pyodide varrendo o documento final.
+  for _, blk in ipairs(doc.blocks) do
+    if blk.t == "CodeBlock" and blk.attr and blk.attr.classes then
+      for _, c in ipairs(blk.attr.classes) do
+        if c:find("pyodide%-python") or c:find("{pyodide-python}") then
+          missingPyodideCell = false
+          break
+        end
+      end
+      if not missingPyodideCell then break end
+    end
+  end
   if missingPyodideCell then 
     return doc
   end

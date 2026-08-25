@@ -2702,7 +2702,7 @@ determinística (como a clássica) e passa a ser probabilística.
 
 Probabilidade calculada de ser 0: 0.50
 Probabilidade calculada de ser 1: 0.50
-Resultado da Medição (Colapso): |0>
+Resultado da Medição (Colapso): |1>
 \end{verbatim}
 
 \begin{verbatim}
@@ -5162,7 +5162,7 @@ Rodaremos 1000 vezes para ver a distribuição de probabilidades.
 \begin{verbatim}
 
 --- Resultados da Medição (1000 execuções) ---
-{'00': 490, '11': 510}
+{'11': 506, '00': 494}
 \end{verbatim}
 
 \begin{verbatim}
@@ -7051,7 +7051,7 @@ funcionou!
 
 \begin{verbatim}
 Resultados das medições (1000 execuções):
-{'101': 256, '100': 266, '110': 228, '111': 250}
+{'101': 246, '100': 238, '110': 266, '111': 250}
 
 O resultado esperado é '100' (qubit 2 = |1⟩, demonstrando o teletransporte)
 \end{verbatim}
@@ -7198,7 +7198,7 @@ original.
 \end{Shaded}
 
 \begin{verbatim}
-<qiskit.circuit.instructionset.InstructionSet at 0x7779e87e4b80>
+<qiskit.circuit.instructionset.InstructionSet at 0x76f3e218d390>
 \end{verbatim}
 
 \subsection{Visualização após o primeiro Hadamard (Espelho
@@ -7248,7 +7248,7 @@ Estado após primeiro H: Statevector([0.70710678+0.j, 0.70710678+0.j],
 \end{Shaded}
 
 \begin{verbatim}
-<qiskit.circuit.instructionset.InstructionSet at 0x7779e83d9150>
+<qiskit.circuit.instructionset.InstructionSet at 0x76f3e0e0d420>
 \end{verbatim}
 
 \subsection{Visualização após o segundo Hadamard (Espelho
@@ -8390,7 +8390,7 @@ característica do \textbf{Phase Kickback}!
 \end{Shaded}
 
 \begin{verbatim}
-<qiskit.circuit.instructionset.InstructionSet at 0x7779ea49b0a0>
+<qiskit.circuit.instructionset.InstructionSet at 0x76f3e07bd9f0>
 \end{verbatim}
 
 \subsubsection{Demonstração Matemática: O Phase
@@ -8477,7 +8477,7 @@ Q-Sphere:
 \end{Shaded}
 
 \begin{verbatim}
-<qiskit.circuit.instructionset.InstructionSet at 0x7779dbf15a50>
+<qiskit.circuit.instructionset.InstructionSet at 0x76f3e0745390>
 \end{verbatim}
 
 \subsubsection{Demonstração Matemática: Verificação com
@@ -8704,7 +8704,7 @@ Input: 100 -> Output: 0
 Todos os valores são iguais! A função é constante.
 
 Tabela oculta (caixa preta):
-[1, 0, 0, 1, 0, 0, 1, 1]
+[1, 0, 1, 0, 0, 1, 0, 1]
 
 Testando se a função é constante ou balanceada:
 Input: 000 -> Output: 1
@@ -8938,7 +8938,7 @@ oráculo}!
 ======================================================================
 🧪 TESTE COM FUNÇÃO CONSTANTE
 ======================================================================
-📋 Tabela clássica (primeiros 8 valores): [1, 1, 1, 1, 1, 1, 1, 1]...
+📋 Tabela clássica (primeiros 8 valores): [0, 0, 0, 0, 0, 0, 0, 0]...
 ⚛️  Medição quântica: 000
 🎯 Resultado do algoritmo: CONSTANTE
 ✅ CORRETO! O algoritmo identificou o tipo corretamente!
@@ -8953,7 +8953,7 @@ oráculo}!
 ======================================================================
 🧪 TESTE COM FUNÇÃO BALANCEADA
 ======================================================================
-📋 Tabela clássica (primeiros 8 valores): [1, 0, 1, 1, 0, 1, 0, 0]...
+📋 Tabela clássica (primeiros 8 valores): [1, 0, 1, 0, 0, 1, 1, 0]...
 ⚛️  Medição quântica: 111
 🎯 Resultado do algoritmo: BALANCEADA
 ✅ CORRETO! O algoritmo identificou o tipo corretamente!
@@ -10703,7 +10703,7 @@ montagem manual das portas agora.
 \end{Shaded}
 
 \begin{verbatim}
-/tmp/ipykernel_666762/638381934.py:3: DeprecationWarning: The class ``qiskit.circuit.library.basis_change.qft.QFT`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. ('Use qiskit.circuit.library.QFTGate or qiskit.synthesis.qft.synth_qft_full instead, for access to all previous arguments.',)
+/tmp/ipykernel_677917/638381934.py:3: DeprecationWarning: The class ``qiskit.circuit.library.basis_change.qft.QFT`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. ('Use qiskit.circuit.library.QFTGate or qiskit.synthesis.qft.synth_qft_full instead, for access to all previous arguments.',)
   qc_qft = QFT(num_qubits, do_swaps=False).to_gate()
 \end{verbatim}
 
@@ -11099,7 +11099,7 @@ Em binário: (O terceiro bit é 1).
 \end{Shaded}
 
 \begin{verbatim}
-/tmp/ipykernel_666762/3409750826.py:4: DeprecationWarning: The class ``qiskit.circuit.library.basis_change.qft.QFT`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. ('Use qiskit.circuit.library.QFTGate or qiskit.synthesis.qft.synth_qft_full instead, for access to all previous arguments.',)
+/tmp/ipykernel_677917/3409750826.py:4: DeprecationWarning: The class ``qiskit.circuit.library.basis_change.qft.QFT`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. ('Use qiskit.circuit.library.QFTGate or qiskit.synthesis.qft.synth_qft_full instead, for access to all previous arguments.',)
   qc_iqft = QFT(num_qubits_contagem, inverse=True).to_gate()
 \end{verbatim}
 
@@ -11120,7 +11120,7 @@ C:\Users\Max\AppData\Local\Temp\ipykernel_18328\2763487660.py:4: DeprecationWarn
 \end{Shaded}
 
 \begin{verbatim}
-<qiskit.circuit.instructionset.InstructionSet at 0x7779dbbcca90>
+<qiskit.circuit.instructionset.InstructionSet at 0x76f3e03432b0>
 \end{verbatim}
 
 \begin{Shaded}
@@ -11814,7 +11814,7 @@ features!
 \end{Shaded}
 
 \begin{verbatim}
-/tmp/ipykernel_666762/1824718266.py:5: DeprecationWarning: The class ``qiskit.circuit.library.data_preparation._zz_feature_map.ZZFeatureMap`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. Use the zz_feature_map function as a replacement. Note that this will no longer return a BlueprintCircuit, but just a plain QuantumCircuit.
+/tmp/ipykernel_677917/1824718266.py:5: DeprecationWarning: The class ``qiskit.circuit.library.data_preparation._zz_feature_map.ZZFeatureMap`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. Use the zz_feature_map function as a replacement. Note that this will no longer return a BlueprintCircuit, but just a plain QuantumCircuit.
   feature_map = ZZFeatureMap(feature_dimension=num_qubits, reps=1)
 \end{verbatim}
 
@@ -12268,7 +12268,7 @@ exatamente como uma rede neural clássica ajusta pesos W!
 \end{Shaded}
 
 \begin{verbatim}
-/tmp/ipykernel_666762/4274500007.py:4: DeprecationWarning: The class ``qiskit.circuit.library.n_local.real_amplitudes.RealAmplitudes`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. Use the function qiskit.circuit.library.real_amplitudes instead.
+/tmp/ipykernel_677917/4274500007.py:4: DeprecationWarning: The class ``qiskit.circuit.library.n_local.real_amplitudes.RealAmplitudes`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. Use the function qiskit.circuit.library.real_amplitudes instead.
   ansatz = RealAmplitudes(num_qubits=num_qubits, reps=1)
 \end{verbatim}
 
@@ -12349,7 +12349,7 @@ assim como os pesos W em uma rede neural clássica.
 \end{verbatim}
 
 \begin{verbatim}
-<qiskit_machine_learning.algorithms.classifiers.vqc.VQC at 0x7779da95d540>
+<qiskit_machine_learning.algorithms.classifiers.vqc.VQC at 0x76f3d8568670>
 \end{verbatim}
 
 \begin{verbatim}
@@ -12472,9 +12472,9 @@ Treinando VQC otimizado (isso pode demorar mais)...
 \end{verbatim}
 
 \begin{verbatim}
-/tmp/ipykernel_666762/2842022012.py:8: DeprecationWarning: The class ``qiskit.circuit.library.data_preparation._zz_feature_map.ZZFeatureMap`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. Use the zz_feature_map function as a replacement. Note that this will no longer return a BlueprintCircuit, but just a plain QuantumCircuit.
+/tmp/ipykernel_677917/2842022012.py:8: DeprecationWarning: The class ``qiskit.circuit.library.data_preparation._zz_feature_map.ZZFeatureMap`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. Use the zz_feature_map function as a replacement. Note that this will no longer return a BlueprintCircuit, but just a plain QuantumCircuit.
   feature_map=ZZFeatureMap(feature_dimension=num_qubits, reps=2),  # Mais repetições
-/tmp/ipykernel_666762/2842022012.py:9: DeprecationWarning: The class ``qiskit.circuit.library.n_local.real_amplitudes.RealAmplitudes`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. Use the function qiskit.circuit.library.real_amplitudes instead.
+/tmp/ipykernel_677917/2842022012.py:9: DeprecationWarning: The class ``qiskit.circuit.library.n_local.real_amplitudes.RealAmplitudes`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. Use the function qiskit.circuit.library.real_amplitudes instead.
   ansatz=RealAmplitudes(num_qubits=num_qubits, reps=3),  # Ansatz mais profundo
 \end{verbatim}
 
@@ -12785,7 +12785,7 @@ Métrica                        VQC Otimizado        SVM Clássico
 ----------------------------------------------------------------------
 Acurácia (Treino)              0.7214               0.9786              
 Acurácia (Teste)               0.8000               0.9833              
-Tempo de Treino (s)            ~300 iterações       0.0049              
+Tempo de Treino (s)            ~300 iterações       0.0087              
 ----------------------------------------------------------------------
 
 💡 Observação:
@@ -13183,9 +13183,9 @@ Treinando VQC em dados circulares...
 \end{verbatim}
 
 \begin{verbatim}
-/tmp/ipykernel_666762/1172035350.py:46: DeprecationWarning: The class ``qiskit.circuit.library.data_preparation._zz_feature_map.ZZFeatureMap`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. Use the zz_feature_map function as a replacement. Note that this will no longer return a BlueprintCircuit, but just a plain QuantumCircuit.
+/tmp/ipykernel_677917/1172035350.py:46: DeprecationWarning: The class ``qiskit.circuit.library.data_preparation._zz_feature_map.ZZFeatureMap`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. Use the zz_feature_map function as a replacement. Note that this will no longer return a BlueprintCircuit, but just a plain QuantumCircuit.
   feature_map=ZZFeatureMap(feature_dimension=2, reps=2),  # Aumentar reps para mais expressividade
-/tmp/ipykernel_666762/1172035350.py:47: DeprecationWarning: The class ``qiskit.circuit.library.n_local.real_amplitudes.RealAmplitudes`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. Use the function qiskit.circuit.library.real_amplitudes instead.
+/tmp/ipykernel_677917/1172035350.py:47: DeprecationWarning: The class ``qiskit.circuit.library.n_local.real_amplitudes.RealAmplitudes`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. Use the function qiskit.circuit.library.real_amplitudes instead.
   ansatz=RealAmplitudes(num_qubits=2, reps=2),
 /home/max/aula-quantum/.venv/lib/python3.10/site-packages/IPython/core/pylabtools.py:170: UserWarning: Glyph 10060 (\N{CROSS MARK}) missing from font(s) DejaVu Sans.
   fig.canvas.print_figure(bytes_io, **kw)

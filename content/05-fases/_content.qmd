@@ -36,10 +36,8 @@ onde $\phi$ é a fase do número complexo.
 - **Porta T**: Adiciona fase de 45° ao estado |1⟩
   $$T = \begin{bmatrix} 1 & 0 \\ 0 & e^{i\pi/4} \end{bmatrix}$$
 
-```{python}
+```{python} {pyodide-python}
 # Importações para visualização da esfera de Bloch
-from qiskit.visualization import plot_bloch_multivector, plot_state_qsphere
-from qiskit.quantum_info import Statevector
 from sympy import Matrix, symbols       # Para criar matrizes e símbolos matemáticos
 from IPython.display import display, Markdown
 
@@ -62,6 +60,17 @@ display(Markdown(f"$$S = {sp.latex(S)}$$"))
 display(Markdown(f"$$T = {sp.latex(T)}$$"))
 ```
 
+::: {.callout-note collapse="true"}
+## 🔒 Imports do Qiskit (requerem execução local)
+Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
+
+```python .qiskit-static
+from qiskit.visualization import plot_bloch_multivector, plot_state_qsphere
+from qiskit.quantum_info import Statevector
+```
+:::
+
+
 ### Visualização na Esfera de Bloch
 
 A esfera de Bloch é uma representação geométrica de um qubit onde:
@@ -74,7 +83,8 @@ A esfera de Bloch é uma representação geométrica de um qubit onde:
 
 Vamos visualizar estados com diferentes fases:
 
-```{python}
+```{python} .qiskit-static
+
 # Statevector do Qiskit serve para visualização. 
 # Vai ajudar a montrar a esfera de Bloch.
 # Ele aceita listas com os coeficientes dos estados |0⟩ e |1⟩, neste caso
@@ -149,7 +159,8 @@ $$Z|+⟩ = Z · \frac{1}{\sqrt{2}}(|0⟩ + |1⟩) = \frac{1}{\sqrt{2}}(|0⟩ - |
 
 Na esfera de Bloch, isso corresponde a uma rotação de 180° em torno do eixo Z.
 
-```{python}
+```{python} .qiskit-static
+
 # Demonstração: Aplicar porta Z em |+⟩
 estado_inicial = state_plus
 estado_apos_Z = Statevector([1/np.sqrt(2), -1/np.sqrt(2)])
@@ -188,7 +199,8 @@ $$S|+⟩ = S · \frac{1}{\sqrt{2}}(|0⟩ + |1⟩) = \frac{1}{\sqrt{2}}(|0⟩ + i
 
 Na esfera de Bloch, isso corresponde a uma rotação de 90° em torno do eixo Z.
 
-```{python}
+```{python} .qiskit-static
+
 # Demonstração: Aplicar porta S em |+⟩
 estado_inicial = state_plus
 estado_apos_S = Statevector([1/np.sqrt(2), 1j/np.sqrt(2)])
@@ -226,7 +238,8 @@ O Q-Sphere é outra forma de visualizar estados quânticos, onde as **cores** re
 - **Vermelho/Laranja**: Fase negativa (180° a 270°)
 - **Tamanho das esferas**: Magnitude da amplitude
 
-```{python}
+```{python} .qiskit-static
+
 # Visualizar os mesmos estados no Q-Sphere
 print("Estado |+⟩ - Fase 0°:")
 display(plot_state_qsphere(state_plus))
@@ -292,7 +305,8 @@ A fase quântica é fundamental para:
 - 🔗 **Emaranhamento**: Estados emaranhados têm relações de fase específicas
 - ⚡ **Phase Kickback**: Técnica usada em oráculos quânticos (veremos em notebooks avançados)
 
-```{python}
+```{python} .qiskit-static
+
 # Experimente diferentes valores de theta (em graus)
 theta_graus = 45  # Modifique este valor: 0, 45, 90, 135, 180, 225, 270, 315...
 theta_rad = np.deg2rad(theta_graus)
@@ -359,7 +373,8 @@ Cada porta rotaciona o qubit em torno de um eixo da Esfera de Bloch:
 
 **Observação importante:** O ângulo nas matrizes é **θ/2** (metade do ângulo de rotação na Esfera de Bloch). Isso é uma convenção da mecânica quântica relacionada ao grupo SU(2).
 
-```{python}
+```{python} {pyodide-python}
+
 # Definir as portas de rotação parametrizadas
 import numpy as np
 import sympy as sp
@@ -405,10 +420,7 @@ A porta **RY(θ)** é especialmente importante porque:
 
 Vamos aplicar RY com diferentes ângulos ao estado |0⟩:
 
-```{python}
-from qiskit import QuantumCircuit
-from qiskit.quantum_info import Statevector
-from qiskit.visualization import plot_bloch_multivector
+```{python} {pyodide-python}
 import matplotlib.pyplot as plt
 
 # Testar RY com diferentes ângulos
@@ -438,7 +450,6 @@ for i, (angulo, nome) in enumerate(zip(angulos, nomes)):
     print(f"  Probabilidades: P(0) = {abs(alpha)**2:.4f}, P(1) = {abs(beta)**2:.4f}")
     
     # Plotar na Esfera de Bloch
-    from qiskit.visualization import plot_bloch_vector
     
     # Converter estado em coordenadas de Bloch
     theta_bloch = 2 * angulo  # Dobrar o ângulo para coordenadas de Bloch
@@ -459,6 +470,19 @@ print("  • RY(180°) = |1⟩ (polo sul)")
 print("  • Todos os estados estão no plano XZ (y = 0)")
 print("=" * 70)
 ```
+
+::: {.callout-note collapse="true"}
+## 🔒 Imports do Qiskit (requerem execução local)
+Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
+
+```python .qiskit-static
+from qiskit import QuantumCircuit
+from qiskit.quantum_info import Statevector
+from qiskit.visualization import plot_bloch_multivector
+    from qiskit.visualization import plot_bloch_vector
+```
+:::
+
 
 ```
 ======================================================================
@@ -508,7 +532,8 @@ A porta **RZ(θ)** modifica apenas a **fase** do qubit, sem alterar as probabili
 
 Diferente de RY, RZ **não muda a posição vertical** na Esfera de Bloch, apenas **rotaciona em torno do eixo Z**:
 
-```{python}
+```{python} .qiskit-static
+
 # Demonstração: RZ aplicado a |+⟩
 print("=" * 70)
 print("PORTA RZ: Rotação em torno do eixo Z (afeta apenas a fase)")
@@ -619,7 +644,8 @@ A porta **RX(θ)** rotaciona em torno do eixo X. É menos comum que RY e RZ, mas
 
 Vamos ver RX em ação:
 
-```{python}
+```{python} .qiskit-static
+
 print("=" * 70)
 print("PORTA RX: Rotação em torno do eixo X")
 print("=" * 70)
@@ -699,7 +725,8 @@ Vamos implementar as portas de rotação usando apenas NumPy. Isso ajuda a enten
 
 **Lembre-se:** As matrizes usam **θ/2** (metade do ângulo), então para uma rotação de 90° na Esfera de Bloch, passamos θ = π/2 rad (45° nas matrizes).
 
-```{python}
+```{python} {pyodide-python}
+
 import numpy as np
 
 # Implementação manual das portas de rotação parametrizadas
@@ -915,11 +942,8 @@ qc.ry(theta, 0)        # Aplicar rotação RY
 
 Vamos testar com diferentes valores:
 
-```{python}
+```{python} {pyodide-python}
 # Importações necessárias para esta célula
-from qiskit import QuantumCircuit
-from qiskit.quantum_info import Statevector
-from qiskit.visualization import plot_bloch_vector
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -965,6 +989,18 @@ print("   Dados diferentes → Ângulos diferentes → Estados quânticos difere
 print("   Assim, codificamos informação clássica em superposições quânticas!")
 print("=" * 70)
 ```
+
+::: {.callout-note collapse="true"}
+## 🔒 Imports do Qiskit (requerem execução local)
+Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
+
+```python .qiskit-static
+from qiskit import QuantumCircuit
+from qiskit.quantum_info import Statevector
+from qiskit.visualization import plot_bloch_vector
+```
+:::
+
 
 ```
 ======================================================================
@@ -1075,7 +1111,8 @@ $$
 
 #### Usando a Porta CP com Numpy puro (sem Qiskit)
 
-```{python}
+```{python} {pyodide-python}
+
 # Implementação da porta CPHASE (Controlled-Phase)
 
 def cphase_gate(theta):
@@ -1121,15 +1158,23 @@ Esperamos e^(iπ/2)|11> = i|11>, obtivemos:
 
 Vamos ver outro exemplo utilizando a esfera de Bloch para visualizar o efeito da porta CP em um sistema de dois qubits.
 
-```{python}
+```{python} {pyodide-python}
 # Visualização do efeito da Porta CPHASE nas Esferas de Bloch
 import numpy as np
-from qiskit.quantum_info import Statevector
-from qiskit.visualization import plot_bloch_multivector
 import matplotlib.pyplot as plt
 from IPython.display import display, Markdown
-
 ```
+
+::: {.callout-note collapse="true"}
+## 🔒 Imports do Qiskit (requerem execução local)
+Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
+
+```python .qiskit-static
+from qiskit.quantum_info import Statevector
+from qiskit.visualization import plot_bloch_multivector
+```
+:::
+
 
 Vamos criar o estado passo a passo para entender como ele aparece nas esferas de Bloch:
 
@@ -1152,7 +1197,8 @@ np.kron(|+⟩, |1⟩)  →  qubit1 = |+⟩  e  qubit0 = |1⟩
 - **Esfera da ESQUERDA** = qubit 0 (menos significativo) = |1⟩ → **polo sul** ✓
 - **Esfera da DIREITA** = qubit 1 (mais significativo) = |+⟩ → **equador +X** ✓
 
-```{python}
+```{python} .qiskit-static
+
 
 # Parâmetro da porta (já definido no notebook): θ = π/2
 theta = np.pi / 2
@@ -1231,7 +1277,8 @@ CRIANDO O ESTADO QUÂNTICO DE 2 QUBITS
 
 ```
 
-```{python}
+```{python} .qiskit-static
+
 
 print("Antes da CP (controle |+>, alvo |1>):")
 display(plot_bloch_multivector(sv_before))
@@ -1243,7 +1290,8 @@ Antes da CP (controle |+>, alvo |1>):
 
 ```
 
-```{python}
+```{python} .qiskit-static
+
 
 # Aplicar CPHASE
 state_after = CP.dot(state_before.reshape(4, 1)).flatten()
@@ -1259,7 +1307,8 @@ Depois da CP (θ = π/2):
 
 ```
 
-```{python}
+```{python} {pyodide-python}
+
 
 # Análise numérica do estado reduzido do qubit alvo
 psi_before = state_before.reshape((2, 2))    # formato (controle, alvo)
@@ -1303,10 +1352,7 @@ Até agora trabalhamos com NumPy e vetores de estado diretamente. Agora vamos ve
 
 No Qiskit, a porta CP está disponível como `qc.cp(theta, control_qubit, target_qubit)`.
 
-```{python}
-from qiskit import QuantumCircuit
-from qiskit.quantum_info import Statevector
-from qiskit.visualization import plot_bloch_multivector
+```{python} {pyodide-python}
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -1324,12 +1370,25 @@ display(qc.draw('mpl'))
 estado_antes_qiskit = Statevector(qc)
 ```
 
+::: {.callout-note collapse="true"}
+## 🔒 Imports do Qiskit (requerem execução local)
+Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
+
+```python .qiskit-static
+from qiskit import QuantumCircuit
+from qiskit.quantum_info import Statevector
+from qiskit.visualization import plot_bloch_multivector
+```
+:::
+
+
 ```
 Circuito ANTES da porta CP:
 
 ```
 
-```{python}
+```{python} .qiskit-static
+
 # Aplicar a porta CP (Controlled-Phase) com θ = π/2
 theta = np.pi / 2
 qc.cp(theta, 1, 0)  # Porta CP: controle=qubit1, alvo=qubit0
@@ -1346,7 +1405,8 @@ Circuito DEPOIS da porta CP:
 
 ```
 
-```{python}
+```{python} {pyodide-python}
+
 # Comparar com o resultado NumPy anterior
 print("="*70)
 print("COMPARAÇÃO: NumPy vs Qiskit")
@@ -1397,7 +1457,8 @@ COMPARAÇÃO: NumPy vs Qiskit
 
 ```
 
-```{python}
+```{python} .qiskit-static
+
 # Visualizar o estado final nas esferas de Bloch
 print("Estado final (após CP) usando Qiskit:")
 display(plot_bloch_multivector(estado_depois_qiskit))

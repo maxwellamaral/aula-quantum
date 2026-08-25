@@ -43,15 +43,24 @@ O difusor é um padrão fixo: aplica H, aplica X, aplica H no último qubit com 
 
 Aqui está o código completo comentado:
 
-```{python}
+```{python} {pyodide-python}
+import matplotlib.pyplot as plt
+```
+
+::: {.callout-note collapse="true"}
+## 🔒 Imports do Qiskit (requerem execução local)
+Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
+
+```python .qiskit-static
 from qiskit import QuantumCircuit, transpile
 from qiskit_aer import AerSimulator
 from qiskit.visualization import plot_histogram
-import matplotlib.pyplot as plt
-
 ```
+:::
 
-```{python}
+
+```{python} .qiskit-static
+
 
 def oraculo_para_11():
     """
@@ -94,7 +103,8 @@ def difusor_grover(n_qubits):
 
 ```
 
-```{python}
+```{python} .qiskit-static
+
 
 # --- MONTAGEM DO ALGORITMO ---
 
@@ -130,7 +140,8 @@ qc.draw('mpl')
 
 ```
 
-```{python}
+```{python} .qiskit-static
+
 
 simulador = AerSimulator()
 job = simulador.run(transpile(qc, simulador), shots=1024)
@@ -168,7 +179,8 @@ Contagens: {'11': 1024}
 
 Tente modificar a função `oraculo_para_11` para encontrar o estado **`00`** em vez de `11`.
 
-```{python}
+```{python} .qiskit-static
+
 def oraculo_para_00():
     """
     Marca o estado |00> invertendo sua fase.
@@ -182,7 +194,8 @@ def oraculo_para_00():
     return qc
 ```
 
-```{python}
+```{python} .qiskit-static
+
 qc = QuantumCircuit(2, 2)
 qc.h([0, 1])
 qc.barrier()
@@ -214,21 +227,31 @@ Contagens: {'00': 1024}
 
 Agora que você viu o algoritmo funcionando e testou o desafio, vamos explorar cada etapa em detalhes matemáticos. Esta seção irá reconstruir o mesmo algoritmo, mas desta vez visualizando e calculando cada transformação.
 
-```{python}
+```{python} {pyodide-python}
 # Função auxiliar para visualização na esfera de Bloch
-from qiskit.visualization import plot_bloch_multivector
-from qiskit.quantum_info import Statevector
 
 def visualize_state(qc):
     state = Statevector.from_instruction(qc)
     return plot_bloch_multivector(state)
 ```
 
+::: {.callout-note collapse="true"}
+## 🔒 Imports do Qiskit (requerem execução local)
+Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
+
+```python .qiskit-static
+from qiskit.visualization import plot_bloch_multivector
+from qiskit.quantum_info import Statevector
+```
+:::
+
+
 ####  Passo 1: Preparação do Estado Inicial
 
 Iniciamos com todos os estados igualmente prováveis, representados por amplitudes iguais. O objetivo do Algoritmo de Grover é aumentar a amplitude do estado desejado (a resposta correta) enquanto diminui as amplitudes dos outros estados.
 
-```{python}
+```{python} .qiskit-static
+
 qc = QuantumCircuit(2, 2)
 qc.h([0, 1])
 qc.barrier()
@@ -241,7 +264,8 @@ O estado agora é de superposição uniforme:
 - 25% para |10⟩
 - 25% para |11⟩
 
-```{python}
+```{python} {pyodide-python}
+
 visualize_state(qc)
 ```
 
@@ -264,7 +288,8 @@ $$
 
 Perceba que CZ é executado para "filtrar" somente o estado desejado, indicado para |11⟩. Em outros estados (00, 01, 10), o oráculo não faz nenhuma alteração.
 
-```{python}
+```{python} .qiskit-static
+
 oraculo = QuantumCircuit(2)
 oraculo.cz(0, 1)
 oraculo.draw('mpl')
@@ -276,7 +301,8 @@ oraculo.draw('mpl')
 > - Assim, percebe-se que o oráculo pode ser adaptado para qualquer estado alvo, garantindo que a fase seja invertida corretamente para o estado desejado, desde que você faça as manipulações necessárias com portas X ou outras portas lógicas apropriadas.
 > - Perceba com isso que, se você fosse implementar uma "busca" na computação clássica, você precisaria de uma função que verificasse cada item um por um, utilizando um loop ou similar, o que é ineficiente para grandes conjuntos de dados.
 
-```{python}
+```{python} {pyodide-python}
+
 qc = qc.compose(oraculo)
 qc.barrier()
 qc.draw('mpl')
@@ -387,7 +413,8 @@ Portanto, o vetor intermediário seria: $(-\frac{1}{4}, -\frac{1}{4}, -\frac{1}{
 
 Porém, a implementação física do difusor com as portas H-X-CZ-X-H realiza essa operação junto com uma normalização que leva ao resultado final: $(0, 0, 0, 1)$.
 
-```{python}
+```{python} .qiskit-static
+
 difusor = QuantumCircuit(2)
 difusor.h([0, 1])
 difusor.x([0, 1])
@@ -397,7 +424,8 @@ difusor.h([0, 1])
 difusor.draw('mpl')
 ```
 
-```{python}
+```{python} {pyodide-python}
+
 qc = qc.compose(difusor)
 qc.barrier()
 qc.draw('mpl')
@@ -408,7 +436,8 @@ qc.draw('mpl')
 
 Finalmente, medimos o estado do sistema quântico. Após a aplicação do oráculo e do difusor, o estado do sistema é $|11\rangle$ com probabilidade 100%. Portanto, ao medir os qubits, obtemos o resultado `11` com certeza.
 
-```{python}
+```{python} {pyodide-python}
+
 # Finalização com medição nos qubits
 qc.measure([0, 1], [0, 1])
 qc.draw('mpl')
@@ -418,7 +447,8 @@ qc.draw('mpl')
 
 Aqui o circuito é executado no simulador quântico, coletando os resultados das medições para verificar se o algoritmo funcionou conforme esperado.
 
-```{python}
+```{python} .qiskit-static
+
 # --- EXECUÇÃO ---
 simulador = AerSimulator()
 job = simulador.run(transpile(qc, simulador), shots=1024)   

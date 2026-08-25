@@ -34,17 +34,26 @@ Vamos usar o Qiskit para ver isso acontecer. Vamos pegar o número 6 (`110`), ap
 
 Para facilitar, usaremos a biblioteca pronta de QFT do Qiskit (`qiskit.circuit.library`), assim focamos no efeito e não na montagem manual das portas agora.
 
-```{python}
+```{python} {pyodide-python}
 import numpy as np
+import matplotlib.pyplot as plt
+```
+
+::: {.callout-note collapse="true"}
+## 🔒 Imports do Qiskit (requerem execução local)
+Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
+
+```python .qiskit-static
 from qiskit import QuantumCircuit, transpile
 from qiskit.circuit.library import QFT
 from qiskit.quantum_info import Statevector
 from qiskit.visualization import plot_bloch_multivector
-import matplotlib.pyplot as plt
-
 ```
+:::
 
-```{python}
+
+```{python} .qiskit-static
+
 
 # 1. PREPARAÇÃO: Codificar o número 6 (Binário 110)
 # Em Qiskit (Little Endian): q0 é o menos significativo.
@@ -69,7 +78,8 @@ print("--- Estado Antes (Binário 110) ---")
 
 ```
 
-```{python}
+```{python} .qiskit-static
+
 
 # 2. A MÁGICA: Aplicar a QFT
 # A biblioteca cria o circuito complexo de Hadamards e Rotações para nós
@@ -90,7 +100,8 @@ C:\Users\Max\AppData\Local\Temp\ipykernel_18328\3244769350.py:3: DeprecationWarn
 
 ```
 
-```{python}
+```{python} .qiskit-static
+
 from IPython.display import display
 
 # 3. VISUALIZAÇÃO
@@ -146,7 +157,8 @@ Observe como as setas na imagem "Depois" giram muito menos. Essa sensibilidade v
 
 ### Interpretação dos resultados baseados na precisão dos qubits
 
-```{python}
+```{python} {pyodide-python}
+
 # Visualizar o vetor de estados com melhor formatação
 print("\n=== ESTADO ANTES DA QFT (Base Computacional) ===")
 print(f"Representação: |110⟩ (número 6 em binário)")
@@ -172,7 +184,8 @@ Amplitudes:
 
 ```
 
-```{python}
+```{python} {pyodide-python}
+
 
 print("\n" + "="*60)
 print("\n=== ESTADO DEPOIS DA QFT (Base de Fourier) ===")
@@ -260,16 +273,25 @@ O resultado esperado em binário fracionário:
 
 Em binário:  (O terceiro bit é 1).
 
-```{python}
+```{python} {pyodide-python}
 import numpy as np
+```
+
+::: {.callout-note collapse="true"}
+## 🔒 Imports do Qiskit (requerem execução local)
+Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
+
+```python .qiskit-static
 from qiskit import QuantumCircuit, transpile
 from qiskit_aer import AerSimulator
 from qiskit.circuit.library import QFT, PhaseGate
 from qiskit.visualization import plot_histogram
-
 ```
+:::
 
-```{python}
+
+```{python} .qiskit-static
+
 # --- 1. CONFIGURAÇÃO ---
 # Precisamos de qubits para "contar" a fase (precisão) e 1 (q3) para sofrer a ação
 num_qubits_contagem = 3 
@@ -279,7 +301,8 @@ qc = QuantumCircuit(num_qubits_total, num_qubits_contagem)
 qc.draw('mpl')
 ```
 
-```{python}
+```{python} {pyodide-python}
+
 # --- 2. PREPARAÇÃO ---
 # Colocar os qubits de contagem em superposição (para receberem o kickback)
 for qubit in range(num_qubits_contagem):
@@ -291,7 +314,8 @@ qc.x(num_qubits_contagem)
 qc.draw('mpl')
 ```
 
-```{python}
+```{python} {pyodide-python}
+
 
 # --- 3. APLICAÇÃO DA PORTA "MISTERIOSA" (U) ---
 # Vamos definir nossa fase secreta: 1/8 de volta
@@ -313,7 +337,8 @@ qc.barrier()
 qc.draw('mpl')
 ```
 
-```{python}
+```{python} {pyodide-python}
+
 
 # --- 4. O DECODIFICADOR (QFT INVERSA) ---
 # Até aqui, a informação do ângulo está escondida na fase dos qubits de contagem.
@@ -329,14 +354,16 @@ C:\Users\Max\AppData\Local\Temp\ipykernel_18328\2763487660.py:4: DeprecationWarn
 
 ```
 
-```{python}
+```{python} {pyodide-python}
+
 
 # --- 5. MEDIÇÃO ---
 qc.measure(range(num_qubits_contagem), range(num_qubits_contagem))
 
 ```
 
-```{python}
+```{python} .qiskit-static
+
 
 # --- EXECUÇÃO ---
 simulador = AerSimulator()
@@ -345,7 +372,8 @@ contagens = job.result().get_counts()
 
 ```
 
-```{python}
+```{python} {pyodide-python}
+
 
 # --- INTERPRETAÇÃO ---
 # A saída será um binário, ex: '001'.

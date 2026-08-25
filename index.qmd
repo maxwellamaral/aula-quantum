@@ -1,0 +1,45 @@
+---
+page-layout: full
+header-includes:
+  - <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+---
+
+::: {.max-w-5xl .mx-auto .pt-4}
+
+::: {.mb-16 .mt-8}
+# Fundamentos de <br/> Computação Quântica {.title-glow .text-4xl .md:text-5xl .font-extrabold .text-white .mb-6 .tracking-tight .leading-tight}
+:::
+
+::: {.my-10 .text-xl .text-slate-400 .max-w-2xl .leading-relaxed}
+
+Bem-vindo ao portal do curso de extensão de Fundamentos de Computação Quântica, da física que originou a mecânica quântica aos algoritmos e ao Quantum Machine Learning.
+
+:::
+
+::: {.grid .grid-cols-1 .md:grid-cols-3 .gap-6 .mb-16 }
+
+::: {.feature-card .p-8 .rounded-xl}
+### [📘 Aulas & Materiais](content/index.qmd) {.text-xl .font-semibold .text-white .mb-3}
+
+[Módulos, notebooks Qiskit e simuladores interativos.]{.text-base}
+:::
+
+::: {.feature-card .p-8 .rounded-xl}
+### [💻 Notebooks & Simuladores](https://github.com/maxwellamaral/aula-quantum) {.text-xl .font-semibold .text-white .mb-3}
+
+[Notebooks executáveis e laboratórios interativos.]{.text-base}
+:::
+
+::: {.feature-card .p-8 .rounded-xl}
+### [ℹ️ Informações do Curso](about.qmd) {.text-xl .font-semibold .text-white .mb-3}
+
+[Ficha técnica, pré-requisitos e bibliografia.]{.text-base}
+:::
+
+:::
+
+::: {.flex .flex-col .items-center .mb-12}
+[📄 Baixar Apostila (PDF)](content/apostila.pdf){.cta-btn .text-white .font-medium .py-3 .px-8 .rounded-md .shadow-lg}
+:::
+
+:::

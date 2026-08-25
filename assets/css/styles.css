@@ -1,0 +1,615 @@
+/* Custom styles for Quarto website - VVTS (Dark Abyss Theme) */
+
+:root {
+  --abyss-bg: #060b14;
+  --abyss-surface: #0b1528;
+  --abyss-border: #1e293b;
+  --abyss-accent: #38bdf8;
+  --abyss-text: #f1f5f9;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background-color: #050c1a !important;
+  background-image:
+    radial-gradient(circle at 80% 50%, rgba(30, 58, 138, 0.2) 0%, transparent 70%),
+    linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px) !important;
+  background-size: 100% 100%, 60px 60px, 60px 60px !important;
+  color: var(--abyss-text);
+}
+
+/* Glow effect for main title */
+.title-glow {
+  text-shadow: 0 0 20px rgba(79, 209, 197, 0.8), 0 0 40px rgba(79, 209, 197, 0.5), 0 0 60px rgba(79, 209, 197, 0.3);
+}
+
+/* Card Glow and border effects */
+.feature-card {
+  background: linear-gradient(145deg, rgba(26, 43, 72, 0.4), rgba(5, 12, 26, 0.6)) !important;
+  border: 1px solid rgba(79, 209, 197, 0.3) !important;
+  transition: all 0.3s ease !important;
+  text-decoration: none !important;
+}
+
+.feature-card:hover {
+  box-shadow: 0 0 25px rgba(79, 209, 197, 0.25) !important;
+  border-color: rgba(79, 209, 197, 0.6) !important;
+  transform: translateY(-2px);
+  text-decoration: none !important;
+}
+
+.cta-btn {
+  background: linear-gradient(180deg, #1a2b48 0%, #0f192b 100%) !important;
+  border: 1px solid rgba(30, 58, 138, 0.5) !important;
+  border-radius: 8px !important;
+  text-decoration: none !important;
+  transition: all 0.3s ease !important;
+}
+
+.cta-btn:hover {
+  background: linear-gradient(180deg, #23395d 0%, #142139 100%) !important;
+  border-color: rgba(79, 209, 197, 0.5) !important;
+  box-shadow: 0 0 15px rgba(30, 58, 138, 0.4) !important;
+  text-decoration: none !important;
+}
+
+/* Timeline navigation style for sidebar/TOC */
+.timeline-dot {
+  position: relative;
+}
+
+.timeline-dot::before {
+  content: '';
+  position: absolute;
+  left: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  background-color: #4a5568;
+  border-radius: 50%;
+}
+
+.timeline-dot.active::before {
+  background-color: #3182ce;
+  box-shadow: 0 0 8px #3182ce;
+}
+
+.timeline-line {
+  position: absolute;
+  left: -17px;
+  top: 20px;
+  bottom: -12px;
+  width: 1px;
+  background-color: #2d3748;
+}
+
+code {
+  font-family: 'Fira Code', 'Courier New', Courier, monospace;
+}
+
+/* Navbar & Header Dark Abyss styling */
+.navbar {
+  background-color: #040911 !important;
+  border-bottom: 1px solid var(--abyss-border);
+}
+
+.sidebar nav[role=doc-toc] {
+  border-left: 2px solid var(--abyss-border);
+}
+
+/* Pyodide Monaco Editor & Output Dark Theme Overrides */
+.qpyodide-editor {
+  border: 1px solid #2d3748 !important;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.qpyodide-editor-toolbar {
+  background-color: #1a202c !important;
+  border-bottom: 1px solid #2d3748 !important;
+  color: #e2e8f0 !important;
+  padding: 0.4rem 0.6rem;
+}
+
+.qpyodide-button {
+  background-color: #2d3748 !important;
+  color: #f7fafc !important;
+  border: 1px solid #4a5568 !important;
+  font-weight: 500;
+  border-radius: 4px;
+}
+
+.qpyodide-button:hover {
+  background-color: #4a5568 !important;
+  color: #ffffff !important;
+  border-color: #718096 !important;
+}
+
+.qpyodide-output-code-area pre {
+  background-color: #0d1117 !important;
+  border: 1px solid #2d3748 !important;
+  border-radius: 6px;
+  color: #e6edf3 !important;
+}
+
+.qpyodide-output-code-stdout {
+  color: #e6edf3 !important;
+}
+
+.qpyodide-output-code-stderr {
+  color: #ff7b72 !important;
+}
+
+.qpyodide-button-reset,
+.qpyodide-button-copy {
+  color: #cbd5e0 !important;
+}
+
+div.qpyodide-console-area {
+  border: 1px solid #2d3748 !important;
+  background-color: #0d1117 !important;
+  border-radius: 6px;
+}
+
+/* Glassmorphism & Neon Cyan styles for Aulas & Materiais */
+.glass-card {
+  background: rgba(8, 45, 61, 0.4) !important;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 206, 209, 0.2) !important;
+  border-radius: 12px;
+  transition: all 0.3s ease !important;
+}
+
+.glass-card:hover {
+  border-color: rgba(0, 206, 209, 0.4) !important;
+  box-shadow: 0 0 20px rgba(0, 206, 209, 0.25) !important;
+}
+
+.neon-border {
+  border: 1px solid #00ced1 !important;
+  box-shadow: 0 0 25px rgba(0, 206, 209, 0.6), inset 0 0 10px rgba(0, 206, 209, 0.3) !important;
+}
+
+.text-brand-teal {
+  color: #00ced1 !important;
+}
+
+.bg-brand-teal\/20 {
+  background-color: rgba(0, 206, 209, 0.2) !important;
+}
+
+.glass-header {
+  background-color: rgba(5, 27, 38, 0.4) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+.bg-brand-surface\/40 {
+  background-color: rgba(5, 27, 38, 0.4) !important;
+}
+
+/* Custom styles for Detailed Lesson Page (teste.html) */
+.glow-text {
+  text-shadow: 0 0 20px rgba(0, 255, 213, 0.8), 0 0 10px rgba(0, 255, 213, 0.5) !important;
+  color: #ffffff !important;
+}
+
+/* Estilização automática para títulos (h1, h2, h3) do conteúdo Markdown */
+main.content h1:not(.title),
+#quarto-document-content h1:not(.title),
+.content h1:not(.title) {
+  text-shadow: 0 0 20px rgba(0, 255, 213, 0.8), 0 0 10px rgba(0, 255, 213, 0.5) !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  font-size: 1.875rem !important;
+  margin-top: 2rem !important;
+  margin-bottom: 0.75rem !important;
+}
+
+main.content h2,
+#quarto-document-content h2,
+.content h2 {
+  text-shadow: 0 0 15px rgba(0, 255, 213, 0.6), 0 0 8px rgba(0, 255, 213, 0.4) !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  font-size: 1.5rem !important;
+  margin-top: 1.75rem !important;
+  margin-bottom: 0.75rem !important;
+}
+
+main.content h3,
+#quarto-document-content h3,
+.content h3 {
+  color: #a0f0ed !important;
+  text-shadow: 0 0 10px rgba(0, 206, 209, 0.35) !important;
+  border-left: 3px solid #00ced1 !important;
+  padding-left: 0.6rem !important;
+  font-weight: 600 !important;
+  font-size: 1.25rem !important;
+  margin-top: 1.5rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+main.content h4,
+#quarto-document-content h4,
+.content h4 {
+  color: #a0f0ed !important;
+  text-shadow: 0 0 8px rgba(0, 206, 209, 0.25) !important;
+  border-left: 2px solid rgba(0, 206, 209, 0.6) !important;
+  padding-left: 0.5rem !important;
+  font-weight: 600 !important;
+  font-size: 1.1rem !important;
+  margin-top: 1.25rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+/* Estilização para parágrafos do conteúdo Markdown (leitura agradável) */
+main.content p,
+#quarto-document-content p,
+.content p {
+  line-height: 1.75 !important;
+  margin-top: 0 !important;
+  margin-bottom: 1.25rem !important;
+  color: #e2e8f0 !important;
+  font-size: 1.025rem !important;
+}
+
+.neon-border {
+  border: 1px solid rgba(0, 255, 213, 0.4) !important;
+  box-shadow: 0 0 15px rgba(0, 255, 213, 0.15) !important;
+  background-color: rgba(0, 19, 31, 0.6) !important;
+  border-radius: 0.5rem !important;
+}
+
+.pill-badge {
+  border: 1px solid rgba(160, 240, 237, 0.4) !important;
+  padding: 0.25rem 0.75rem !important;
+  border-radius: 9999px !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  color: #a0f0ed !important;
+  font-family: monospace, ui-monospace, sans-serif !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+.pill-badge::before {
+  content: '' !important;
+  width: 6px !important;
+  height: 6px !important;
+  border-radius: 50% !important;
+  background-color: rgba(160, 240, 237, 0.6) !important;
+  display: inline-block !important;
+  margin-right: 0.35rem !important;
+}
+
+.text-cyan-text-90 {
+  color: rgba(160, 240, 237, 0.9) !important;
+}
+
+.border-cyan-text-10 {
+  border-color: rgba(160, 240, 237, 0.1) !important;
+}
+
+.bg-white-5 {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.text-cyan-text-60 {
+  color: rgba(160, 240, 237, 0.6) !important;
+}
+
+blockquote {
+  border-left: 4px solid #00ffd5 !important;
+  padding: 0.5rem 0 0.5rem 1.5rem !important;
+  margin: 1.5rem 0 !important;
+  font-style: italic !important;
+  color: #a0f0ed !important;
+  background: rgba(0, 19, 31, 0.3) !important;
+  border-radius: 0 8px 8px 0 !important;
+}
+
+/* Restore list styles overridden by Tailwind CSS Preflight */
+main.content ol,
+#quarto-document-content ol,
+.content ol {
+  list-style-type: decimal !important;
+  padding-left: 1.5rem !important;
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.75rem !important;
+}
+
+main.content ul,
+#quarto-document-content ul,
+.content ul {
+  list-style-type: disc !important;
+  padding-left: 1.5rem !important;
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.75rem !important;
+}
+
+main.content ol ol,
+#quarto-document-content ol ol,
+.content ol ol {
+  list-style-type: lower-alpha !important;
+}
+
+main.content ul ul,
+#quarto-document-content ul ul,
+.content ul ul {
+  list-style-type: circle !important;
+}
+
+/* Ensure navigation, TOC and reset lists remain without bullets */
+nav ol,
+nav ul,
+.navbar ol,
+.navbar ul,
+.toc ol,
+.toc ul,
+#TOC ol,
+#TOC ul,
+.nav ol,
+.nav ul,
+.list-none {
+  list-style-type: none !important;
+  padding-left: 0 !important;
+}
+
+/* Quarto Callouts - Dark Abyss Glassmorphism & Neon Styling */
+.callout {
+  border-radius: 10px !important;
+  margin: 1.5rem 0 !important;
+  overflow: hidden !important;
+  border-left-width: 4px !important;
+  backdrop-filter: blur(8px) !important;
+  transition: all 0.3s ease !important;
+}
+
+.callout .callout-header {
+  padding: 0.75rem 1rem !important;
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+}
+
+.callout .callout-title {
+  margin: 0 !important;
+  font-weight: 700 !important;
+  font-size: 1.05rem !important;
+}
+
+.callout .callout-body {
+  padding: 1rem 1.25rem !important;
+  font-size: 0.95rem !important;
+  line-height: 1.6 !important;
+  color: #e2e8f0 !important;
+}
+
+.callout .callout-body p:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* Callout Note (Definição / Informação) - Neon Cyan */
+.callout-note {
+  background: rgba(8, 45, 61, 0.4) !important;
+  border: 1px solid rgba(0, 206, 209, 0.3) !important;
+  border-left: 4px solid #00ced1 !important;
+  box-shadow: 0 0 15px rgba(0, 206, 209, 0.1) !important;
+}
+
+.callout-note .callout-header {
+  background: rgba(0, 206, 209, 0.1) !important;
+  border-bottom: 1px solid rgba(0, 206, 209, 0.15) !important;
+  color: #a0f0ed !important;
+}
+
+.callout-note .callout-icon::before {
+  color: #00ced1 !important;
+}
+
+/* Callout Tip (Dica / Prática) - Neon Emerald */
+.callout-tip {
+  background: rgba(6, 40, 28, 0.4) !important;
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+  border-left: 4px solid #10b981 !important;
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.1) !important;
+}
+
+.callout-tip .callout-header {
+  background: rgba(16, 185, 129, 0.1) !important;
+  border-bottom: 1px solid rgba(16, 185, 129, 0.15) !important;
+  color: #a7f3d0 !important;
+}
+
+.callout-tip .callout-icon::before {
+  color: #10b981 !important;
+}
+
+/* Callout Important (Destaque / Relevante) - Sapphire Blue */
+.callout-important {
+  background: rgba(15, 30, 60, 0.4) !important;
+  border: 1px solid rgba(59, 130, 246, 0.3) !important;
+  border-left: 4px solid #3b82f6 !important;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.1) !important;
+}
+
+.callout-important .callout-header {
+  background: rgba(59, 130, 246, 0.1) !important;
+  border-bottom: 1px solid rgba(59, 130, 246, 0.15) !important;
+  color: #bfdbfe !important;
+}
+
+.callout-important .callout-icon::before {
+  color: #3b82f6 !important;
+}
+
+/* Callout Warning (Aviso / Atenção) - Amber Gold */
+.callout-warning {
+  background: rgba(45, 30, 5, 0.4) !important;
+  border: 1px solid rgba(245, 158, 11, 0.3) !important;
+  border-left: 4px solid #f59e0b !important;
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.1) !important;
+}
+
+.callout-warning .callout-header {
+  background: rgba(245, 158, 11, 0.1) !important;
+  border-bottom: 1px solid rgba(245, 158, 11, 0.15) !important;
+  color: #fde68a !important;
+}
+
+.callout-warning .callout-icon::before {
+  color: #f59e0b !important;
+}
+
+/* Callout Caution (Cuidado / Alerta) - Crimson / Rose */
+.callout-caution {
+  background: rgba(45, 10, 20, 0.4) !important;
+  border: 1px solid rgba(244, 63, 94, 0.3) !important;
+  border-left: 4px solid #f43f5e !important;
+  box-shadow: 0 0 15px rgba(244, 63, 94, 0.1) !important;
+}
+
+.callout-caution .callout-header {
+  background: rgba(244, 63, 94, 0.1) !important;
+  border-bottom: 1px solid rgba(244, 63, 94, 0.15) !important;
+  color: #fecdd3 !important;
+}
+
+.callout-caution .callout-icon::before {
+  color: #f43f5e !important;
+}
+
+/* Quarto Tables - Dark Abyss Glassmorphism & Neon Styling */
+main.content table,
+#quarto-document-content table,
+.content table,
+table.caption-top,
+table.table {
+  width: 100% !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  margin: 1.5rem 0 2rem 0 !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(0, 206, 209, 0.25) !important;
+  background: rgba(8, 20, 35, 0.6) !important;
+  backdrop-filter: blur(8px) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 0 15px rgba(0, 206, 209, 0.05) !important;
+}
+
+main.content table th,
+#quarto-document-content table th,
+.content table th,
+table.table th {
+  background: rgba(0, 206, 209, 0.12) !important;
+  color: #a0f0ed !important;
+  font-weight: 700 !important;
+  font-size: 0.925rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  padding: 0.85rem 1.25rem !important;
+  border-bottom: 2px solid rgba(0, 206, 209, 0.3) !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+main.content table td,
+#quarto-document-content table td,
+.content table td,
+table.table td {
+  padding: 0.85rem 1.25rem !important;
+  font-size: 0.95rem !important;
+  color: #cbd5e1 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  line-height: 1.5 !important;
+}
+
+main.content table tbody tr:nth-child(even),
+#quarto-document-content table tbody tr:nth-child(even),
+.content table tbody tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.02) !important;
+}
+
+main.content table tbody tr:hover,
+#quarto-document-content table tbody tr:hover,
+.content table tbody tr:hover {
+  background-color: rgba(0, 206, 209, 0.06) !important;
+  transition: background-color 0.2s ease !important;
+}
+
+main.content table tbody tr:last-child td,
+#quarto-document-content table tbody tr:last-child td,
+.content table tbody tr:last-child td {
+  border-bottom: none !important;
+}
+
+/* Quarto Figures & Images - Dark Abyss Glassmorphism & Neon Aura Styling */
+main.content figure,
+#quarto-document-content figure,
+.content figure,
+div.quarto-figure,
+figure.quarto-float {
+  margin: 2rem auto !important;
+  padding: 0.75rem !important;
+  background: rgba(8, 20, 35, 0.4) !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(0, 206, 209, 0.2) !important;
+  backdrop-filter: blur(8px) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(0, 206, 209, 0.03) !important;
+  transition: all 0.3s ease !important;
+}
+
+main.content figure:hover,
+#quarto-document-content figure:hover,
+.content figure:hover,
+div.quarto-figure:hover {
+  border-color: rgba(0, 206, 209, 0.4) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(0, 206, 209, 0.2) !important;
+  transform: translateY(-2px) !important;
+}
+
+main.content img,
+#quarto-document-content img,
+.content img,
+figure img {
+  border-radius: 10px !important;
+  border: 1px solid rgba(0, 206, 209, 0.25) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+  max-width: 100% !important;
+  height: auto !important;
+  display: block !important;
+  margin: 0 auto !important;
+}
+
+main.content figcaption,
+#quarto-document-content figcaption,
+.content figcaption,
+figcaption.figure-caption,
+figcaption.quarto-float-caption {
+  margin-top: 0.75rem !important;
+  padding: 0.25rem 0.5rem !important;
+  font-size: 0.9rem !important;
+  font-style: italic !important;
+  color: rgba(160, 240, 237, 0.85) !important;
+  text-align: center !important;
+  font-weight: 500 !important;
+}
+
+/* Horizontal Rules - Cyan Gradient Line */
+hr,
+main.content hr,
+#quarto-document-content hr {
+  border: none !important;
+  height: 1px !important;
+  background: linear-gradient(90deg, transparent, rgba(0, 206, 209, 0.5), transparent) !important;
+  margin: 2.5rem 0 !important;
+}

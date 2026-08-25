@@ -1,0 +1,68 @@
+---
+page-layout: article
+header-includes:
+  - <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+---
+<!-- Navegação -->
+::: {.flex .items-center .gap-2 .mt-4 .mb-4 .text-sm .text-slate-400}
+[🏠 Home](../../){.hover:text-cyan-text .transition-colors}
+<span>/</span>
+[📚 Aulas & Materiais](#){.hover:text-cyan-text .transition-colors}
+:::
+
+<!-- Título -->
+::: {.mb-10 .mt-8}
+# Aulas & Materiais {.glow-text .text-4xl .md:text-4xl .font-extrabold .text-white .mb-6 .tracking-tight .leading-tight}
+:::
+
+<!-- Módulos de Aprendizagem -->
+::: {.overflow-hidden .mb-8}
+
+::: {.p-4 }
+## 🎓 Módulos de Aprendizagem {.text-2xl .font-semibold .text-white}
+:::
+
+::: {.p-6 .pt-4 .pl-6}
+
+<!-- Bloco I -->
+::: {.glass-card .mb-6 .p-4}
+### Bloco I — Dos experimentos físicos ao qubit {.text-xl .font-bold .text-white .mb-3}
+
+- 📄 [Aula 01: Panorama — Por que Computação Quântica?](01-panorama/index.qmd){.text-base .text-slate-300 .hover:text-brand-teal}
+- 📄 [Aula 02: Da Física Clássica à Quântica — Corpo Negro, Efeito Fotoelétrico e Bohr](02-fisica-classica-quanticas/index.qmd){.text-base .text-slate-300 .hover:text-brand-teal}
+- 📄 [Aula 03: Ondas de Matéria, Função de Onda e Dupla Fenda](03-ondas-dupla-fenda/index.qmd){.text-base .text-slate-300 .hover:text-brand-teal}
+- 📄 [Aula 04: O Qubit — Fundamentos Matemáticos](04-qubit/index.qmd){.text-base .text-slate-300 .hover:text-brand-teal}
+- 📄 [Aula 05: Fases Quânticas e Portas de Rotação](05-fases/index.qmd){.text-base .text-slate-300 .hover:text-brand-teal}
+:::
+
+<!-- Bloco II -->
+::: {.glass-card .mb-6 .p-4}
+### Bloco II — Circuitos, Emaranhamento e Protocolos {.text-xl .font-bold .text-white .mb-3}
+
+- 📄 [Aula 06: Primeiros Circuitos, Estados de Bell e Emaranhamento](06-circuitos-emaranhamento/index.qmd){.text-base .text-slate-300 .hover:text-brand-teal}
+- 📄 [Aula 07: Protocolo de Teletransporte Quântico](07-teletransporte/index.qmd){.text-base .text-slate-300 .hover:text-brand-teal}
+- 📄 [Aula 08: Experimento de Interferência com Hadamard (Mach-Zehnder)](08-hadamard-experimento/index.qmd){.text-base .text-slate-300 .hover:text-brand-teal}
+:::
+
+<!-- Bloco III -->
+::: {.glass-card .mb-6 .p-4}
+### Bloco III — Algoritmos Quânticos {.text-xl .font-bold .text-white .mb-3}
+
+- 📄 [Aula 09: Interferência e Algoritmo de Deutsch-Jozsa](09-interferencia-deutsch-jozsa/index.qmd){.text-base .text-slate-300 .hover:text-brand-teal}
+- 📄 [Aula 10: Algoritmo de Grover — Busca Quântica](10-grover/index.qmd){.text-base .text-slate-300 .hover:text-brand-teal}
+- 📄 [Aula 11: Transformada de Fourier Quântica e Estimação de Fase](11-qft-qpe/index.qmd){.text-base .text-slate-300 .hover:text-brand-teal}
+:::
+
+<!-- Bloco IV -->
+::: {.glass-card .mb-6 .p-4}
+### Bloco IV — Hardware, QML e Impacto na Engenharia de Software {.text-xl .font-bold .text-white .mb-3}
+
+- 📄 [Aula 12: Hardware Quântico Real — Ruído e Decoerência](12-hardware-real/index.qmd){.text-base .text-slate-300 .hover:text-brand-teal}
+- 📄 [Aula 13: Quantum Machine Learning — Classificação com VQC](13-qml-vqc/index.qmd){.text-base .text-slate-300 .hover:text-brand-teal}
+- 📄 [Aula 14: Compilação Quântica e Topologia do Hardware](14-compilacao-topologia/index.qmd){.text-base .text-slate-300 .hover:text-brand-teal}
+- 📄 [Aula 15: Impacto na Engenharia de Software](15-impacto-engsoft/index.qmd){.text-base .text-slate-300 .hover:text-brand-teal}
+:::
+
+:::
+
+:::

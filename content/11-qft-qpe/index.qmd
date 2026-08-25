@@ -1,0 +1,19 @@
+---
+title: "Aula 11 — Transformada de Fourier Quântica e Estimação de Fase"
+subtitle: "Fundamentos de Computação Quântica — Curso de Extensão"
+author: "Prof. Me. Maxwell Anderson Ielpo do Amaral"
+institute: "Instituto Federal de Educação, Ciência e Tecnologia da Paraíba (IFPB) — Campus João Pessoa"
+date: "2026-11-03"
+lang: pt-BR
+format:
+  html:
+    toc: true
+---
+
+::: {.callout-tip}
+## 📽️ Material da Aula
+- 📄 [Baixar Apostila Completa em PDF](../apostila.pdf)
+- 🧪 [Simuladores interativos](/assets/simuladores/)
+:::
+
+{{< include _content.qmd >}}

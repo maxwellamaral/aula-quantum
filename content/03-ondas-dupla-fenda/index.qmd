@@ -1,0 +1,19 @@
+---
+title: "Aula 03 — Ondas de Matéria, Função de Onda e Dupla Fenda"
+subtitle: "Fundamentos de Computação Quântica — Curso de Extensão"
+author: "Prof. Me. Maxwell Anderson Ielpo do Amaral"
+institute: "Instituto Federal de Educação, Ciência e Tecnologia da Paraíba (IFPB) — Campus João Pessoa"
+date: "2026-09-08"
+lang: pt-BR
+format:
+  html:
+    toc: true
+---
+
+::: {.callout-tip}
+## 📽️ Material da Aula
+- 📄 [Baixar Apostila Completa em PDF](../apostila.pdf)
+- 🧪 [Simuladores interativos](/assets/simuladores/)
+:::
+
+{{< include _content.qmd >}}

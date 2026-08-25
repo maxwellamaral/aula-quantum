@@ -1,0 +1,54 @@
+project:
+  type: website
+  output-dir: _site
+  preview:
+    port: 4201
+    browser: false
+    watch-inputs: true
+    navigate: true
+  render:
+    - "*.qmd"
+    - "content/**/*.qmd"
+    - "!content/apostila.qmd"
+  resources:
+    - .nojekyll
+    - content/references.bib
+    - assets/js/*.js
+    - assets/css/*.css
+    - assets/simuladores/*.html
+    - notebooks/qasm/*.qasm
+  post-render:
+    - scripts/render_apostila.sh
+
+bibliography: content/references.bib
+
+website:
+  title: "Fundamentos de Computação Quântica"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Início
+      - href: content/index.qmd
+        text: Aulas & Materiais
+      - href: about.qmd
+        text: Sobre
+    right:
+      - href: content/apostila.pdf
+        text: "📄 Baixar PDF Completo"
+
+execute:
+  enabled: false        # site estático: células NÃO executam no render (conteúdo integral já convertido)
+  echo: true            # código permanece visível
+  cache: false
+  daemon: false
+
+format:
+  html:
+    theme: darkly
+    highlight-style: dracula
+    css: assets/css/styles.css
+    toc: true
+    toc-title: "Nesta página"
+    code-fold: true
+    code-tools: true
+    lang: pt-BR

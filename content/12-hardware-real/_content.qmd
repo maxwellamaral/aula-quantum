@@ -1,0 +1,32 @@
+# Aula 12 — Hardware Quântico Real: Ruído, Decoerência e NISQ
+
+## Executando os circuitos do curso na IBM Quantum Platform
+
+Todos os algoritmos estudados até aqui possuem implementação OpenQASM pronta para importação no [IBM Quantum Composer](https://quantum.ibm.com/composer):
+
+| Protocolo | Arquivo |
+|---|---|
+| Teletransporte | [`notebooks/qasm/02-teletransport.qasm`](/notebooks/qasm/02-teletransport.qasm) |
+| Phase Kickback | [`notebooks/qasm/05-kickback.qasm`](/notebooks/qasm/05-kickback.qasm) |
+| Deutsch-Jozsa | [`notebooks/qasm/05-deutsch-jozsa.qasm`](/notebooks/qasm/05-deutsch-jozsa.qasm) |
+| Grover | [`notebooks/qasm/06-grover.qasm`](/notebooks/qasm/06-grover.qasm) |
+
+**Roteiro:** importe o arquivo no Composer, execute no simulador (`ibmq_qasm_simulator`) e depois em um backend real (ex.: `ibm_brisbane`). Compare os histogramas — em hardware real a taxa de sucesso fica abaixo de 100% por causa de **ruído quântico**, **decoerência** e imperfeições dos qubits físicos.
+
+## Dispositivos NISQ
+
+# Dispositivos NISQ dependem de integração quântico-clássica
+
+Dispositivos quânticos de escala intermediária e ruidosa não funcionam como substitutos independentes dos computadores clássicos. A decoerência, o ruído e a necessidade de repetir medições fazem com que algoritmos NISQ dependam de controle, otimização e pós-processamento clássicos.[[Quantum Computing - Vision and Challenges]]
+
+A arquitetura mais realista para o estágio atual é híbrida: o computador clássico coordena o experimento, enquanto o dispositivo quântico executa subrotinas específicas.
+
+## Relações
+
+- [[Vantagem quântica é dependente da classe de problemas]]
+- [[Compilação quântica precisa respeitar a topologia do hardware]]
+
+## Fonte
+
+- [1] https://arxiv.org/abs/2403.02240
+

@@ -1,0 +1,25 @@
+# Aula 15 — Impacto na Engenharia de Software
+
+## Vantagem quântica é dependente da classe de problemas
+
+# Vantagem quântica é dependente da classe de problemas
+
+A computação quântica não oferece uma aceleração universal. A possível vantagem depende da estrutura do problema, do algoritmo utilizado e da capacidade de superar os custos de preparação, execução, medição e pós-processamento.[[Quantum Computing - Vision and Challenges]]
+
+Isso implica que a pergunta adequada não é se computadores quânticos são simplesmente mais rápidos, mas quais classes de problemas podem se beneficiar de suas propriedades físicas e algorítmicas.
+
+## Relações
+
+- [[Dispositivos NISQ dependem de integração quântico-clássica]]
+- [[Compilação quântica precisa respeitar a topologia do hardware]]
+
+## Fonte
+
+- [1] https://arxiv.org/abs/2403.02240
+
+
+## Tópicos para pesquisa orientada
+
+1. Criptografia pós-quântica (NIST PQC): impacto de Shor sobre RSA/ECC e migração de algoritmos.
+2. Teste e depuração de programas quânticos: como "assertar" superposições?
+3. Ciclo híbrido quântico-clássico (Qiskit Runtime primitives) e o papel do engenheiro de software.

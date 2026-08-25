@@ -1,0 +1,114 @@
+---
+title: "Apostila do Curso: Fundamentos de Computação Quântica"
+subtitle: "Notas de Aula Integradas — Curso de Extensão"
+author: "Prof. Maxwell Amaral"
+date: "2026-08-25"
+bibliography: references.bib
+format:
+  pdf:
+    documentclass: report
+    margin-left: 2.5cm
+    margin-right: 2.5cm
+    margin-top: 2.5cm
+    margin-bottom: 2.5cm
+    number-sections: true
+    toc: true
+    toc-title: "Sumário"
+    lang: pt-BR
+    resource-path: ["..", "."]
+    include-in-header:
+      text: |
+        \usepackage{physics}
+        \usepackage{braket}
+        \usepackage{amsmath,amssymb}
+---
+
+\newpage
+
+# Módulo 1: Panorama e Fundamentos Físicos
+
+{{< include 01-panorama/_content.qmd >}}
+
+\newpage
+
+# Módulo 2: Da Física Clássica à Quântica
+
+{{< include 02-fisica-classica-quanticas/_content.qmd >}}
+
+\newpage
+
+# Módulo 3: Ondas de Matéria e Dupla Fenda
+
+{{< include 03-ondas-dupla-fenda/_content.qmd >}}
+
+\newpage
+
+# Módulo 4: O Qubit
+
+{{< include 04-qubit/_content.qmd >}}
+
+\newpage
+
+# Módulo 5: Fases Quânticas e Portas de Rotação
+
+{{< include 05-fases/_content.qmd >}}
+
+\newpage
+
+# Módulo 6: Circuitos, Estados de Bell e Emaranhamento
+
+{{< include 06-circuitos-emaranhamento/_content.qmd >}}
+
+\newpage
+
+# Módulo 7: Teletransporte Quântico
+
+{{< include 07-teletransporte/_content.qmd >}}
+
+\newpage
+
+# Módulo 8: Experimento de Interferência com Hadamard
+
+{{< include 08-hadamard-experimento/_content.qmd >}}
+
+\newpage
+
+# Módulo 9: Interferência e Deutsch-Jozsa
+
+{{< include 09-interferencia-deutsch-jozsa/_content.qmd >}}
+
+\newpage
+
+# Módulo 10: Algoritmo de Grover
+
+{{< include 10-grover/_content.qmd >}}
+
+\newpage
+
+# Módulo 11: QFT e Estimação de Fase
+
+{{< include 11-qft-qpe/_content.qmd >}}
+
+\newpage
+
+# Módulo 12: Hardware Quântico Real
+
+{{< include 12-hardware-real/_content.qmd >}}
+
+\newpage
+
+# Módulo 13: Quantum Machine Learning (VQC)
+
+{{< include 13-qml-vqc/_content.qmd >}}
+
+\newpage
+
+# Módulo 14: Compilação Quântica e Topologia
+
+{{< include 14-compilacao-topologia/_content.qmd >}}
+
+\newpage
+
+# Módulo 15: Impacto na Engenharia de Software
+
+{{< include 15-impacto-engsoft/_content.qmd >}}

@@ -1,0 +1,32 @@
+# Aula 14 — Compilação Quântica e Topologia do Hardware
+
+# Compilação quântica precisa respeitar a topologia do hardware
+
+Um circuito quântico descrito em uma linguagem de alto nível precisa ser traduzido para as restrições físicas do dispositivo. A conectividade entre qubits e o conjunto de portas disponíveis influenciam a forma como o circuito pode ser executado.[[Quantum Computing - Vision and Challenges]]
+
+Portanto, o software quântico não é apenas uma camada abstrata independente do hardware. A compilação é parte do desempenho do sistema e precisa considerar a arquitetura física.
+
+## Relações
+
+- [[Dispositivos NISQ dependem de integração quântico-clássica]]
+- [[Vantagem quântica é dependente da classe de problemas]]
+
+## Fonte
+
+- [1] https://arxiv.org/abs/2403.02240
+
+
+## Prática com o Transpiler do Qiskit
+
+```{python}
+# Compare o circuito lógico com o circuito transpilado para a topologia real do dispositivo
+from qiskit import transpile
+from qiskit.providers.fake_provider import GenericBackendV2
+
+# qc_logico = ... circuito da aula anterior
+# backend = GenericBackendV2(num_qubits=5)
+# qc_transpilado = transpile(qc_logico, backend=backend, optimization_level=3)
+# print(f"Portas antes: {qc_logico.size()} | depois: {qc_transpilado.size()}")
+```
+
+Observe como o transpiler insere portas SWAP para respeitar o grafo de acoplamento físico, aumentando a profundidade do circuito.

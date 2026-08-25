@@ -3,7 +3,10 @@ set -e
 
 # Renderizar o PDF da apostila apenas quando for um render completo do projeto (quarto render).
 # Evita compilar o PDF repetidamente em modo de preview (quarto preview).
-if [ "$QUARTO_PROJECT_RENDER_ALL" = "1" ] && [ -z "$QUARTO_POST_RENDER" ]; then
+# Pula a geracao se o PDF ja existe e nenhum _content.qmd mudou desde ele (modo CI)
+if command -v git >/dev/null 2>&1 && [ -f content/apostila.pdf ] && git diff --quiet HEAD -- content/*/_content.qmd content/apostila.qmd 2>/dev/null; then
+  echo "Apostila PDF atual e sem mudancas de conteudo — geracao pulada."
+elif [ "$QUARTO_PROJECT_RENDER_ALL" = "1" ] && [ -z "$QUARTO_POST_RENDER" ]; then
   export QUARTO_POST_RENDER=1
   echo "Renderizando apostila.qmd para PDF..."
   quarto render content/apostila.qmd --to pdf

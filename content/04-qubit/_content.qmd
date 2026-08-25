@@ -42,7 +42,7 @@ from matplotlib import pyplot as plt    # Para criar gráficos
 ## 🔒 Imports do Qiskit (requerem execução local)
 Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
 
-```python .qiskit-static
+```python
 from qiskit.quantum_info import Statevector  # Para trabalhar com estados quânticos
 from qiskit.visualization import plot_bloch_multivector, plot_state_qsphere  # Visualizações quânticas
 ```

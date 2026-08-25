@@ -6,14 +6,24 @@ Você pode replicar esse experimento físico agora mesmo no Qiskit. É a prova d
 
 Matematicamente, aplicar dois Hadamards é igual a não fazer nada (Identidade), pois as superposições se cancelam e voltam ao estado original.
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/04-Hadamard-experiment.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Statevector
 from qiskit.visualization import plot_bloch_multivector, plot_state_qsphere
 ```
+:::
 
-```{python} .qiskit-static
+
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/04-Hadamard-experiment.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 
 qc = QuantumCircuit(1)
@@ -23,16 +33,24 @@ qc = QuantumCircuit(1)
 qc.h(0) 
 
 ```
+:::
+
 
 ### Visualização após o primeiro Hadamard (Espelho Semitransparente 1)
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/04-Hadamard-experiment.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 # Esfera de Bloch após o primeiro H
 vetor_apos_h1 = Statevector(qc)
 display(plot_bloch_multivector(vetor_apos_h1))
 print(f"Estado após primeiro H: {vetor_apos_h1}")
 ```
+:::
+
 
 ```
 Estado após primeiro H: Statevector([0.70710678+0.j, 0.70710678+0.j],
@@ -40,11 +58,17 @@ Estado após primeiro H: Statevector([0.70710678+0.j, 0.70710678+0.j],
 
 ```
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/04-Hadamard-experiment.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 # Q-Sphere após o primeiro H
 display(plot_state_qsphere(vetor_apos_h1))
 ```
+:::
+
 
 ```{python} {pyodide-python}
 
@@ -57,13 +81,19 @@ qc.h(0)
 
 ### Visualização após o segundo Hadamard (Espelho Semitransparente 2 - Interferência)
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/04-Hadamard-experiment.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 # Esfera de Bloch após o segundo H
 vetor_apos_h2 = Statevector(qc)
 display(plot_bloch_multivector(vetor_apos_h2))
 print(f"Estado após segundo H: {vetor_apos_h2}")
 ```
+:::
+
 
 ```
 Estado após segundo H: Statevector([1.+0.j, 0.+0.j],
@@ -71,21 +101,33 @@ Estado após segundo H: Statevector([1.+0.j, 0.+0.j],
 
 ```
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/04-Hadamard-experiment.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 # Q-Sphere após o segundo H
 display(plot_state_qsphere(vetor_apos_h2))
 ```
+:::
+
 
 ### Visualização do Circuito Completo
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/04-Hadamard-experiment.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 
 # Verificação
 vetor = Statevector(qc)
 print(vetor)
 ```
+:::
+
 
 ```
 Statevector([1.+0.j, 0.+0.j],

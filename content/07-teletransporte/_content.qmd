@@ -35,7 +35,7 @@ from numpy import pi
 ## 🔒 Imports do Qiskit (requerem execução local)
 Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
 
-```python .qiskit-static
+```python
 from qiskit import QuantumRegister, ClassicalRegister, QuantumCircuit
 from qiskit.quantum_info import Statevector
 from qiskit.visualization import plot_bloch_multivector, plot_state_qsphere, plot_state_city
@@ -65,7 +65,11 @@ No início, todos os qubits estão em $|0\rangle$:
 
 $$|\psi_{\text{inicial}}\rangle = |q_0\rangle \otimes |q_1\rangle \otimes |q_2\rangle = |0\rangle \otimes |0\rangle \otimes |0\rangle = |000\rangle$$
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 
 qreg_q = QuantumRegister(3, 'q')
@@ -77,6 +81,8 @@ state1 = Statevector.from_instruction(circuit)
 print(state1)
 plot_bloch_multivector(state1)
 ```
+:::
+
 
 ```
 Statevector([1.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j,
@@ -111,7 +117,11 @@ Aplicando no qubit 0:
 
 $$|\psi_1\rangle = (X \otimes I \otimes I)|000\rangle = |100\rangle = |1\rangle \otimes |0\rangle \otimes |0\rangle$$
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 
 circuit.x(qreg_q[0])
@@ -122,6 +132,8 @@ state2 = Statevector.from_instruction(circuit)
 print(state2)
 plot_bloch_multivector(state2)
 ```
+:::
+
 
 ```
 Statevector([0.+0.j, 1.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j,
@@ -167,7 +179,11 @@ $$H|0\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle)$$
 Estado após H:
 $$|\psi_2\rangle = |1\rangle \otimes \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle) \otimes |0\rangle = \frac{1}{\sqrt{2}}(|100\rangle + |110\rangle) = 0.7071 (|100\rangle + |110\rangle)$$
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 circuit.h(qreg_q[1])
 
@@ -175,6 +191,8 @@ state3 = Statevector.from_instruction(circuit)
 print(state3)
 plot_bloch_multivector(state3)
 ```
+:::
+
 
 ```
 Statevector([0.        +0.j, 0.70710678+0.j, 0.        +0.j,
@@ -211,7 +229,11 @@ $$|\psi_3\rangle = \frac{1}{\sqrt{2}}(|100\rangle + |111\rangle)$$
 
 **🔗 Estado de Bell criado!** Os qubits 1 e 2 agora estão **emaranhados** - medindo um, sabemos instantaneamente o outro!
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 circuit.cx(qreg_q[1], qreg_q[2])
 
@@ -219,6 +241,8 @@ state4 = Statevector.from_instruction(circuit)
 print(state4)
 
 ```
+:::
+
 
 ```
 Statevector([0.        +0.j, 0.70710678+0.j, 0.        +0.j,
@@ -228,13 +252,19 @@ Statevector([0.        +0.j, 0.70710678+0.j, 0.        +0.j,
 
 ```
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 
 # Visualização na Q-Sphere - melhor para ver emaranhamento!
 print("\n🌐 Q-Sphere (mostra amplitudes e fases do estado completo):")
 plot_state_qsphere(state4)
 ```
+:::
+
 
 ```
 
@@ -337,7 +367,11 @@ $$|\psi_4\rangle = \frac{1}{\sqrt{2}}(|110\rangle + |101\rangle)$$
 
 **✨ Emaranhamento triplo!** Agora os 3 qubits estão interconectados quanticamente.
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 circuit.cx(qreg_q[0], qreg_q[1])
 
@@ -348,6 +382,8 @@ print(state5)
 print("\n🏙️ State City (visualização 3D da matriz densidade):")
 plot_state_city(state5)
 ```
+:::
+
 
 ```
 Statevector([0.        +0.j, 0.        +0.j, 0.        +0.j,
@@ -439,7 +475,11 @@ $$|\psi_5\rangle = \frac{1}{2}(|010\rangle - |110\rangle + |001\rangle - |101\ra
 Podemos reescrever agrupando os estados de Alice (q[0]q[1]) e Bob (q[2]):
 $$|\psi_5\rangle = \frac{1}{2}[|00\rangle(|0\rangle - |1\rangle) + |01\rangle(|1\rangle - |0\rangle) + |10\rangle(|0\rangle + |1\rangle) + |11\rangle(|1\rangle + |0\rangle)]$$
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 circuit.h(qreg_q[0])
 circuit.barrier(qreg_q[0], qreg_q[1], qreg_q[2])
@@ -452,6 +492,8 @@ print(state6)
 print("\n🌐 Q-Sphere - Estado completo antes da medição:")
 plot_state_qsphere(state6)
 ```
+:::
+
 
 ```
 Statevector([ 0. +0.j,  0. +0.j,  0.5+0.j, -0.5+0.j,  0.5+0.j, -0.5+0.j,
@@ -630,7 +672,7 @@ print("   O teletransporte quântico funcionou perfeitamente! 🚀")
 ## 🔒 Imports do Qiskit (requerem execução local)
 Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
 
-```python .qiskit-static
+```python
 from qiskit.quantum_info import Statevector, Operator
 ```
 :::
@@ -740,7 +782,7 @@ final_circuit = QuantumCircuit(3)
 ## 🔒 Imports do Qiskit (requerem execução local)
 Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
 
-```python .qiskit-static
+```python
 from qiskit_aer import Aer
 from qiskit.quantum_info import Statevector
 from qiskit.visualization import plot_bloch_multivector
@@ -750,7 +792,11 @@ from qiskit.visualization import plot_bloch_multivector
 
 #### 🔹 Etapa 0: Estado Inicial (todos qubits em |0⟩)
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 # Visualizar estado inicial (circuito vazio)
 state_0 = Statevector.from_instruction(final_circuit)
@@ -758,6 +804,8 @@ print("Estado: |000⟩ (todos qubits em |0⟩)")
 print(state_0)
 final_circuit.draw('mpl')
 ```
+:::
+
 
 ```
 Estado: |000⟩ (todos qubits em |0⟩)
@@ -767,14 +815,24 @@ Statevector([1.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j,
 
 ```
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 plot_bloch_multivector(state_0)
 ```
+:::
+
 
 #### 🔹 Etapa 1: Preparar o estado a teletransportar (X no qubit 0)
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 # Aplicar X no qubit 0 (preparar |1⟩)
 final_circuit.x(0)
@@ -786,6 +844,8 @@ print("Estado: |100⟩ (qubit 0 preparado em |1⟩)")
 print(state_1)
 final_circuit.draw('mpl')
 ```
+:::
+
 
 ```
 Estado: |100⟩ (qubit 0 preparado em |1⟩)
@@ -795,14 +855,24 @@ Statevector([0.+0.j, 1.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j,
 
 ```
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 plot_bloch_multivector(state_1)
 ```
+:::
+
 
 #### 🔹 Etapa 2: Criar par de Bell (H + CNOT nos qubits 1 e 2)
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 # Criar par de Bell entre qubits 1 e 2
 final_circuit.h(1)
@@ -814,6 +884,8 @@ print("Estado: 1/√2(|100⟩ + |111⟩) - qubits 1 e 2 emaranhados")
 print(state_2)
 final_circuit.draw('mpl')
 ```
+:::
+
 
 ```
 Estado: 1/√2(|100⟩ + |111⟩) - qubits 1 e 2 emaranhados
@@ -824,11 +896,17 @@ Statevector([0.        +0.j, 0.70710678+0.j, 0.        +0.j,
 
 ```
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 print("\n🌐 Q-Sphere - Visualizando o emaranhamento:")
 plot_state_qsphere(state_2)
 ```
+:::
+
 
 ```
 
@@ -836,14 +914,24 @@ plot_state_qsphere(state_2)
 
 ```
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 plot_bloch_multivector(state_2)
 ```
+:::
+
 
 #### 🔹 Etapa 3: Medição de Bell (CNOT + H nos qubits de Alice)
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 # Aplicar medição de Bell (sem as medições clássicas)
 final_circuit.cx(0, 1)
@@ -856,6 +944,8 @@ print("Estado: 1/2(|010⟩ - |110⟩ + |001⟩ - |101⟩) - 3 qubits emaranhados
 print(state_3)
 final_circuit.draw('mpl')
 ```
+:::
+
 
 ```
 Estado: 1/2(|010⟩ - |110⟩ + |001⟩ - |101⟩) - 3 qubits emaranhados
@@ -865,11 +955,17 @@ Statevector([ 0. +0.j,  0. +0.j,  0.5+0.j, -0.5+0.j,  0.5+0.j, -0.5+0.j,
 
 ```
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 print("\n🌐 Q-Sphere - Superposição dos 4 cenários possíveis:")
 plot_state_qsphere(state_3)
 ```
+:::
+
 
 ```
 
@@ -877,14 +973,24 @@ plot_state_qsphere(state_3)
 
 ```
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 plot_bloch_multivector(state_3)
 ```
+:::
+
 
 #### 📊 Resumo do Estado Final (antes das correções de Bob)
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 # Estado completo antes das correções de Bob
 state_final = Statevector.from_instruction(final_circuit)
@@ -895,6 +1001,8 @@ print("\nEste estado representa os 4 cenários possíveis com igual probabilidad
 # Bloch sphere
 plot_bloch_multivector(state_final)
 ```
+:::
+
 
 ```
 Estado completo antes das correções:
@@ -918,11 +1026,17 @@ plot_state_city(state_final)
 
 ```
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 print("\n🌐 Q-Sphere - Todas as amplitudes:")
 plot_state_qsphere(state_final)
 ```
+:::
+
 
 ```
 
@@ -974,7 +1088,7 @@ print("\nO resultado esperado é '100' (qubit 2 = |1⟩, demonstrando o teletran
 ## 🔒 Imports do Qiskit (requerem execução local)
 Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
 
-```python .qiskit-static
+```python
 from qiskit_aer import AerSimulator
 ```
 :::

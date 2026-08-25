@@ -64,7 +64,7 @@ display(Markdown(f"$$T = {sp.latex(T)}$$"))
 ## 🔒 Imports do Qiskit (requerem execução local)
 Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
 
-```python .qiskit-static
+```python
 from qiskit.visualization import plot_bloch_multivector, plot_state_qsphere
 from qiskit.quantum_info import Statevector
 ```
@@ -83,7 +83,11 @@ A esfera de Bloch é uma representação geométrica de um qubit onde:
 
 Vamos visualizar estados com diferentes fases:
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/00b-phases.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 # Statevector do Qiskit serve para visualização. 
 # Vai ajudar a montrar a esfera de Bloch.
@@ -120,6 +124,8 @@ display(plot_bloch_multivector(state_i_minus))
 print("\nObserve como todos os estados estão no equador da esfera de Bloch")
 print("(igual probabilidade de medir 0 ou 1), mas em direções diferentes.")
 ```
+:::
+
 
 ```
 Estado |+⟩ (Fase 0°) - Eixo +X:
@@ -159,7 +165,11 @@ $$Z|+⟩ = Z · \frac{1}{\sqrt{2}}(|0⟩ + |1⟩) = \frac{1}{\sqrt{2}}(|0⟩ - |
 
 Na esfera de Bloch, isso corresponde a uma rotação de 180° em torno do eixo Z.
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/00b-phases.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 # Demonstração: Aplicar porta Z em |+⟩
 estado_inicial = state_plus
@@ -173,6 +183,8 @@ display(plot_bloch_multivector(estado_apos_Z))
 
 print("\nA porta Z rotacionou o estado de +X para -X (180° em torno do eixo Z)")
 ```
+:::
+
 
 ```
 Antes de aplicar a porta Z:
@@ -199,7 +211,11 @@ $$S|+⟩ = S · \frac{1}{\sqrt{2}}(|0⟩ + |1⟩) = \frac{1}{\sqrt{2}}(|0⟩ + i
 
 Na esfera de Bloch, isso corresponde a uma rotação de 90° em torno do eixo Z.
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/00b-phases.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 # Demonstração: Aplicar porta S em |+⟩
 estado_inicial = state_plus
@@ -213,6 +229,8 @@ display(plot_bloch_multivector(estado_apos_S))
 
 print("\nA porta S rotacionou o estado de +X para +Y (90° em torno do eixo Z)")
 ```
+:::
+
 
 ```
 Antes de aplicar a porta S:
@@ -238,7 +256,11 @@ O Q-Sphere é outra forma de visualizar estados quânticos, onde as **cores** re
 - **Vermelho/Laranja**: Fase negativa (180° a 270°)
 - **Tamanho das esferas**: Magnitude da amplitude
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/00b-phases.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 # Visualizar os mesmos estados no Q-Sphere
 print("Estado |+⟩ - Fase 0°:")
@@ -255,6 +277,8 @@ display(plot_state_qsphere(state_i_minus))
 
 print("\nNo Q-Sphere, observe a mudança de cores indicando diferentes fases.")
 ```
+:::
+
 
 ```
 Estado |+⟩ - Fase 0°:
@@ -305,7 +329,11 @@ A fase quântica é fundamental para:
 - 🔗 **Emaranhamento**: Estados emaranhados têm relações de fase específicas
 - ⚡ **Phase Kickback**: Técnica usada em oráculos quânticos (veremos em notebooks avançados)
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/00b-phases.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 # Experimente diferentes valores de theta (em graus)
 theta_graus = 45  # Modifique este valor: 0, 45, 90, 135, 180, 225, 270, 315...
@@ -329,6 +357,8 @@ print(f"\nQ-Sphere - Fase θ = {theta_graus}°:")
 display(plot_state_qsphere(estado_custom))  
 
 ```
+:::
+
 
 ```
 Estado criado: |ψ⟩ = 1/√2 (|0⟩ + e^(i·45°)|1⟩)
@@ -475,7 +505,7 @@ print("=" * 70)
 ## 🔒 Imports do Qiskit (requerem execução local)
 Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
 
-```python .qiskit-static
+```python
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Statevector
 from qiskit.visualization import plot_bloch_multivector
@@ -532,7 +562,11 @@ A porta **RZ(θ)** modifica apenas a **fase** do qubit, sem alterar as probabili
 
 Diferente de RY, RZ **não muda a posição vertical** na Esfera de Bloch, apenas **rotaciona em torno do eixo Z**:
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/00b-phases.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 # Demonstração: RZ aplicado a |+⟩
 print("=" * 70)
@@ -588,6 +622,8 @@ print("  • Apenas a FASE (direção no equador) muda")
 print("  • RZ(0°) = |+⟩, RZ(180°) = |-⟩")
 print("=" * 70)
 ```
+:::
+
 
 ```
 ======================================================================
@@ -644,7 +680,11 @@ A porta **RX(θ)** rotaciona em torno do eixo X. É menos comum que RY e RZ, mas
 
 Vamos ver RX em ação:
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/00b-phases.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 print("=" * 70)
 print("PORTA RX: Rotação em torno do eixo X")
@@ -684,6 +724,8 @@ print("  • RX(90°) cria superposição com números complexos")
 print("  • RX(180°) = X (porta NOT)")
 print("=" * 70)
 ```
+:::
+
 
 ```
 ======================================================================
@@ -994,7 +1036,7 @@ print("=" * 70)
 ## 🔒 Imports do Qiskit (requerem execução local)
 Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
 
-```python .qiskit-static
+```python
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Statevector
 from qiskit.visualization import plot_bloch_vector
@@ -1169,7 +1211,7 @@ from IPython.display import display, Markdown
 ## 🔒 Imports do Qiskit (requerem execução local)
 Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
 
-```python .qiskit-static
+```python
 from qiskit.quantum_info import Statevector
 from qiskit.visualization import plot_bloch_multivector
 ```
@@ -1197,7 +1239,11 @@ np.kron(|+⟩, |1⟩)  →  qubit1 = |+⟩  e  qubit0 = |1⟩
 - **Esfera da ESQUERDA** = qubit 0 (menos significativo) = |1⟩ → **polo sul** ✓
 - **Esfera da DIREITA** = qubit 1 (mais significativo) = |+⟩ → **equador +X** ✓
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/00b-phases.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 
 # Parâmetro da porta (já definido no notebook): θ = π/2
@@ -1240,6 +1286,8 @@ print("   • Qubit 1 está em superposição |+⟩ (equador +X)")
 print("=" * 70)
 
 ```
+:::
+
 
 ```
 ======================================================================
@@ -1277,20 +1325,30 @@ CRIANDO O ESTADO QUÂNTICO DE 2 QUBITS
 
 ```
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/00b-phases.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 
 print("Antes da CP (controle |+>, alvo |1>):")
 display(plot_bloch_multivector(sv_before))
 
 ```
+:::
+
 
 ```
 Antes da CP (controle |+>, alvo |1>):
 
 ```
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/00b-phases.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 
 # Aplicar CPHASE
@@ -1301,6 +1359,8 @@ print("Depois da CP (θ = π/2):")
 display(plot_bloch_multivector(sv_after))
 
 ```
+:::
+
 
 ```
 Depois da CP (θ = π/2):
@@ -1374,7 +1434,7 @@ estado_antes_qiskit = Statevector(qc)
 ## 🔒 Imports do Qiskit (requerem execução local)
 Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
 
-```python .qiskit-static
+```python
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Statevector
 from qiskit.visualization import plot_bloch_multivector
@@ -1387,7 +1447,11 @@ Circuito ANTES da porta CP:
 
 ```
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/00b-phases.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 # Aplicar a porta CP (Controlled-Phase) com θ = π/2
 theta = np.pi / 2
@@ -1399,6 +1463,8 @@ display(qc.draw('mpl'))
 # Obter o estado final
 estado_depois_qiskit = Statevector(qc)
 ```
+:::
+
 
 ```
 Circuito DEPOIS da porta CP:
@@ -1457,7 +1523,11 @@ COMPARAÇÃO: NumPy vs Qiskit
 
 ```
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/00b-phases.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 # Visualizar o estado final nas esferas de Bloch
 print("Estado final (após CP) usando Qiskit:")
@@ -1470,6 +1540,8 @@ for i, amp in enumerate(estado_depois_qiskit.data):
         fase_graus = np.angle(amp, deg=True)
         print(f"  |{i:02b}⟩: amplitude = {abs(amp):.4f}, fase = {fase_graus:7.2f}°")
 ```
+:::
+
 
 ```
 Estado final (após CP) usando Qiskit:

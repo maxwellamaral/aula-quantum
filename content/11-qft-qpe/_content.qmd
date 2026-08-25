@@ -43,7 +43,7 @@ import matplotlib.pyplot as plt
 ## 🔒 Imports do Qiskit (requerem execução local)
 Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
 
-```python .qiskit-static
+```python
 from qiskit import QuantumCircuit, transpile
 from qiskit.circuit.library import QFT
 from qiskit.quantum_info import Statevector
@@ -52,7 +52,11 @@ from qiskit.visualization import plot_bloch_multivector
 :::
 
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/07-quantum-fourier-transform.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 
 # 1. PREPARAÇÃO: Codificar o número 6 (Binário 110)
@@ -72,13 +76,19 @@ print("--- Estado Antes (Binário 110) ---")
 # Vai mostrar setas para baixo (1) e para cima (0)
 
 ```
+:::
+
 
 ```
 --- Estado Antes (Binário 110) ---
 
 ```
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/07-quantum-fourier-transform.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 
 # 2. A MÁGICA: Aplicar a QFT
@@ -93,6 +103,8 @@ estado_depois = Statevector(qc)
 qc.draw('mpl') 
 
 ```
+:::
+
 
 ```
 C:\Users\Max\AppData\Local\Temp\ipykernel_18328\3244769350.py:3: DeprecationWarning: The class ``qiskit.circuit.library.basis_change.qft.QFT`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. ('Use qiskit.circuit.library.QFTGate or qiskit.synthesis.qft.synth_qft_full instead, for access to all previous arguments.',)
@@ -100,7 +112,11 @@ C:\Users\Max\AppData\Local\Temp\ipykernel_18328\3244769350.py:3: DeprecationWarn
 
 ```
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/07-quantum-fourier-transform.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 from IPython.display import display
 
@@ -115,6 +131,8 @@ display(fig1)
 fig2 = plot_bloch_multivector(estado_depois, title="Depois: Número 6 (Base de Fourier)")
 display(fig2)
 ```
+:::
+
 
 ```
 
@@ -281,7 +299,7 @@ import numpy as np
 ## 🔒 Imports do Qiskit (requerem execução local)
 Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
 
-```python .qiskit-static
+```python
 from qiskit import QuantumCircuit, transpile
 from qiskit_aer import AerSimulator
 from qiskit.circuit.library import QFT, PhaseGate
@@ -290,7 +308,11 @@ from qiskit.visualization import plot_histogram
 :::
 
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/07-quantum-fourier-transform.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 # --- 1. CONFIGURAÇÃO ---
 # Precisamos de qubits para "contar" a fase (precisão) e 1 (q3) para sofrer a ação
@@ -300,6 +322,8 @@ num_qubits_total = num_qubits_contagem + 1 # +1 para o alvo
 qc = QuantumCircuit(num_qubits_total, num_qubits_contagem)
 qc.draw('mpl')
 ```
+:::
+
 
 ```{python} {pyodide-python}
 
@@ -362,7 +386,11 @@ qc.measure(range(num_qubits_contagem), range(num_qubits_contagem))
 
 ```
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/07-quantum-fourier-transform.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 
 # --- EXECUÇÃO ---
@@ -371,6 +399,8 @@ job = simulador.run(transpile(qc, simulador), shots=1024)
 contagens = job.result().get_counts()
 
 ```
+:::
+
 
 ```{python} {pyodide-python}
 

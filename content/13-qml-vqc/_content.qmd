@@ -73,7 +73,7 @@ from sklearn.preprocessing import MinMaxScaler
 ## 🔒 Imports do Qiskit (requerem execução local)
 Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
 
-```python .qiskit-static
+```python
 from qiskit.circuit.library import ZZFeatureMap, RealAmplitudes
 from qiskit_algorithms.optimizers import COBYLA
 from qiskit_machine_learning.algorithms import VQC
@@ -345,7 +345,11 @@ O **ZZFeatureMap** é um ótimo ponto de partida: equilibra expressividade e efi
 
 **Resumo:** O Feature Map é a "rampa de acesso" ao mundo quântico, e o ZZFeatureMap faz isso de forma eficiente usando emaranhamento ZZ para capturar interações não-lineares entre suas features!
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/20-quantum-machine-learning.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 
 # --- 2. O FEATURE MAP (Tradutor Dados -> Quantum) ---
@@ -355,6 +359,8 @@ num_qubits = 2
 feature_map = ZZFeatureMap(feature_dimension=num_qubits, reps=1)
 
 ```
+:::
+
 
 ```
 C:\Users\Max\AppData\Local\Temp\ipykernel_20596\1784461025.py:5: DeprecationWarning: The class ``qiskit.circuit.library.data_preparation._zz_feature_map.ZZFeatureMap`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. Use the zz_feature_map function as a replacement. Note that this will no longer return a BlueprintCircuit, but just a plain QuantumCircuit.
@@ -718,7 +724,11 @@ Isso dá controle total sobre a arquitetura!
 
 **Resumo em uma frase:** O Ansatz é o circuito parametrizado que "aprende" a classificar dados ajustando ângulos de rotação θ, exatamente como uma rede neural clássica ajusta pesos W!
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/20-quantum-machine-learning.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 
 # --- 3. O ANSATZ (O Modelo Treinável) ---
@@ -727,6 +737,8 @@ Isso dá controle total sobre a arquitetura!
 ansatz = RealAmplitudes(num_qubits=num_qubits, reps=1)
 
 ```
+:::
+
 
 ```
 C:\Users\Max\AppData\Local\Temp\ipykernel_20596\2137702756.py:4: DeprecationWarning: The class ``qiskit.circuit.library.n_local.real_amplitudes.RealAmplitudes`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. Use the function qiskit.circuit.library.real_amplitudes instead.
@@ -766,7 +778,11 @@ assim como os pesos W em uma rede neural clássica.
 
 ```
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/20-quantum-machine-learning.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 
 # --- 4. O MODELO VQC (Variational Quantum Classifier) ---
@@ -785,6 +801,8 @@ print("--- Iniciando Treinamento do Modelo Quântico ---")
 vqc.fit(X_train, y_train)
 
 ```
+:::
+
 
 ```
 No gradient function provided, creating a gradient function. If your Sampler requires transpilation, please provide a pass manager.
@@ -830,7 +848,11 @@ Acurácia no Teste:  0.47
 - Aumentar `reps` no Feature Map e Ansatz
 - Rodar múltiplas vezes com diferentes inicializações
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/20-quantum-machine-learning.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 # 🔧 MELHORANDO O VQC - Vamos tentar otimizar melhor
 print("="*60)
@@ -877,6 +899,8 @@ else:
     print("   - Otimizador diferente (SPSA, ADAM)")
     print("   - Múltiplas tentativas com diferentes seeds")
 ```
+:::
+
 
 ```
 C:\Users\Max\AppData\Local\Temp\ipykernel_20596\2842022012.py:8: DeprecationWarning: The class ``qiskit.circuit.library.data_preparation._zz_feature_map.ZZFeatureMap`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. Use the zz_feature_map function as a replacement. Note that this will no longer return a BlueprintCircuit, but just a plain QuantumCircuit.
@@ -917,7 +941,11 @@ Ansatz reps                    1               3
 
 Agora vamos visualizar graficamente a diferença entre o modelo original (que não convergiu bem) e o modelo otimizado:
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/20-quantum-machine-learning.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 # --- VISUALIZAÇÃO COMPARATIVA: VQC Original vs Otimizado ---
 # Vamos ver visualmente a diferença entre os dois modelos
@@ -971,6 +999,8 @@ print(f"VQC Otimizado: {score_test_improved:.2%} - Fronteira mais suave, menos e
 print(f"Melhoria:      {(score_test_improved - score_test):.2%}")
 print(f"{'='*60}")
 ```
+:::
+
 
 ```
 Calculando fronteiras de decisão...
@@ -1048,7 +1078,11 @@ O `ZZFeatureMap` projeta seus dados 2D em um espaço de dimensão **2^n = 4** (p
 
 Agora vamos comparar o **VQC otimizado** (que alcançou 80% de acurácia) com um classificador clássico SVM. Esta é uma comparação justa para entender quando cada abordagem é vantajosa:
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/20-quantum-machine-learning.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 # Importar classificador clássico para comparação
 from sklearn.svm import SVC
@@ -1089,6 +1123,8 @@ plot_decision_boundary_single(svm_classical, X_test, y_test, ax,
                               "SVM Clássico (kernel RBF)", svm_test_score)
 plt.show()
 ```
+:::
+
 
 ```
 Treinando SVM Clássico (kernel RBF)...
@@ -1119,7 +1155,11 @@ Calculando fronteira de decisão do SVM...
 
 Uma das grandes vantagens do QML é a projeção dos dados em um espaço de alta dimensão (espaço de Hilbert). Vamos tentar visualizar isso de forma simplificada:
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/20-quantum-machine-learning.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 # Visualização conceitual do mapeamento para espaço de Hilbert
 from mpl_toolkits.mplot3d import Axes3D
@@ -1174,6 +1214,8 @@ print("   • O Feature Map quântico projeta os dados em um espaço de 2^n dime
 print("   • Neste espaço maior, a separação entre classes fica mais fácil")
 print("   • É como 'desenrolar' um problema complexo em um espaço maior!")
 ```
+:::
+
 
 ```
 
@@ -1189,7 +1231,11 @@ print("   • É como 'desenrolar' um problema complexo em um espaço maior!")
 
 Vamos analisar mais a fundo o desempenho do classificador quântico:
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/20-quantum-machine-learning.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
@@ -1222,6 +1268,8 @@ print("="*60)
 print("\nDados de Teste:")
 print(classification_report(y_test, y_pred_test, target_names=['Classe 0', 'Classe 1']))
 ```
+:::
+
 
 ```
 
@@ -1339,7 +1387,11 @@ Para começar: use o mesmo número de qubits que features (como fizemos: 2 featu
 
 Agora vamos ver o verdadeiro poder do QML! Vamos criar um dataset onde dados estão organizados em círculos concêntricos - um problema que é difícil para classificadores lineares:
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/20-quantum-machine-learning.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 from sklearn.datasets import make_circles
 from sklearn.linear_model import LogisticRegression
@@ -1413,6 +1465,8 @@ print(f"Regressão Logística (Linear): {lr_score:.4f}")
 print(f"VQC Quântico (Não-Linear):    {vqc_score:.4f}")
 print(f"{'='*60}")
 ```
+:::
+
 
 ```
 C:\Users\Max\AppData\Local\Temp\ipykernel_20596\3627597481.py:46: DeprecationWarning: The class ``qiskit.circuit.library.data_preparation._zz_feature_map.ZZFeatureMap`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. Use the zz_feature_map function as a replacement. Note that this will no longer return a BlueprintCircuit, but just a plain QuantumCircuit.
@@ -1451,7 +1505,11 @@ VQC Quântico (Não-Linear):    0.8500
 
 ```
 
-```{python} .qiskit-static
+::: {.callout-warning collapse="true"}
+## ⚛️ Célula Qiskit — execute no Colab ou localmente
+Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/20-quantum-machine-learning.ipynb) ou rode `uv run jupyter lab` localmente.
+
+```python
 
 # Visualizar as fronteiras de decisão
 fig, axes = plt.subplots(1, 2, figsize=(14, 5))
@@ -1501,6 +1559,8 @@ print("   • O classificador linear cria apenas uma linha reta (limitado!)")
 print("   • O VQC consegue criar uma fronteira curva e não-linear")
 print("   • Isso acontece porque o Feature Map projeta os dados em um espaço de alta dimensão")
 ```
+:::
+
 
 ```
 Calculando fronteira de decisão do VQC...

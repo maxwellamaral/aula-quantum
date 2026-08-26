@@ -12,8 +12,8 @@ format:
 
 ::: {.callout-tip}
 ## 📽️ Material da Aula
-- 📄 [Baixar Apostila Completa em PDF](../apostila.pdf)
-- 🧪 [Simuladores interativos](/assets/simuladores/)
+- 📄 [Baixar Apostila Completa em PDF](../apostila.pdf){target="_blank"}
+- 🧪 [Galeria de Simuladores Interativos](/assets/simuladores/){target="_blank"}
 :::
 
 {{< include _content.qmd >}}

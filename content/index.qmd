@@ -5,7 +5,7 @@ header-includes:
 ---
 <!-- Navegação -->
 ::: {.flex .items-center .gap-2 .mt-4 .mb-4 .text-sm .text-slate-400}
-[🏠 Home](../../){.hover:text-cyan-text .transition-colors}
+[🏠 Home](../){.hover:text-cyan-text .transition-colors}
 <span>/</span>
 [📚 Aulas & Materiais](#){.hover:text-cyan-text .transition-colors}
 :::

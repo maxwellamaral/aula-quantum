@@ -23,6 +23,16 @@ def main() -> int:
         return 0
 
     pdf = ROOT / "content" / "apostila.pdf"
+
+    # No GitHub Actions (CI), o LaTeX não está instalado no runner; usa o PDF já versionado
+    if os.environ.get("CI") == "true" or os.environ.get("GITHUB_ACTIONS") == "true":
+        print("Ambiente de CI (GitHub Actions) detectado. Pulando compilação LaTeX.")
+        if pdf.exists():
+            dest_dir = ROOT / "_site" / "content"
+            dest_dir.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(pdf, dest_dir / "apostila.pdf")
+            print("Apostila PDF existente copiada para _site/content/apostila.pdf.")
+        return 0
     if pdf.exists():
         try:
             subprocess.run(

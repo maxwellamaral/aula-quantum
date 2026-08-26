@@ -13,23 +13,15 @@ project:
   resources:
     - .nojekyll
     - content/references.bib
-    - assets/js/*.js
-    - assets/css/*.css
-    - assets/images/*.png
-    - assets/images/*.svg
-    - assets/images/*.jpg
-    - assets/images/*.jpeg
-    - assets/images/*.gif
-    - assets/images/*.mp4
-    - assets/simuladores/*.html
+    - assets/**
     - notebooks/qasm/*.qasm
-  post-render:
-    - scripts/render_apostila.py
 
 bibliography: content/references.bib
 
 website:
   title: "Fundamentos de Computação Quântica"
+  site-url: "https://maxwellamaral.github.io/aula-quantum"
+  repo-url: "https://github.com/maxwellamaral/aula-quantum"
   navbar:
     left:
       - href: index.qmd

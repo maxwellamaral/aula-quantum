@@ -2,74 +2,66 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://maxwellamaral.github.io/aula-quantum/index.html</loc>
-    <lastmod>2026-08-25T23:50:48.296Z</lastmod>
+    <lastmod>2026-08-26T17:24:04.787Z</lastmod>
   </url>
   <url>
-    <loc>https://maxwellamaral.github.io/aula-quantum/content/15-impacto-engsoft/index.html</loc>
-    <lastmod>2026-08-25T23:50:48.172Z</lastmod>
+    <loc>https://maxwellamaral.github.io/aula-quantum/content/13-impacto-engsoft/index.html</loc>
+    <lastmod>2026-08-26T17:24:04.700Z</lastmod>
   </url>
   <url>
-    <loc>https://maxwellamaral.github.io/aula-quantum/content/13-qml-vqc/index.html</loc>
-    <lastmod>2026-08-25T23:50:48.171Z</lastmod>
+    <loc>https://maxwellamaral.github.io/aula-quantum/content/11-qml-vqc/index.html</loc>
+    <lastmod>2026-08-26T17:24:04.700Z</lastmod>
   </url>
   <url>
-    <loc>https://maxwellamaral.github.io/aula-quantum/content/11-qft-qpe/index.html</loc>
-    <lastmod>2026-08-25T23:50:48.161Z</lastmod>
+    <loc>https://maxwellamaral.github.io/aula-quantum/content/09-qft-qpe/index.html</loc>
+    <lastmod>2026-08-26T17:24:04.699Z</lastmod>
   </url>
   <url>
-    <loc>https://maxwellamaral.github.io/aula-quantum/content/09-interferencia-deutsch-jozsa/index.html</loc>
-    <lastmod>2026-08-25T23:50:48.153Z</lastmod>
+    <loc>https://maxwellamaral.github.io/aula-quantum/content/07-interferencia-deutsch-jozsa/index.html</loc>
+    <lastmod>2026-08-26T17:24:04.697Z</lastmod>
   </url>
   <url>
-    <loc>https://maxwellamaral.github.io/aula-quantum/content/07-teletransporte/index.html</loc>
-    <lastmod>2026-08-25T23:50:48.116Z</lastmod>
+    <loc>https://maxwellamaral.github.io/aula-quantum/content/05-teletransporte/index.html</loc>
+    <lastmod>2026-08-26T17:24:04.681Z</lastmod>
   </url>
   <url>
-    <loc>https://maxwellamaral.github.io/aula-quantum/content/05-fases/index.html</loc>
-    <lastmod>2026-08-25T23:50:48.048Z</lastmod>
-  </url>
-  <url>
-    <loc>https://maxwellamaral.github.io/aula-quantum/content/03-ondas-dupla-fenda/index.html</loc>
-    <lastmod>2026-08-25T23:50:47.975Z</lastmod>
+    <loc>https://maxwellamaral.github.io/aula-quantum/content/03-fases/index.html</loc>
+    <lastmod>2026-08-26T17:24:04.681Z</lastmod>
   </url>
   <url>
     <loc>https://maxwellamaral.github.io/aula-quantum/content/01-panorama/index.html</loc>
-    <lastmod>2026-08-25T23:50:47.975Z</lastmod>
+    <lastmod>2026-08-26T17:24:04.680Z</lastmod>
   </url>
   <url>
     <loc>https://maxwellamaral.github.io/aula-quantum/about.html</loc>
-    <lastmod>2026-08-25T23:50:47.970Z</lastmod>
+    <lastmod>2026-08-26T17:24:04.568Z</lastmod>
   </url>
   <url>
-    <loc>https://maxwellamaral.github.io/aula-quantum/content/02-fisica-classica-quanticas/index.html</loc>
-    <lastmod>2026-08-25T23:50:47.975Z</lastmod>
+    <loc>https://maxwellamaral.github.io/aula-quantum/content/02-qubit/index.html</loc>
+    <lastmod>2026-08-26T17:24:04.681Z</lastmod>
   </url>
   <url>
-    <loc>https://maxwellamaral.github.io/aula-quantum/content/04-qubit/index.html</loc>
-    <lastmod>2026-08-25T23:50:47.984Z</lastmod>
+    <loc>https://maxwellamaral.github.io/aula-quantum/content/04-circuitos-emaranhamento/index.html</loc>
+    <lastmod>2026-08-26T17:24:04.681Z</lastmod>
   </url>
   <url>
-    <loc>https://maxwellamaral.github.io/aula-quantum/content/06-circuitos-emaranhamento/index.html</loc>
-    <lastmod>2026-08-25T23:50:48.072Z</lastmod>
+    <loc>https://maxwellamaral.github.io/aula-quantum/content/06-hadamard-experimento/index.html</loc>
+    <lastmod>2026-08-26T17:24:04.697Z</lastmod>
   </url>
   <url>
-    <loc>https://maxwellamaral.github.io/aula-quantum/content/08-hadamard-experimento/index.html</loc>
-    <lastmod>2026-08-25T23:50:48.140Z</lastmod>
+    <loc>https://maxwellamaral.github.io/aula-quantum/content/08-grover/index.html</loc>
+    <lastmod>2026-08-26T17:24:04.699Z</lastmod>
   </url>
   <url>
-    <loc>https://maxwellamaral.github.io/aula-quantum/content/10-grover/index.html</loc>
-    <lastmod>2026-08-25T23:50:48.159Z</lastmod>
+    <loc>https://maxwellamaral.github.io/aula-quantum/content/10-hardware-real/index.html</loc>
+    <lastmod>2026-08-26T17:24:04.699Z</lastmod>
   </url>
   <url>
-    <loc>https://maxwellamaral.github.io/aula-quantum/content/12-hardware-real/index.html</loc>
-    <lastmod>2026-08-25T23:50:48.161Z</lastmod>
-  </url>
-  <url>
-    <loc>https://maxwellamaral.github.io/aula-quantum/content/14-compilacao-topologia/index.html</loc>
-    <lastmod>2026-08-25T23:50:48.172Z</lastmod>
+    <loc>https://maxwellamaral.github.io/aula-quantum/content/12-compilacao-topologia/index.html</loc>
+    <lastmod>2026-08-26T17:24:04.700Z</lastmod>
   </url>
   <url>
     <loc>https://maxwellamaral.github.io/aula-quantum/content/index.html</loc>
-    <lastmod>2026-08-25T23:50:48.293Z</lastmod>
+    <lastmod>2026-08-26T17:24:04.784Z</lastmod>
   </url>
 </urlset>

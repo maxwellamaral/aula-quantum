@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simuladores Quânticos Interativos — Fundamentos de Computação Quântica</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0a0e17;
+      --card-bg: #111927;
+      --card-border: #1e293b;
+      --accent-cyan: #00f0ff;
+      --accent-purple: #9d4edd;
+      --text-main: #e2e8f0;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+      padding: 2rem 1rem;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding: 2rem 1rem;
+      background: linear-gradient(180deg, rgba(0, 240, 255, 0.05) 0%, transparent 100%);
+      border-radius: 12px;
+      border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 1rem;
+      color: var(--accent-cyan);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: opacity 0.2s;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+      opacity: 0.8;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-cyan);
+      box-shadow: 0 8px 24px rgba(0, 240, 255, 0.12);
+    }
+
+    .card h2 {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      color: #ffffff;
+    }
+
+    .card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+      flex-grow: 1;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-family: 'Fira Code', monospace;
+      margin-bottom: 0.75rem;
+      background-color: rgba(0, 240, 255, 0.1);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(0, 240, 255, 0.2);
+    }
+
+    .btn {
+      display: inline-block;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.2) 0%, rgba(157, 78, 221, 0.2) 100%);
+      color: #ffffff;
+      text-decoration: none;
+      padding: 0.75rem 1.2rem;
+      border-radius: 6px;
+      font-weight: 600;
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.4) 0%, rgba(157, 78, 221, 0.4) 100%);
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Laboratório de Simuladores Quânticos</h1>
+      <p class="subtitle">Ambientes visuais e interativos de apoio às aulas de Fundamentos de Computação Quântica</p>
+      <a href="/content/" class="back-link">← Voltar para o Portal do Curso</a>
+    </header>
+
+    <div class="grid">
+      <!-- Card 1 -->
+      <div class="card">
+        <div>
+          <span class="badge">AULA 01</span>
+          <h2>Radiação do Corpo Negro</h2>
+          <p>Explore a curva espectral de emissão térmica, altere a temperatura e visualize a Lei do Deslocamento de Wien e a Catástrofe do Ultravioleta.</p>
+        </div>
+        <a href="simulador-corpo-negro.html" class="btn" target="_blank">Abrir Simulador ↗</a>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="card">
+        <div>
+          <span class="badge">AULA 01</span>
+          <h2>Fenda Dupla 3D com Elétrons</h2>
+          <p>Dispare elétrons individuais em tempo real e observe o acúmulo gradual das franjas de interferência probabilística no anteparo.</p>
+        </div>
+        <a href="simulador-fenda-dupla-eletrons-v4.html" class="btn" target="_blank">Abrir Simulador ↗</a>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="card">
+        <div>
+          <span class="badge">AULA 02 & 03</span>
+          <h2>Superposição e Esfera de Bloch</h2>
+          <p>Manipule os ângulos de rotação &theta; e &phi; no vetor de estado de um qubit e visualize a esfera de Bloch em tempo real.</p>
+        </div>
+        <a href="sobreposicao-quantica.html" class="btn" target="_blank">Abrir Simulador ↗</a>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="card">
+        <div>
+          <span class="badge">AULA 04</span>
+          <h2>Emaranhamento e Estados de Bell</h2>
+          <p>Gere pares emaranhados e observe a correlação instantânea das probabilidades de medição conjunta.</p>
+        </div>
+        <a href="entrelaçamento-quantico.html" class="btn" target="_blank">Abrir Simulador ↗</a>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="card">
+        <div>
+          <span class="badge">AULA 05</span>
+          <h2>Teletransporte Quântico</h2>
+          <p>Acompanhe passo a passo a transferência do estado quântico de Alice para Bob usando um par EPR e canal clássico.</p>
+        </div>
+        <a href="teletransporte-quantico-simulador.html" class="btn" target="_blank">Abrir Simulador ↗</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

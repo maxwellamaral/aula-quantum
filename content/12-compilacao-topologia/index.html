@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Prof.&nbsp;Me. Maxwell Anderson Ielpo do Amaral">
 
-<title>Sobre o Curso – Fundamentos de Computação Quântica</title>
+<title>Aula 12 — Compilação Quântica e Topologia do Hardware – Fundamentos de Computação Quântica</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -64,23 +65,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-53dc85963c67a221f6f2030af840abbe.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-03eae88be18a08608b408ecf67964427.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-53dc85963c67a221f6f2030af840abbe.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-03eae88be18a08608b408ecf67964427.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -110,7 +111,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
-<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="stylesheet" href="../../assets/css/styles.css">
 </head>
 
 <body class="nav-fixed quarto-light">
@@ -120,7 +121,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Fundamentos de Computação Quântica</span>
     </a>
   </div>
@@ -131,21 +132,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./index.html"> 
+    <a class="nav-link" href="../../index.html"> 
 <span class="menu-text">Início</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./content/index.html"> 
+    <a class="nav-link" href="../../content/index.html"> 
 <span class="menu-text">Aulas &amp; Materiais</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./about.html" aria-current="page"> 
+    <a class="nav-link" href="../../about.html"> 
 <span class="menu-text">Sobre</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./content/apostila.pdf"> 
+    <a class="nav-link" href="../../content/apostila.pdf"> 
 <span class="menu-text">📄 Baixar PDF Completo</span></a>
   </li>  
 </ul>
@@ -164,11 +165,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Nesta página</h2>
    
   <ul>
-  <li><a href="#fundamentos-de-computação-quântica-para-engenharia-de-software" id="toc-fundamentos-de-computação-quântica-para-engenharia-de-software" class="nav-link active" data-scroll-target="#fundamentos-de-computação-quântica-para-engenharia-de-software">Fundamentos de Computação Quântica para Engenharia de Software</a>
+  <li><a href="#aula-12-compilação-quântica-e-topologia-do-hardware" id="toc-aula-12-compilação-quântica-e-topologia-do-hardware" class="nav-link active" data-scroll-target="#aula-12-compilação-quântica-e-topologia-do-hardware">Aula 12 — Compilação Quântica e Topologia do Hardware</a></li>
+  <li><a href="#compilação-quântica-precisa-respeitar-a-topologia-do-hardware" id="toc-compilação-quântica-precisa-respeitar-a-topologia-do-hardware" class="nav-link" data-scroll-target="#compilação-quântica-precisa-respeitar-a-topologia-do-hardware">Compilação quântica precisa respeitar a topologia do hardware</a>
   <ul class="collapse">
-  <li><a href="#ficha-técnica" id="toc-ficha-técnica" class="nav-link" data-scroll-target="#ficha-técnica">Ficha Técnica</a></li>
-  <li><a href="#tópicos-abordados" id="toc-tópicos-abordados" class="nav-link" data-scroll-target="#tópicos-abordados">Tópicos Abordados</a></li>
-  <li><a href="#ferramentas-utilizadas" id="toc-ferramentas-utilizadas" class="nav-link" data-scroll-target="#ferramentas-utilizadas">Ferramentas Utilizadas</a></li>
+  <li><a href="#relações" id="toc-relações" class="nav-link" data-scroll-target="#relações">Relações</a></li>
+  <li><a href="#fonte" id="toc-fonte" class="nav-link" data-scroll-target="#fonte">Fonte</a></li>
+  <li><a href="#prática-com-o-transpiler-do-qiskit" id="toc-prática-com-o-transpiler-do-qiskit" class="nav-link" data-scroll-target="#prática-com-o-transpiler-do-qiskit">Prática com o Transpiler do Qiskit</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -178,14 +180,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">Sobre o Curso</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Código</button></div></div>
+<div class="quarto-title-block"><div><h1 class="title">Aula 12 — Compilação Quântica e Topologia do Hardware</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Código</button></div></div>
+<p class="subtitle lead">Fundamentos de Computação Quântica — Curso de Extensão</p>
 </div>
 
 
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Autor</div>
+  <div class="quarto-title-meta-heading">Afiliação</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author">Prof.&nbsp;Me. Maxwell Anderson Ielpo do Amaral </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            Instituto Federal de Educação, Ciência e Tecnologia da Paraíba (IFPB) — Campus João Pessoa
+          </p>
+      </div>
+  </div>
 
 <div class="quarto-title-meta">
 
-    
+      
+    <div>
+    <div class="quarto-title-meta-heading">Data de Publicação</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">24 de novembro de 2026</p>
+    </div>
+  </div>
   
     
   </div>
@@ -195,63 +217,69 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="fundamentos-de-computação-quântica-para-engenharia-de-software" class="level2">
-<h2 class="anchored" data-anchor-id="fundamentos-de-computação-quântica-para-engenharia-de-software">Fundamentos de Computação Quântica para Engenharia de Software</h2>
-<p>Curso de <strong>extensão</strong> voltado a estudantes de graduação em Engenharia de Software, oferecido pelo Prof.&nbsp;Me. Maxwell Anderson Ielpo do Amaral (IFPB — Campus João Pessoa). O percurso vai dos experimentos físicos que originaram a mecân quântica até Quantum Machine Learning, com execução em simuladores e hardware quântico real da IBM.</p>
-<section id="ficha-técnica" class="level3">
-<h3 class="anchored" data-anchor-id="ficha-técnica">Ficha Técnica</h3>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th style="text-align: left;">Item</th>
-<th style="text-align: left;">Especificação</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"><strong>Curso</strong></td>
-<td style="text-align: left;">Bacharelado em Engenharia de Software</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><strong>Modalidade</strong></td>
-<td style="text-align: left;">Atividade de Extensão</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><strong>Pré-requisito</strong></td>
-<td style="text-align: left;">Álgebra Linear</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><strong>Carga Horária Sugerida</strong></td>
-<td style="text-align: left;">67h (Teórica: 40h | Prática: 27h)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><strong>Docente</strong></td>
-<td style="text-align: left;">Prof.&nbsp;Me. Maxwell Anderson Ielpo do Amaral</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="tópicos-abordados" class="level3">
-<h3 class="anchored" data-anchor-id="tópicos-abordados">Tópicos Abordados</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Dica</span>📽️ Material da Aula
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <ul>
-<li>Fundamentos físicos: quantização, fótons, ondas de matéria e dupla fenda</li>
-<li>O qubit, notação de Dirac, esfera de Bloch e portas quânticas</li>
-<li>Emaranhamento, teletransporte e interferômetros (Mach-Zehnder)</li>
-<li>Algoritmos: Deutsch-Jozsa, Grover, QFT/QPE e caminho para Shor</li>
-<li>Execução em hardware IBM: ruído, decoerência e limitações NISQ</li>
-<li>Quantum Machine Learning: feature maps, ansatz e VQC</li>
-<li>Impacto na Engenharia de Software: criptografia pós-quântica</li>
+<li>📄 <a href="../apostila.pdf" target="_blank">Baixar Apostila Completa em PDF</a></li>
+<li>🧪 <a href="../../assets/simuladores/" target="_blank">Galeria de Simuladores Interativos</a></li>
+</ul>
+</div>
+</div>
+<section id="aula-12-compilação-quântica-e-topologia-do-hardware" class="level1">
+<h1>Aula 12 — Compilação Quântica e Topologia do Hardware</h1>
+</section>
+<section id="compilação-quântica-precisa-respeitar-a-topologia-do-hardware" class="level1">
+<h1>Compilação quântica precisa respeitar a topologia do hardware</h1>
+<p>Um circuito quântico descrito em uma linguagem de alto nível precisa ser traduzido para as restrições físicas do dispositivo. A conectividade entre qubits e o conjunto de portas disponíveis influenciam a forma como o circuito pode ser executado.[[Quantum Computing - Vision and Challenges]]</p>
+<p>Portanto, o software quântico não é apenas uma camada abstrata independente do hardware. A compilação é parte do desempenho do sistema e precisa considerar a arquitetura física.</p>
+<section id="relações" class="level2">
+<h2 class="anchored" data-anchor-id="relações">Relações</h2>
+<ul>
+<li>[[Dispositivos NISQ dependem de integração quântico-clássica]]</li>
+<li>[[Vantagem quântica é dependente da classe de problemas]]</li>
 </ul>
 </section>
-<section id="ferramentas-utilizadas" class="level3">
-<h3 class="anchored" data-anchor-id="ferramentas-utilizadas">Ferramentas Utilizadas</h3>
+<section id="fonte" class="level2">
+<h2 class="anchored" data-anchor-id="fonte">Fonte</h2>
 <ul>
-<li><strong>Linguagem</strong>: Python 3.10+</li>
-<li><strong>Framework Quântico</strong>: Qiskit 2.x + Qiskit Aer</li>
-<li><strong>Hardware</strong>: IBM Quantum Platform (OpenQASM 2/3)</li>
-<li><strong>Gerenciador de Dependências</strong>: <code>uv</code></li>
-<li><strong>Documentação</strong>: Quarto</li>
+<li>[1] https://arxiv.org/abs/2403.02240</li>
 </ul>
+</section>
+<section id="prática-com-o-transpiler-do-qiskit" class="level2">
+<h2 class="anchored" data-anchor-id="prática-com-o-transpiler-do-qiskit">Prática com o Transpiler do Qiskit</h2>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/07-quantum-fourier-transform.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare o circuito lógico com o circuito transpilado para a topologia real do dispositivo</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit <span class="im">import</span> transpile</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.providers.fake_provider <span class="im">import</span> GenericBackendV2</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># qc_logico = ... circuito da aula anterior</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># backend = GenericBackendV2(num_qubits=5)</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># qc_transpilado = transpile(qc_logico, backend=backend, optimization_level=3)</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># print(f"Portas antes: {qc_logico.size()} | depois: {qc_transpilado.size()}")</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<p>Observe como o transpiler insere portas SWAP para respeitar o grafo de acoplamento físico, aumentando a profundidade do circuito.</p>
 
 
 <!-- -->
@@ -711,39 +739,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Código fonte</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Sobre o Curso"</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">## Fundamentos de Computação Quântica para Engenharia de Software</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>Curso de **extensão** voltado a estudantes de graduação em Engenharia de Software, oferecido pelo Prof. Me. Maxwell Anderson Ielpo do Amaral (IFPB — Campus João Pessoa). O percurso vai dos experimentos físicos que originaram a mecân quântica até Quantum Machine Learning, com execução em simuladores e hardware quântico real da IBM.</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">### Ficha Técnica</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Item <span class="pp">|</span> Especificação <span class="pp">|</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="pp">| :---</span> <span class="pp">| :---</span> <span class="pp">|</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **Curso** <span class="pp">|</span> Bacharelado em Engenharia de Software <span class="pp">|</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **Modalidade** <span class="pp">|</span> Atividade de Extensão <span class="pp">|</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **Pré-requisito** <span class="pp">|</span> Álgebra Linear <span class="pp">|</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **Carga Horária Sugerida** <span class="pp">|</span> 67h (Teórica: 40h <span class="sc">\|</span> Prática: 27h) <span class="pp">|</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **Docente** <span class="pp">|</span> Prof. Me. Maxwell Anderson Ielpo do Amaral <span class="pp">|</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">### Tópicos Abordados</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Fundamentos físicos: quantização, fótons, ondas de matéria e dupla fenda</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>O qubit, notação de Dirac, esfera de Bloch e portas quânticas</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Emaranhamento, teletransporte e interferômetros (Mach-Zehnder)</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Algoritmos: Deutsch-Jozsa, Grover, QFT/QPE e caminho para Shor</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Execução em hardware IBM: ruído, decoerência e limitações NISQ</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Quantum Machine Learning: feature maps, ansatz e VQC</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Impacto na Engenharia de Software: criptografia pós-quântica</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="fu">### Ferramentas Utilizadas</span></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Linguagem**: Python 3.10+</span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Framework Quântico**: Qiskit 2.x + Qiskit Aer</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Hardware**: IBM Quantum Platform (OpenQASM 2/3)</span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Gerenciador de Dependências**: <span class="in">`uv`</span></span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Documentação**: Quarto</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Aula 12 — Compilação Quântica e Topologia do Hardware"</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Fundamentos de Computação Quântica — Curso de Extensão"</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Prof. Me. Maxwell Anderson Ielpo do Amaral"</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="an">institute:</span><span class="co"> "Instituto Federal de Educação, Ciência e Tecnologia da Paraíba (IFPB) — Campus João Pessoa"</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2026-11-24"</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="an">lang:</span><span class="co"> pt-BR</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📽️ Material da Aula</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>📄 <span class="co">[</span><span class="ot">Baixar Apostila Completa em PDF</span><span class="co">](../apostila.pdf)</span>{target="_blank"}</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>🧪 <span class="co">[</span><span class="ot">Galeria de Simuladores Interativos</span><span class="co">](/assets/simuladores/)</span>{target="_blank"}</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>{{&lt; include _content.qmd &gt;}}</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

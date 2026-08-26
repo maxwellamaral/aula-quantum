@@ -91,7 +91,7 @@ A lei de Wien calcula que o pico da fotosfera solar está em $\lambda_{\max} \ap
 ::: {.callout-note}
 ### 🧪 Simulador Interativo do Corpo Negro
 Experimente alterar a temperatura e observe a mudança no pico e na intensidade:
-👉 [Abrir Simulador Interativo do Corpo Negro](/assets/simuladores/simulador-corpo-negro.html)
+👉 [Abrir Simulador Interativo do Corpo Negro](/assets/simuladores/simulador-corpo-negro.html){target="_blank"}
 :::
 
 ### A "Catástrofe do Ultravioleta": o bug da física clássica
@@ -376,7 +376,7 @@ O termo cruzado $2\text{Re}(\psi_1^* \psi_2)$ é o **termo de interferência qu�
 ::: {.callout-tip}
 ### 🧪 Simulador 3D da Dupla Fenda com Elétrons
 Dispare elétrons um a um e veja como impactos pontuais acumulam o padrão de franjas:
-👉 [Abrir Simulador 3D da Fenda Dupla com Elétrons](/assets/simuladores/simulador-fenda-dupla-eletrons-v4.html)
+👉 [Abrir Simulador 3D da Fenda Dupla com Elétrons](/assets/simuladores/simulador-fenda-dupla-eletrons-v4.html){target="_blank"}
 :::
 
 Mesmo enviando um único elétron por vez, cada elétron interfere com todas as alternativas de trajetória possíveis antes de colapsar como um único ponto no anteparo.

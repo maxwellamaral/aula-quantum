@@ -5,3 +5,11 @@
 _site/
 .env
 __pycache__/
+**/*.quarto_ipynb
+.jupyter_cache/
+**/_content_files/
+**/index_files/
+content/apostila_files/
+*.aux
+*.log
+*.toc

@@ -1,9 +1,9 @@
 ---
-title: "Aula 01 — Panorama: Por que Computação Quântica?"
+title: "Aula 04 — Primeiros Circuitos, Estados de Bell e Emaranhamento"
 subtitle: "Fundamentos de Computação Quântica — Curso de Extensão"
 author: "Prof. Me. Maxwell Anderson Ielpo do Amaral"
 institute: "Instituto Federal de Educação, Ciência e Tecnologia da Paraíba (IFPB) — Campus João Pessoa"
-date: "2026-08-25"
+date: "2026-09-29"
 lang: pt-BR
 format:
   html:
@@ -17,4 +17,3 @@ format:
 :::
 
 {{< include _content.qmd >}}
-  

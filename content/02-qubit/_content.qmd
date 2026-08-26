@@ -1,0 +1,972 @@
+# Aula 02 — O Qubit: Fundamentos Matemáticos da Computação Quântica
+
+# 📚 Fundamentos Matemáticos da Computação Quântica
+
+Bem-vindo! Este notebook foi criado para ajudá-lo a entender os **conceitos matemáticos básicos** necessários para trabalhar com computação quântica.
+
+## 🎯 O que você vai aprender:
+
+1. **Estados quânticos** - Como representar qubits matematicamente
+2. **Portas quânticas** - Operações que transformam estados quânticos
+3. **Superposição** - O "poder" dos computadores quânticos
+4. **Visualizações** - Esfera de Bloch e outras representações visuais
+
+## 💡 Para quem é este notebook?
+
+Se você conhece:
+- ✅ Álgebra linear básica (vetores e matrizes)
+- ✅ Números complexos (pelo menos saber que existem 😊)
+- ✅ Python básico
+
+Então você está pronto para começar! Não se preocupe se alguns conceitos parecerem estranhos no início - isso é normal em computação quântica.
+
+<hr/>
+
+**Dica**: Execute cada célula na ordem para acompanhar os exemplos interativos!
+
+> Observação
+> As células com borda verde executam **direto no seu navegador** (Pyodide/WASM). > As células Qiskit requerem execução local: abra um terminal e rode `uv sync` na raiz deste repositório, depois `uv run jupyter lab`.
+
+```{python} {pyodide-python}
+# Importando as bibliotecas necessárias
+# Não se preocupe se não entender todas agora - vamos usá-las ao longo do notebook
+
+import numpy as np                      # Para operações com matrizes e vetores
+import sympy as sp                      # Para matemática simbólica (fórmulas bonitas)
+from sympy import Matrix, symbols       # Para criar matrizes e símbolos matemáticos
+from IPython.display import Markdown    # Para exibir fórmulas formatadas
+from matplotlib import pyplot as plt    # Para criar gráficos
+```
+
+::: {.callout-note collapse="true"}
+## 🔒 Imports do Qiskit (requerem execução local)
+Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
+
+```python
+from qiskit.quantum_info import Statevector  # Para trabalhar com estados quânticos
+from qiskit.visualization import plot_bloch_multivector, plot_state_qsphere  # Visualizações quânticas
+```
+:::
+
+
+## 🔬 Estados Quânticos Básicos
+
+Na computação clássica, trabalhamos com **bits** que podem ser 0 ou 1.
+
+Na computação quântica, trabalhamos com **qubits** que podem estar em:
+- **Estado |0⟩** (lê-se "ket zero") - equivalente ao bit clássico 0
+- **Estado |1⟩** (lê-se "ket um") - equivalente ao bit clássico 1
+- **Superposição de |0⟩ e |1⟩** - aqui está a mágica! O qubit pode estar em "ambos" estados simultaneamente
+
+### 📌 Notação matemática:
+
+Representamos esses estados como **vetores coluna** em "ket psi". Em geral:
+
+$|\psi⟩ = \begin{bmatrix} \text{amplitude para estado } \alpha  \\ \text{amplitude para estado } \beta \end{bmatrix}$ 
+
+Essa amplitude pode variar de $-1$ a $1$ em números reais ou é um número complexo cujo módulo (valor absoluto) é menor ou igual a 1.
+
+Assim:
+
+- Estado |0⟩ = $\begin{bmatrix} 1 \\ 0 \end{bmatrix}$ 
+    - **Primeira posição (1)**: Amplitude para o estado |0⟩
+    - **Segunda posição (0)**: Amplitude para o estado |1⟩
+    - ➡️ Interpretação: 100% de probabilidade de medir 0, 0% de probabilidade de medir 1
+
+- Estado |1⟩ = $\begin{bmatrix} 0 \\ 1 \end{bmatrix}$
+    - **Primeira posição (0)**: Amplitude para o estado |0⟩
+    - **Segunda posição (1)**: Amplitude para o estado |1⟩
+    - ➡️ Interpretação: 0% de probabilidade de medir 0, 100% de probabilidade de medir 1
+
+**Regra geral**: Para qualquer qubit $|\psi⟩ = \begin{bmatrix} \alpha \\ \beta \end{bmatrix}$:
+- O valor **$\alpha$** (primeira linha) representa a amplitude do estado |0⟩
+- O valor **$\beta$** (segunda linha) representa a amplitude do estado |1⟩
+- As probabilidades são: P(0) = |$\alpha$|² e P(1) = |$\beta$|²
+- Sempre vale: |$\alpha$|² + |$\beta$|² = 1 (normalização)
+
+**Por que vetores?** Porque podemos aplicar transformações matemáticas (matrizes) neles, e isso é exatamente o que as portas quânticas naturalmente fazem!
+
+```{python} {pyodide-python}
+
+# Vamos criar esses estados básicos usando SymPy (biblioteca de matemática simbólica)
+# Isso nos permite trabalhar com fórmulas matemáticas de forma elegante
+
+# Estado |0⟩ - primeiro número é 1, segundo é 0
+ket_0 = Matrix([[1], 
+                [0]])
+
+# Estado |1⟩ - primeiro número é 0, segundo é 1
+ket_1 = Matrix([[0], 
+                [1]])
+
+# Exibir de forma bonita com LaTeX (notação matemática profissional)
+display(Markdown(f"$$\\ket{{0}} = {sp.latex(ket_0)}$$"))
+display(Markdown(f"$$\\ket{{1}} = {sp.latex(ket_1)}$$"))
+
+print("\n✅ Estados básicos criados com sucesso!")
+```
+
+```
+
+✅ Estados básicos criados com sucesso!
+
+```
+
+```{python} {pyodide-python}
+
+# Agora vamos criar os MESMOS estados usando NumPy (só para fins de comparação de bibliotecas)
+# NumPy é mais eficiente para cálculos numéricos (com números reais)
+
+# Estado |0⟩ usando NumPy
+q_zero = np.array([
+    [1],   # Probabilidade 100% de medir 0
+    [0]    # Probabilidade 0% de medir 1
+])
+
+# Estado |1⟩ usando NumPy
+q_one = np.array([
+    [0],   # Probabilidade 0% de medir 0
+    [1]    # Probabilidade 100% de medir 1
+])
+
+print("=== Estado |0⟩ ===")
+print(q_zero)
+print("\n=== Estado |1⟩ ===")
+print(q_one)
+
+print("\n💡 Dica: Esses vetores representam a 'probabilidade' de medir cada resultado!")
+
+```
+
+```
+=== Estado |0⟩ ===
+[[1]
+ [0]]
+
+=== Estado |1⟩ ===
+[[0]
+ [1]]
+
+💡 Dica: Esses vetores representam a 'probabilidade' de medir cada resultado!
+
+```
+
+## 🌟 Superposição: o coração da Computação Quântica
+
+Aqui está onde a mágica acontece! Um qubit pode estar em uma **combinação** dos estados |0⟩ e |1⟩:
+
+$$|ψ⟩ = 𝛼|0⟩ + 𝛽|1⟩$$
+
+Onde:
+- **|ψ⟩** (lê-se "ket psi") é o estado do qubit
+- **𝛼** (alpha) e **𝛽** (beta) são **números complexos** chamados de **amplitudes**
+- **Regra de ouro**: $|𝛼|² + |𝛽|²= 1$ (aqui também essas probabilidades precisam somar 100%!)
+
+### 🎲 Como interpretar as amplitudes:
+
+- $|𝛼|²$ = probabilidade de medir **0**
+- $|𝛽|²$ = probabilidade de medir **1**
+
+### 📊 Exemplo visual:
+
+Se $𝛼 = \frac{1}{\sqrt{2}}$ e $𝛽 = \frac{1}{\sqrt{2}}$? 
+
+"Montando" a combinação dos estados |0⟩ e |1⟩, ficará assim:
+
+$$|ψ⟩ = \frac{1}{\sqrt{2}}|0⟩ + \frac{1}{\sqrt{2}}|1⟩$$
+
+Se quiser, pra ficar mais claro, podemos substituir os kets pelos seus vetores, até para ficar mais intuitivo e você sempre imaginar que por trás desses kets, existem, na verdade, vetores:
+
+$$|ψ⟩ = \frac{1}{\sqrt{2}} \begin{bmatrix} 1 \\ 0 \end{bmatrix} + \frac{1}{\sqrt{2}} \begin{bmatrix} 0 \\ 1 \end{bmatrix}$$
+
+Assim, não precisamos sempre usar vetores, mas é bom saber que eles estão lá por trás.
+
+Agora, calculando as probabilidades:
+
+- Probabilidade de medir 0: $\left(\frac{1}{\sqrt{2}}\right)² = \frac{1}{2} = 0.50 = 50\%$
+- Probabilidade de medir 1: $\left(\frac{1}{\sqrt{2}}\right)² = \frac{1}{2} = 0.50 = 50\%$
+
+**Em vetores:**
+
+$$|ψ⟩ = 𝛼 \begin{bmatrix} 1 \\ 0 \end{bmatrix} + 𝛽 \begin{bmatrix} 0 \\ 1 \end{bmatrix} = \begin{bmatrix} 𝛼 \\ 𝛽 \end{bmatrix}$$
+
+$$|ψ⟩ = 𝛼|0⟩ + 𝛽|1⟩$$
+
+Simples assim! O primeiro número é a amplitude para |0⟩, o segundo para |1⟩.
+
+```{python} {pyodide-python}
+
+# Vamos criar um estado genérico em superposição!
+# Usamos símbolos 𝛼 (alpha) e 𝛽 (beta) para representar valores desconhecidos
+
+alpha, beta = symbols('alpha beta', complex=True)   # Definindo 𝛼 e 𝛽 como números complexos
+psi = alpha * ket_0 + beta * ket_1                  # Estado genérico em superposição
+
+print("Estado quântico genérico criado:")
+
+display(Markdown(f"$$\\ket{{\\psi}} = {sp.latex(psi)}$$"))
+
+print("\n💡 Isso significa:")
+print("   - Com probabilidade |α|², medimos 0")
+print("   - Com probabilidade |β|², medimos 1")
+print("   - Antes da medição, o qubit está em AMBOS os estados!")
+
+```
+
+```
+Estado quântico genérico criado:
+
+```
+
+```
+
+💡 Isso significa:
+   - Com probabilidade |α|², medimos 0
+   - Com probabilidade |β|², medimos 1
+   - Antes da medição, o qubit está em AMBOS os estados!
+
+```
+
+## 🌀 E o que é esse termo "superposição"?
+
+Superposição é o fenômeno quântico onde um qubit pode existir em múltiplos estados ao mesmo tempo. Diferente dos bits clássicos que são ou 0 ou 1, um qubit em superposição pode ser uma combinação de ambos os estados. 
+
+> *Como assim? Eu estou acostumado a pensar que algo é 0 ou 1, não ambos ao mesmo tempo!* 🤔
+
+Imagine uma moeda girando no ar 🪙 (esse é um comparativo clássico da literatura!). Enquanto está girando, ela não é nem cara nem coroa - está em um estado de superposição de ambos os lados. Só quando a moeda cai e você olha para ela 👀 é que ela "decide" ser cara ou coroa. Então, olhar para a moeda é como medir um qubit: você força ele a escolher um estado específico (0 ou 1), fazendo-o parar de girar.
+
+Obviamente, se você for teimoso, vai dizer que os dois não são cara e coroa ao mesmo tempo, pois se você usar uma supercâmera de altíssima velocidade 📹, verá que a moeda está em um estado definido a cada instante. Em câmera super lenta, você verá que a moeda ou está em cara, ou em coroa. OK, teimoso, você está certo! Porém, entretanto, todavia...
+
+No mundo quântico ⚛️, se essa moeda existisse - vamos chamar de moeda quântica 🪙✨ - ele seria cara e coroa ao mesmo tempo. Somente quando você a observasse é que poderia saber se é cara ou coroa. Na visualização, o movimento de giro é destruído ao ser observado. A moeda cai e para. Você perdeu a informação do movimento (superposição) e ficou apenas com o resultado estático (0 ou 1), e só a partir daí você sabe o resultado final. Estranho não é? Bem-vindo ao mundo quântico! 🎭
+
+> ⚡ O que acontece: 
+> O qubit (o objeto físico, como um elétron ou átomo) geralmente não é destruído (a menos que seja um fóton sendo absorvido por um detector). O que é "destruído" irremediavelmente é a informação da superposição (a parte quântica, o giro). O qubit continua lá, mas agora ele é apenas um bit clássico chato (está parado em cara ou coroa)
+
+Entender isso (e aceitar) é crucial para compreender como os computadores quânticos funcionam e por que eles são tão poderosos para certas tarefas. Daqui para frente, sempre que falarmos de qubits em superposição, lembre-se da moeda quântica girando no ar!
+
+Em [03-mais-sobre-Hadamard.md](03-mais-sobre-Hadamard.md) existe um experimento físico feito com fótons 💡 que ilustra muito bem esse conceito de superposição e medição quântica. Recomendo fortemente a leitura para aprofundar sua compreensão, caso estejas curioso! Somente me convenci intuitivamente disso após ler aquele experimento.
+
+> 📊 O que acontece: 
+> quando aplicamos uma porta Hadamard (veremos depois) e colocamos o qubit em um estado de superposição (como o estado $|+\rangle$), ele passa a ter 50% de chance de ser medido como 0 e 50% de chance de ser medido como 1. Ao fazer a medição, ele 'colapsa' (faz parar) essa superposição em um dos estados possíveis."
+
+Daí sempre precisamos realizar múltiplas medições para termos uma boa ideia das probabilidades reais envolvidas. É como jogar a moeda quântica 1024 vezes 🎲 - chamamos de 1024 shots - para ver quantas vezes ela cai em cara ou coroa! Uma hora pode ser 30% de cara, outra hora 70%. Em outro momento pode ser 33% de cara. Mas se você jogar 1024 vezes, verá que a média se aproxima dos 50% esperados. Você consegue entender que o fim do cálculo se baseia, na verdade, em probabilidades estatísticas, certo? Não é como somar 1 + 1 = 2, onde o resultado é sempre o mesmo. Aqui, o resultado pode variar a cada experimento, mas a média de muitos experimentos converge para o valor esperado. 
+
+> 📈 Observação: 
+> É padrão realizar, por exemplo, 1024 shots para construir um histograma de probabilidades e ver qual é a resposta mais provável.
+
+Claro que em um computador clássico 💻 fazer cálculo (1 + 1 = 2) de forma quântica demoraria muito, e seria coisa de louco calcular probabilidades estatísticas para tudo. Porém, você vai ver mais a frente, que existem certos cálculos que um computador clássico não consegue fazer de forma eficiente, pois se conseguisse, não haveria necessidade de um outro tipo de computador, certo? E é aí que entra o computador quântico 🖥️⚛️. Ele não precisa 'calcular' essas probabilidades uma a uma; ele manipula as ondas de probabilidade (amplitudes) usando superposição, entrelaçamento e interferência para que, no final, a resposta correta tenha a maior chance de ser medida. Mas isso é assunto para os próximos notebooks!
+
+> 💾 O que acontece: 
+> É explicado que para simular um sistema quântico de $n$ qubits, um computador clássico precisa armazenar $2^n$ números complexos (as amplitudes). Isso cresce exponencialmente. Com apenas 64 qubits, seriam necessários cerca de 18 quintilhões de números complexos, o que excede a capacidade de armazenamento atual para um computador clássico (este sofre para calcular essas amplitudes)!
+
+Assim, quando você ouvir dizer que os cálculos realizados em um computador clássico são determinísticos (a gente sabe onde vai dar o resultado se fizermos "na mão"), enquanto os cálculos em um computador quântico são probabilísticos (é provável que dê 50% para...), agora você entenderá o porquê!
+
+**✨ A superposição não é ser A e B. É ter a potencialidade de ser A ou B, com uma probabilidade que nós podemos controlar.**
+
+<hr/>
+
+## ⚙️ Portas Quânticas: Transformando Estados
+
+Portas quânticas são **transformações** que aplicamos aos qubits. Matematicamente, são **matrizes** que multiplicamos pelos vetores de estado.
+
+Da mesma forma que em computação clássica temos portas lógicas (AND, OR, NOT) que manipulam bits, em computação quântica temos portas quânticas que manipulam qubits. 
+
+**Analogia:** Se um estado quântico é como uma formiga em cima de uma bola (Esfera de Bloch), uma porta quântica é como uma rotação que move a formiga para uma nova posição na bola.
+
+### 🔄 Principais Portas Quânticas:
+
+1. **Porta X (NOT quântico)** - Inverte |0⟩ ↔ |1⟩ (como o NOT da computação clássica)
+2. **Porta H (Hadamard)** - Cria superposição (a porta mais importante!)
+3. **Portas de Fase (Z, S, T)** - Modificam a fase sem mudar probabilidades
+
+Vamos explorar cada uma delas!
+
+> ⚠️ **Importante**:
+> Vamos trabalhar com kets ao representar os estados quânticos, como |0⟩ e |1⟩, para manter a notação padrão da computação quântica. Lembre-se que por trás desses kets, existem vetores coluna que representam os estados matematicamente, só isso!
+
+<hr/>
+
+### 🚪 Porta X (NOT Quântico)
+
+É a versão quântica do NOT clássico. Funciona assim:
+- Se o qubit está em |0⟩ → vira |1⟩
+- Se o qubit está em |1⟩ → vira |0⟩
+
+Se fossemos usar vetores, seria:
+- Se o qubit está em $\begin{bmatrix} 1 \\ 0 \end{bmatrix}$ → vira $\begin{bmatrix} 0 \\ 1 \end{bmatrix}$
+- Se o qubit está em $\begin{bmatrix} 0 \\ 1 \end{bmatrix}$ → vira $\begin{bmatrix} 1 \\ 0 \end{bmatrix}$
+
+**Matriz da Porta X:**
+
+$$X = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$$
+
+**Como funciona:**
+
+A função é simbolizada como X|ψ⟩, onde |ψ⟩ é o estado do qubit. Assim, é como se:
+
+- em $X$ você substitui o $X$ pela matriz da porta X que é $\begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$
+- e o $|0⟩$ pelo vetor correspondente a |0⟩, que é $\begin{bmatrix} 1 \\ 0 \end{bmatrix}$.
+
+Então, juntando $X$ e $|0⟩$, temos $X|0⟩$:
+
+$$X|0⟩ = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix} \begin{bmatrix} 1 \\ 0 \end{bmatrix}$$
+
+Daqui é só continuar com o cálculo sobre a multiplicação de matrizes para ver o resultado final:
+
+$$\begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix} \begin{bmatrix} 1 \\ 0 \end{bmatrix} = \begin{bmatrix} 0 \\ 1 \end{bmatrix}$$
+
+E você percebe com que $\begin{bmatrix} 0 \\ 1 \end{bmatrix}$ se parece? Sim! É o vetor correspondente a |1⟩. Então, concluímos que:
+
+$$X|0⟩ = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix} \begin{bmatrix} 1 \\ 0 \end{bmatrix} = \begin{bmatrix} 0 \\ 1 \end{bmatrix} = |1⟩$$
+
+<hr/>
+
+E para $X|1⟩$?
+
+$$X|1⟩ = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix} \begin{bmatrix} 0 \\ 1 \end{bmatrix} = \begin{bmatrix} 1 \\ 0 \end{bmatrix} = |0⟩$$
+
+**Dica:** Multiplicação de matrizes é só "linha × coluna e somar"!
+
+```{python} {pyodide-python}
+
+# Vamos testar a porta X na prática com Python!
+
+# Definir a matriz da porta X
+X = Matrix([[0, 1],
+            [1, 0]])
+
+print("🔄 Aplicando a Porta X...\n")
+
+# Aplicar X ao estado |0⟩
+result_0 = X * ket_0        # ket_0 é o estado |0⟩ com o vetor definido no código lá atrás, lembra?
+print("Teste 1: X|0⟩ deve dar |1⟩")
+display(Markdown(f"$$X \\ket{{0}} = {sp.latex(result_0)}$$ ✅"))
+
+# Aplicar X ao estado |1⟩
+result_1 = X * ket_1
+print("\nTeste 2: X|1⟩ deve dar |0⟩")
+display(Markdown(f"$$X \\ket{{1}} = {sp.latex(result_1)}$$ ✅"))
+
+print("\n💡 A porta X realmente inverte os estados, como esperado!")
+```
+
+```
+🔄 Aplicando a Porta X...
+
+Teste 1: X|0⟩ deve dar |1⟩
+
+```
+
+```
+
+Teste 2: X|1⟩ deve dar |0⟩
+
+```
+
+```
+
+💡 A porta X realmente inverte os estados, como esperado!
+
+```
+
+```{python} {pyodide-python}
+
+# Agora vamos definir a porta X usando NumPy (outra maneira de fazer a mesma coisa)
+
+gate_x = np.array([
+    [0, 1],  # Primeira linha da matriz
+    [1, 0]   # Segunda linha da matriz
+])
+
+print("Porta X definida com NumPy:")
+print(gate_x)
+print("\n✅ Pronta para usar em cálculos numéricos!")
+
+```
+
+```
+Porta X definida com NumPy:
+[[0 1]
+ [1 0]]
+
+✅ Pronta para usar em cálculos numéricos!
+
+```
+
+```{python} {pyodide-python}
+
+# Vamos aplicar a porta X ao estado |0⟩ e ver o resultado numérico
+
+print("=== Aplicando Porta X ao estado |0⟩ ===\n")
+
+# Multiplicação de matriz por vetor: np.dot(matriz, vetor)
+novo_estado = np.dot(gate_x, q_zero)
+
+print("Estado inicial |0⟩:")
+print(q_zero)
+
+print("\nApós aplicar a porta X:")
+print(novo_estado)
+
+print("\n✅ Esperávamos |1⟩ (vetor [0, 1]), e foi isso que obtivemos!")
+print("💡 A porta X funcionou como um 'interruptor' que inverte o qubit!")
+
+```
+
+```
+=== Aplicando Porta X ao estado |0⟩ ===
+
+Estado inicial |0⟩:
+[[1]
+ [0]]
+
+Após aplicar a porta X:
+[[0]
+ [1]]
+
+✅ Esperávamos |1⟩ (vetor [0, 1]), e foi isso que obtivemos!
+💡 A porta X funcionou como um 'interruptor' que inverte o qubit!
+
+```
+
+<hr/>
+
+### Porta H (Hadamard)
+
+A porta H, ou porta Hadamard, é representada pela seguinte matriz:
+
+$$H = \frac{1}{\sqrt{2}} \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}$$
+
+Como funciona:
+
+<hr/>
+
+Vamos aplicar a porta H ao estado |0⟩:
+
+$$H|0⟩ = \frac{1}{\sqrt{2}} \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix} \begin{bmatrix} 1 \\ 0 \end{bmatrix} = \frac{1}{\sqrt{2}} \begin{bmatrix} 1 \cdot 1 + 1 \cdot 0 \\ 1 \cdot 1 + (-1) \cdot 0 \end{bmatrix} = \frac{1}{\sqrt{2}} \begin{bmatrix} 1 \\ 1 \end{bmatrix}$$
+
+Agora, por que o resultado $\frac{1}{\sqrt{2}} \begin{bmatrix} 1 \\ 1 \end{bmatrix}$ vai ser igual a $\frac{1}{\sqrt{2}}|0⟩ + \frac{1}{\sqrt{2}}|1⟩$?
+
+Isso ocorre porque o vetor $\begin{bmatrix} 1 \\ 1 \end{bmatrix}$ pode ser expresso como a soma dos vetores base:
+
+$$\begin{bmatrix} 1 \\ 1 \end{bmatrix} = \begin{bmatrix} 1 \\ 0 \end{bmatrix} + \begin{bmatrix} 0 \\ 1 \end{bmatrix} = |0⟩ + |1⟩$$
+
+Portanto:
+
+$$\frac{1}{\sqrt{2}} \begin{bmatrix} 1 \\ 1 \end{bmatrix} = \frac{1}{\sqrt{2}} (|0⟩ + |1⟩) = \frac{1}{\sqrt{2}}|0⟩ + \frac{1}{\sqrt{2}}|1⟩$$
+
+Esta expressão demonstra o efeito fundamental da porta Hadamard: ela transforma um estado definido (|0⟩) em uma **superposição** com amplitudes iguais. Os coeficientes $\frac{1}{\sqrt{2}} \approx 0.707$ garantem a normalização, ou seja, $\left(\frac{1}{\sqrt{2}}\right)^2 + \left(\frac{1}{\sqrt{2}}\right)^2 = 1$.
+
+<hr/>
+
+Vamos agora aplicar a porta H ao estado |1⟩:
+
+$$H|1⟩ = \frac{1}{\sqrt{2}} \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix} \begin{bmatrix} 0 \\ 1 \end{bmatrix} = \frac{1}{\sqrt{2}} \begin{bmatrix} 1 \cdot 0 + 1 \cdot 1 \\ 1 \cdot 0 + (-1) \cdot 1 \end{bmatrix} = \frac{1}{\sqrt{2}} \begin{bmatrix} 1 \\ -1 \end{bmatrix} = \frac{1}{\sqrt{2}}|0⟩ - \frac{1}{\sqrt{2}}|1⟩$$
+
+Note que a porta Hadamard é **auto-adjunta** (igual à sua transposta conjugada), propriedade fundamental das portas quânticas reversíveis.
+
+```{python} {pyodide-python}
+
+# Exemplo de aplicação da porta H (Hadamard)
+
+# Definir a porta H
+H = (1 / sp.sqrt(2)) * Matrix([[1, 1],
+                               [1, -1]])
+
+# Aplicar a porta H ao estado |0⟩
+result_h0 = H * ket_0
+
+# Aplicar a porta H ao estado |1⟩
+result_h1 = H * ket_1
+
+# Explicar o resultado utilizando Markdown para formatação bonita (perfumaria)
+
+print("=== Aplicando Porta H (Hadamard) ===\n")
+print("A porta H cria superposição dos estados |0⟩ e |1⟩.\n")
+display(Markdown(f"$$H \\ket{{0}} = {sp.latex(H)} \\cdot {sp.latex(ket_0)} = {sp.latex(result_h0)}$$"))
+
+print("\nResultado detalhado:")
+display(Markdown(f"$${sp.latex(result_h0)} = \\frac{{1}}{{\\sqrt{{2}}}} \\ket{{0}} + \\frac{{1}}{{\\sqrt{{2}}}} \\ket{{1}}$$"))
+
+print("\nAgora aplicando H ao estado |1⟩:\n")
+display(Markdown(f"$$H \\ket{{1}} = {sp.latex(H)} \\cdot {sp.latex(ket_1)} = {sp.latex(result_h1)}$$"))
+
+print("\nResultado detalhado:")
+display(Markdown(f"$${sp.latex(result_h1)} = \\frac{{1}}{{\\sqrt{{2}}}} \\ket{{0}} - \\frac{{1}}{{\\sqrt{{2}}}} \\ket{{1}}$$"))
+```
+
+```
+=== Aplicando Porta H (Hadamard) ===
+
+A porta H cria superposição dos estados |0⟩ e |1⟩.
+
+```
+
+```
+
+Resultado detalhado:
+
+```
+
+```
+
+Agora aplicando H ao estado |1⟩:
+
+```
+
+```
+
+Resultado detalhado:
+
+```
+
+```{python} {pyodide-python}
+
+# Outra maneira de definir a porta H usando NumPy (faz a mesma coisa que o código anterior)
+# Porta H (Hadamard): Cria superposição
+# Matriz: (1/√2) * [[1, 1], [1, -1]]
+gate_h = (1 / np.sqrt(2)) * np.array([
+    [1, 1],
+    [1, -1]
+])
+
+# APLICANDO A PORTA HADAMARD em |0>
+# Operação: H * |0> = Superposição
+estado_superposicao = np.dot(gate_h, q_zero)
+
+print("\n--- Após aplicar a Porta Hadamard (H) ---")
+print(f"Estado de Superposição:\n{estado_superposicao}")
+# Note que os valores são aprox 0.707 (que é 1/raiz(2))
+
+```
+
+```
+
+--- Após aplicar a Porta Hadamard (H) ---
+Estado de Superposição:
+[[0.70710678]
+ [0.70710678]]
+
+```
+
+**A Superposição**
+
+Quando aplicamos a gate_h, o resultado foi: 
+
+$$\begin{bmatrix} 0.707... \\ 0.707... \end{bmatrix}$$
+
+Isso significa que o qubit não é nem 0 e nem 1. Ele contém "informação" de ambos. Matematicamente, ele é:
+
+$$|\psi\rangle = 0.707|0\rangle + 0.707|1\rangle$$
+
+Se você ainda não entendeu completamente o conceito de fase quântica, talvez fica melhor de visualizar na Esfera de Bloch, que veremos em [00b-phases.ipynb](00b-phases.ipynb)! Depois volte para cá para reforçar o entendimento.
+
+### Produto interno (Inner Product) ou "bra-ket"
+
+O produto interno entre dois estados quânticos |ψ⟩ e |φ⟩ é denotado por ⟨ψ|φ⟩ e é calculado como:
+
+Ket é o vetor coluna que representa o estado quântico, enquanto bra é o vetor linha conjugado transposto correspondente.
+
+> Como se calcula o vetor linha conjugado transposto?
+> Para calcular o vetor linha conjugado transposto (bra) de um vetor coluna (ket), você deve seguir dois passos:
+> 1. Transpor o vetor coluna, ou seja, transformar suas linhas em colunas.
+> 2. Tomar o conjugado complexo de cada elemento do vetor transposto, o que significa substituir cada número complexo pelo seu conjugado (inverter o sinal da parte imaginária).
+
+Se $|ψ⟩ = \begin{bmatrix} 𝛼 \\ 𝛽 \end{bmatrix}$ e $|φ⟩ = \begin{bmatrix} γ \\ δ \end{bmatrix}$, então:
+
+$⟨ψ|φ⟩ = \begin{bmatrix} 𝛼 & 𝛽 \end{bmatrix} * \begin{bmatrix} γ \\ δ \end{bmatrix} = 𝛼*γ +𝛽*δ$
+
+```{python} {pyodide-python}
+
+# Exemplo de produto interno
+
+bra_0 = ket_0.T
+bra_1 = ket_1.T
+
+# ⟨0|0⟩
+phi_00 = bra_0 * ket_0
+
+# ⟨0|1⟩
+phi_01 = bra_0 * ket_1
+
+# ⟨1|0⟩
+phi_10 = bra_1 * ket_0
+
+# ⟨1|1⟩
+phi_11 = bra_1 * ket_1
+
+display(Markdown(f"$$\\langle 0 | 0 \\rangle = {sp.latex(bra_0)} * {sp.latex(ket_0)} = {phi_00[0,0]}$$"))
+display(Markdown(f"$$\\langle 0 | 1 \\rangle = {sp.latex(bra_0)} * {sp.latex(ket_1)} = {phi_01[0,0]}$$"))
+display(Markdown(f"$$\\langle 1 | 0 \\rangle = {sp.latex(bra_1)} * {sp.latex(ket_0)} = {phi_10[0,0]}$$"))
+display(Markdown(f"$$\\langle 1 | 1 \\rangle = {sp.latex(bra_1)} * {sp.latex(ket_1)} = {phi_11[0,0]}$$"))
+```
+
+### Produto tensorial
+
+O produto tensorial (ou produto de Kronecker) é uma operação matemática que combina dois estados quânticos para formar um estado composto. Se |ψ⟩ e |φ⟩ são dois estados quânticos, o produto tensorial é denotado por |ψ⟩ ⊗ |φ⟩.
+
+Exemplo:
+
+$$|0\rangle \otimes |0\rangle = \begin{bmatrix} 1 \\ 0 \end{bmatrix} \otimes \begin{bmatrix} 1 \\ 0 \end{bmatrix} = \begin{bmatrix} 1 \cdot \begin{bmatrix} 1 \\ 0 \end{bmatrix} \\ 0 \cdot \begin{bmatrix} 1 \\ 0 \end{bmatrix} \end{bmatrix} = \begin{bmatrix} 1 \\ 0 \\ 0 \\ 0 \end{bmatrix}$$
+
+```{python} {pyodide-python}
+
+# Exemplo de produto tensorial
+
+# |0⟩ ⊗ |0⟩
+tensor_00 = sp.kronecker_product(ket_0, ket_0)
+display(
+    Markdown(
+        f"$$\\ket{{0}} \\otimes \\ket{{0}} = {sp.latex(ket_0)} \\otimes {sp.latex(ket_0)} = \\begin{{bmatrix}} 1 \\cdot {sp.latex(ket_0)} \\\\ 0 \\cdot {sp.latex(ket_0)} \\end{{bmatrix}} = {sp.latex(tensor_00)} = \\ket{{00}}$$"
+    )
+)
+
+# |0⟩ ⊗ |1⟩
+tensor_01 = sp.kronecker_product(ket_0, ket_1)
+display(
+    Markdown(
+        f"$$\\ket{{0}} \\otimes \\ket{{1}} = {sp.latex(ket_0)} \\otimes {sp.latex(ket_1)} = \\begin{{bmatrix}} 1 \\cdot {sp.latex(ket_1)} \\\\ 0 \\cdot {sp.latex(ket_1)} \\end{{bmatrix}} = {sp.latex(tensor_01)} = \\ket{{01}}$$"
+    )
+)
+
+# |1⟩ ⊗ |0⟩
+tensor_10 = sp.kronecker_product(ket_1, ket_0)
+display(
+    Markdown(
+        f"$$\\ket{{1}} \\otimes \\ket{{0}} = {sp.latex(ket_1)} \\otimes {sp.latex(ket_0)} = \\begin{{bmatrix}} 0 \\cdot {sp.latex(ket_0)} \\\\ 1 \\cdot {sp.latex(ket_0)} \\end{{bmatrix}} = {sp.latex(tensor_10)} = \\ket{{10}}$$"
+    )
+)
+
+# |1⟩ ⊗ |1⟩
+tensor_11 = sp.kronecker_product(ket_1, ket_1)
+display(
+    Markdown(
+        f"$$\\ket{{1}} \\otimes \\ket{{1}} = {sp.latex(ket_1)} \\otimes {sp.latex(ket_1)} = \\begin{{bmatrix}} 0 \\cdot {sp.latex(ket_1)} \\\\ 1 \\cdot {sp.latex(ket_1)} \\end{{bmatrix}} = {sp.latex(tensor_11)} = \\ket{{11}}$$"
+    )
+)
+```
+
+## Representação de dois qubits
+
+- Estado |00⟩: $\begin{bmatrix} 1 \\ 0 \\ 0 \\ 0 \end{bmatrix}$
+- Estado |01⟩: $\begin{bmatrix} 0 \\ 1 \\ 0 \\ 0 \end{bmatrix}$
+- Estado |10⟩: $\begin{bmatrix} 0 \\ 0 \\ 1 \\ 0 \end{bmatrix}$
+- Estado |11⟩: $\begin{bmatrix} 0 \\ 0 \\ 0 \\ 1 \end{bmatrix}$
+
+Dois qubits podem estar em superposição de todos os quatro estados possíveis:
+
+$$|\psi\rangle = 𝛼|00\rangle + 𝛽|01\rangle + γ|10\rangle + δ|11\rangle$$
+onde |𝛼|² + |𝛽|² + |γ|² + |δ|² = 1.
+
+### Porta Controlled NOT (CNOT)
+
+A porta CNOT (Controlled NOT) é uma porta lógica quântica que atua em dois qubits: um qubit de controle e um qubit alvo. A operação da porta CNOT é a seguinte:
+
+- Se o qubit de controle estiver em |0⟩, o qubit alvo permanece inalterado.
+- Se o qubit de controle estiver em |1⟩, o qubit alvo é invertido (0 vira 1 e 1 vira 0).
+
+A porta CNOT é representada pela seguinte matriz:
+
+$$\text{CNOT} = \begin{bmatrix} 1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & 1 & 0 \end{bmatrix}$$
+
+Quando aplicamos a porta CNOT a um estado composto de dois qubits, o resultado depende do estado do qubit de controle. Por exemplo, se aplicarmos a porta CNOT ao estado |10⟩ (onde o primeiro qubit é o controle e o segundo é o alvo), o resultado será |11⟩, pois o qubit de controle está em |1⟩, então o qubit alvo é invertido.
+
+Por exemplo:
+
+$$\text{CNOT}|11⟩ = \begin{bmatrix} 1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & 1 & 0 \end{bmatrix} * \begin{bmatrix} 0 \\ 0 \\ 0 \\ 1 \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \\ 1 \\ 0 \end{bmatrix} = |10⟩$$
+
+```{python} {pyodide-python}
+
+# Implementação do uso da porta CNOT
+
+# Definindo a porta CNOT
+CNOT = np.array([
+    [1, 0, 0, 0],
+    [0, 1, 0, 0],
+    [0, 0, 0, 1],
+    [0, 0, 1, 0]
+])  
+
+# |11> 
+
+q_11 = np.array([
+    [0],
+    [0],
+    [0],
+    [1]
+])
+
+# Aplicando a porta CNOT em |11>
+novo_estado_cnot = np.dot(CNOT, q_11)
+print("\n--- Após aplicar a Porta CNOT em |11> ---")
+print(f"Esperamos |10>, obtivemos:\n{novo_estado_cnot}")
+
+# Aplicando a porta CNOT em |10>
+q_10 = np.array([
+    [0],
+    [0],
+    [1],
+    [0]
+])
+
+novo_estado_cnot_10 = np.dot(CNOT, q_10)
+print("\n--- Após aplicar a Porta CNOT em |10> ---")
+print(f"Esperamos |11>, obtivemos:\n{novo_estado_cnot_10}")
+
+```
+
+```
+
+--- Após aplicar a Porta CNOT em |11> ---
+Esperamos |10>, obtivemos:
+[[0]
+ [0]
+ [1]
+ [0]]
+
+--- Após aplicar a Porta CNOT em |10> ---
+Esperamos |11>, obtivemos:
+[[0]
+ [0]
+ [0]
+ [1]]
+
+```
+
+### Porta Controled Z (CZ)
+
+A porta CZ (Controlled Z) é uma porta lógica quântica que atua em dois qubits: um qubit de controle e um qubit alvo. A operação da porta CZ é a seguinte:
+
+- Se o qubit de controle estiver em |0⟩, o qubit alvo permanece inalterado.
+- Se o qubit de controle estiver em |1⟩, a fase do qubit alvo é invertida (multiplicada por -1).
+
+A porta CZ é representada pela seguinte matriz:
+
+$$
+\text{CZ} = 
+\begin{bmatrix} 
+1 & 0 & 0 & 0 \\ 
+0 & 1 & 0 & 0 \\ 
+0 & 0 & 1 & 0 \\ 
+0 & 0 & 0 & -1 
+\end{bmatrix}
+$$
+
+Quando aplicamos a porta CZ a um estado composto de dois qubits, o resultado depende do estado do qubit de controle. Por exemplo, se aplicarmos a porta CZ ao estado |11⟩ (onde o primeiro qubit é o controle e o segundo é o alvo), o resultado será -|11⟩, pois o qubit de controle está em |1⟩, então a fase do qubit alvo é invertida.
+
+Por exemplo:
+
+$$
+\text{CZ}|11⟩ = 
+\begin{bmatrix} 
+1 & 0 & 0 & 0 \\ 
+0 & 1 & 0 & 0 \\ 
+0 & 0 & 1 & 0 \\ 
+0 & 0 & 0 & -1 
+\end{bmatrix} * 
+
+\begin{bmatrix}
+0 \\ 0 \\ 0 \\ 1 
+\end{bmatrix} = 
+
+\begin{bmatrix} 
+0 \\ 0 \\ 0 \\ -1 
+\end{bmatrix} = 
+
+-|11⟩
+$$
+
+```{python} {pyodide-python}
+
+# Implementação da porta CZ (Controlled-Z)
+
+CZ = np.array([
+    [1, 0, 0, 0],
+    [0, 1, 0, 0],
+    [0, 0, 1, 0],
+    [0, 0, 0, -1]
+])
+
+# |11>
+q_11 = np.array([
+    [0],
+    [0],
+    [0],
+    [1]
+])
+
+# Aplicando a porta CZ em |11>
+novo_estado_cz = np.dot(CZ, q_11)
+print("\n--- Após aplicar a Porta CZ em |11> ---")
+print(f"Esperamos -|11>, obtivemos:\n{novo_estado_cz}")
+
+# Vamos testar em |10>
+q_10 = np.array([
+    [0],
+    [0],
+    [1],
+    [0]
+])  
+
+novo_estado_cz_10 = np.dot(CZ, q_10)
+print("\n--- Após aplicar a Porta CZ em |10> ---")
+print(f"Esperamos |10>, obtivemos:\n{novo_estado_cz_10}")
+print("\n✅ A porta CZ funcionou como esperado! (a porta só inverte o sinal de |11>)")
+```
+
+```
+
+--- Após aplicar a Porta CZ em |11> ---
+Esperamos -|11>, obtivemos:
+[[ 0]
+ [ 0]
+ [ 0]
+ [-1]]
+
+--- Após aplicar a Porta CZ em |10> ---
+Esperamos |10>, obtivemos:
+[[0]
+ [0]
+ [1]
+ [0]]
+
+✅ A porta CZ funcionou como esperado! (a porta só inverte o sinal de |11>)
+
+```
+
+### Porta ZZ 
+
+A porta ZZ é uma porta lógica quântica que atua em dois qubits e aplica uma operação de fase condicional baseada nos estados dos qubits. A operação da porta ZZ é a seguinte:
+
+- Se ambos os qubits estiverem em |0⟩ ou ambos em |1⟩, o estado permanece inalterado.
+- Se um qubit estiver em |0⟩ e o outro em |1⟩, a fase do estado é invertida (multiplicada por -1).
+
+A porta ZZ é representada pela seguinte matriz:
+
+$$
+\text{ZZ} =
+\begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & -1 & 0 & 0 \\
+0 & 0 & -1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+$$
+
+Quando aplicamos a porta ZZ a um estado composto de dois qubits, o resultado depende dos estados dos qubits. Por exemplo, se aplicarmos a porta ZZ ao estado |01⟩ (onde o primeiro qubit está em |0⟩ e o segundo em |1⟩), o resultado será -|01⟩, pois os qubits estão em estados diferentes, então a fase do estado é invertida.
+
+Por exemplo:
+
+$$
+\text{ZZ}|01⟩ =
+\begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & -1 & 0 & 0 \\
+0 & 0 & -1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix} *
+\begin{bmatrix}
+0 \\
+1 \\
+0 \\
+0
+\end{bmatrix}
+= 
+\begin{bmatrix}
+0 \\
+-1 \\
+0 \\
+0
+\end{bmatrix}
+= -|01⟩
+$$
+
+```{python} {pyodide-python}
+
+# Implementação da Porta ZZ
+
+ZZ = np.array([
+    [1, 0, 0, 0],
+    [0, -1, 0, 0],
+    [0, 0, -1, 0],
+    [0, 0, 0, 1]
+])
+
+# Testando a porta ZZ em |01>
+q_01 = np.array([
+    [0],
+    [1],
+    [0],
+    [0]
+])
+
+novo_estado_zz = np.dot(ZZ, q_01)
+print("\n--- Após aplicar a Porta ZZ em |01> ---")
+print(f"Esperamos -|01>, obtivemos:\n{novo_estado_zz}")
+print("\n✅ A porta ZZ funcionou como esperado! (inverte o sinal de |01> e |10>)")
+```
+
+```
+
+--- Após aplicar a Porta ZZ em |01> ---
+Esperamos -|01>, obtivemos:
+[[ 0]
+ [-1]
+ [ 0]
+ [ 0]]
+
+✅ A porta ZZ funcionou como esperado! (inverte o sinal de |01> e |10>)
+
+```
+
+## O Colapso (Probabilidade)
+ 
+Ao final, calculamos o quadrado desses números (0.707² ≈ 0.5). Isso diz ao computador: "Jogue uma moeda. Tem 50% de chance de dar Cara (0) e 50% de dar Coroa (1)". É aqui que a computação quântica deixa de ser determinística (como a clássica) e passa a ser probabilística.
+
+```{python} {pyodide-python}
+
+
+# A Medição (O Colapso)
+# Na teoria: A probabilidade de medir 0 ou 1 é o quadrado da amplitude (módulo ao quadrado).
+
+def medir_qubit(estado_vetor):
+    # Extrair amplitudes (alpha e beta)
+    alpha = estado_vetor[0][0]
+    beta = estado_vetor[1][0]
+    
+    # Calcular probabilidades (Born Rule): |amplitude|^2
+    prob_0 = abs(alpha) ** 2
+    prob_1 = abs(beta) ** 2
+    
+    print(f"\nProbabilidade calculada de ser 0: {prob_0:.2f}")
+    print(f"Probabilidade calculada de ser 1: {prob_1:.2f}")
+    
+    # Simular o "lance de dados" da natureza
+    resultado = np.random.choice([0, 1], p=[prob_0, prob_1])
+    return resultado
+
+# Vamos medir nosso estado de superposição
+leitura = medir_qubit(estado_superposicao)
+print(f"Resultado da Medição (Colapso): |{leitura}>")
+```
+
+```
+
+Probabilidade calculada de ser 0: 0.50
+Probabilidade calculada de ser 1: 0.50
+Resultado da Medição (Colapso): |0>
+
+```
+
+Por que não usar apenas NumPy sempre? Se é tão simples, por que precisamos do Qiskit ou PennyLane?
+
+Porque as matrizes crescem exponencialmente.
+
+- 1 Qubit = Matriz $2 \times 2$
+- 2 Qubits = Matriz $4 \times 4$
+- 3 Qubits = Matriz $8 \times 8$
+- ...
+- 50 Qubits = Matriz $1.125.899.906.842.624 \times 1.125.899.906.842.624$
+  
+O seu computador não tem memória RAM suficiente para armazenar a matriz de 50 qubits usando NumPy. Os frameworks como Qiskit usam truques matemáticos e otimizações (ou enviam para computadores reais) para lidar com essa complexidade.
+

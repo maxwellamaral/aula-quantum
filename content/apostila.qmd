@@ -31,84 +31,73 @@ format:
 
 \newpage
 
-# Módulo 2: Da Física Clássica à Quântica
+# Módulo 2: O Qubit — Fundamentos Matemáticos
 
-{{< include 02-fisica-classica-quanticas/_content.qmd >}}
-
-\newpage
-
-# Módulo 3: Ondas de Matéria e Dupla Fenda
-
-{{< include 03-ondas-dupla-fenda/_content.qmd >}}
+{{< include 02-qubit/_content.qmd >}}
 
 \newpage
 
-# Módulo 4: O Qubit
+# Módulo 3: Fases Quânticas e Portas de Rotação
 
-{{< include 04-qubit/_content.qmd >}}
-
-\newpage
-
-# Módulo 5: Fases Quânticas e Portas de Rotação
-
-{{< include 05-fases/_content.qmd >}}
+{{< include 03-fases/_content.qmd >}}
 
 \newpage
 
-# Módulo 6: Circuitos, Estados de Bell e Emaranhamento
+# Módulo 4: Circuitos, Estados de Bell e Emaranhamento
 
-{{< include 06-circuitos-emaranhamento/_content.qmd >}}
-
-\newpage
-
-# Módulo 7: Teletransporte Quântico
-
-{{< include 07-teletransporte/_content.qmd >}}
+{{< include 04-circuitos-emaranhamento/_content.qmd >}}
 
 \newpage
 
-# Módulo 8: Experimento de Interferência com Hadamard
+# Módulo 5: Teletransporte Quântico
 
-{{< include 08-hadamard-experimento/_content.qmd >}}
-
-\newpage
-
-# Módulo 9: Interferência e Deutsch-Jozsa
-
-{{< include 09-interferencia-deutsch-jozsa/_content.qmd >}}
+{{< include 05-teletransporte/_content.qmd >}}
 
 \newpage
 
-# Módulo 10: Algoritmo de Grover
+# Módulo 6: Experimento de Interferência com Hadamard
 
-{{< include 10-grover/_content.qmd >}}
-
-\newpage
-
-# Módulo 11: QFT e Estimação de Fase
-
-{{< include 11-qft-qpe/_content.qmd >}}
+{{< include 06-hadamard-experimento/_content.qmd >}}
 
 \newpage
 
-# Módulo 12: Hardware Quântico Real
+# Módulo 7: Interferência e Deutsch-Jozsa
 
-{{< include 12-hardware-real/_content.qmd >}}
-
-\newpage
-
-# Módulo 13: Quantum Machine Learning (VQC)
-
-{{< include 13-qml-vqc/_content.qmd >}}
+{{< include 07-interferencia-deutsch-jozsa/_content.qmd >}}
 
 \newpage
 
-# Módulo 14: Compilação Quântica e Topologia
+# Módulo 8: Algoritmo de Grover
 
-{{< include 14-compilacao-topologia/_content.qmd >}}
+{{< include 08-grover/_content.qmd >}}
 
 \newpage
 
-# Módulo 15: Impacto na Engenharia de Software
+# Módulo 9: QFT e Estimação de Fase
 
-{{< include 15-impacto-engsoft/_content.qmd >}}
+{{< include 09-qft-qpe/_content.qmd >}}
+
+\newpage
+
+# Módulo 10: Hardware Quântico Real
+
+{{< include 10-hardware-real/_content.qmd >}}
+
+\newpage
+
+# Módulo 11: Quantum Machine Learning (VQC)
+
+{{< include 11-qml-vqc/_content.qmd >}}
+
+\newpage
+
+# Módulo 12: Compilação Quântica e Topologia
+
+{{< include 12-compilacao-topologia/_content.qmd >}}
+
+\newpage
+
+# Módulo 13: Impacto na Engenharia de Software
+
+{{< include 13-impacto-engsoft/_content.qmd >}}
+

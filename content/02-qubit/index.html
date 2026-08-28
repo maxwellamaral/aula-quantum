@@ -271,7 +271,7 @@ globalThis.qpyodideCustomizedPyodideOptions = {
 }
 
 // Store cell data
-globalThis.qpyodideCellDetails = [];
+globalThis.qpyodideCellDetails = [{"code":"# Importando as bibliotecas necessárias e o motor quântico Cirq\nimport micropip\nawait micropip.install(\"cirq-core==1.6.1\")\n\nimport cirq\nimport numpy as np                      # Para operações com matrizes e vetores\nimport sympy as sp                      # Para matemática simbólica (fórmulas bonitas)\nfrom sympy import Matrix, symbols       # Para criar matrizes e símbolos matemáticos\nfrom IPython.display import display, Markdown  # Para exibir fórmulas formatadas\nfrom matplotlib import pyplot as plt    # Para criar gráficos\n\nprint(f\"✅ Cirq v{cirq.__version__} pronto para execução interativa!\")","id":1,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\n# Vamos criar esses estados básicos usando SymPy (biblioteca de matemática simbólica)\n# Isso nos permite trabalhar com fórmulas matemáticas de forma elegante\n\n# Estado |0⟩ - primeiro número é 1, segundo é 0\nket_0 = Matrix([[1], \n                [0]])\n\n# Estado |1⟩ - primeiro número é 0, segundo é 1\nket_1 = Matrix([[0], \n                [1]])\n\n# Exibir de forma bonita com LaTeX (notação matemática profissional)\ndisplay(Markdown(f\"$$\\\\ket{{0}} = {sp.latex(ket_0)}$$\"))\ndisplay(Markdown(f\"$$\\\\ket{{1}} = {sp.latex(ket_1)}$$\"))\n\nprint(\"\\n✅ Estados básicos criados com sucesso!\")","id":2,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\n# Agora vamos criar os MESMOS estados usando NumPy (só para fins de comparação de bibliotecas)\n# NumPy é mais eficiente para cálculos numéricos (com números reais)\n\n# Estado |0⟩ usando NumPy\nq_zero = np.array([\n    [1],   # Probabilidade 100% de medir 0\n    [0]    # Probabilidade 0% de medir 1\n])\n\n# Estado |1⟩ usando NumPy\nq_one = np.array([\n    [0],   # Probabilidade 0% de medir 0\n    [1]    # Probabilidade 100% de medir 1\n])\n\nprint(\"=== Estado |0⟩ ===\")\nprint(q_zero)\nprint(\"\\n=== Estado |1⟩ ===\")\nprint(q_one)\n\nprint(\"\\n💡 Dica: Esses vetores representam a 'probabilidade' de medir cada resultado!\")","id":3,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\n# Vamos criar um estado genérico em superposição!\n# Usamos símbolos 𝛼 (alpha) e 𝛽 (beta) para representar valores desconhecidos\n\nalpha, beta = symbols('alpha beta', complex=True)   # Definindo 𝛼 e 𝛽 como números complexos\npsi = alpha * ket_0 + beta * ket_1                  # Estado genérico em superposição\n\nprint(\"Estado quântico genérico criado:\")\n\ndisplay(Markdown(f\"$$\\\\ket{{\\\\psi}} = {sp.latex(psi)}$$\"))\n\nprint(\"\\n💡 Isso significa:\")\nprint(\"   - Com probabilidade |α|², medimos 0\")\nprint(\"   - Com probabilidade |β|², medimos 1\")\nprint(\"   - Antes da medição, o qubit está em AMBOS os estados!\")","id":4,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\n# Vamos testar a porta X na prática com Python!\n\n# Definir a matriz da porta X\nX = Matrix([[0, 1],\n            [1, 0]])\n\nprint(\"🔄 Aplicando a Porta X...\\n\")\n\n# Aplicar X ao estado |0⟩\nresult_0 = X * ket_0        # ket_0 é o estado |0⟩ com o vetor definido no código lá atrás, lembra?\nprint(\"Teste 1: X|0⟩ deve dar |1⟩\")\ndisplay(Markdown(f\"$$X \\\\ket{{0}} = {sp.latex(result_0)}$$ ✅\"))\n\n# Aplicar X ao estado |1⟩\nresult_1 = X * ket_1\nprint(\"\\nTeste 2: X|1⟩ deve dar |0⟩\")\ndisplay(Markdown(f\"$$X \\\\ket{{1}} = {sp.latex(result_1)}$$ ✅\"))\n\nprint(\"\\n💡 A porta X realmente inverte os estados, como esperado!\")","id":5,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\n# Agora vamos definir a porta X usando NumPy (outra maneira de fazer a mesma coisa)\n\ngate_x = np.array([\n    [0, 1],  # Primeira linha da matriz\n    [1, 0]   # Segunda linha da matriz\n])\n\nprint(\"Porta X definida com NumPy:\")\nprint(gate_x)\nprint(\"\\n✅ Pronta para usar em cálculos numéricos!\")","id":6,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\n# Vamos aplicar a porta X ao estado |0⟩ e ver o resultado numérico\n\nprint(\"=== Aplicando Porta X ao estado |0⟩ ===\\n\")\n\n# Multiplicação de matriz por vetor: np.dot(matriz, vetor)\nnovo_estado = np.dot(gate_x, q_zero)\n\nprint(\"Estado inicial |0⟩:\")\nprint(q_zero)\n\nprint(\"\\nApós aplicar a porta X:\")\nprint(novo_estado)\n\nprint(\"\\n✅ Esperávamos |1⟩ (vetor [0, 1]), e foi isso que obtivemos!\")\nprint(\"💡 A porta X funcionou como um 'interruptor' que inverte o qubit!\")","id":7,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\n# Exemplo de aplicação da porta H (Hadamard)\n\n# Definir a porta H\nH = (1 / sp.sqrt(2)) * Matrix([[1, 1],\n                               [1, -1]])\n\n# Aplicar a porta H ao estado |0⟩\nresult_h0 = H * ket_0\n\n# Aplicar a porta H ao estado |1⟩\nresult_h1 = H * ket_1\n\n# Explicar o resultado utilizando Markdown para formatação bonita (perfumaria)\n\nprint(\"=== Aplicando Porta H (Hadamard) ===\\n\")\nprint(\"A porta H cria superposição dos estados |0⟩ e |1⟩.\\n\")\ndisplay(Markdown(f\"$$H \\\\ket{{0}} = {sp.latex(H)} \\\\cdot {sp.latex(ket_0)} = {sp.latex(result_h0)}$$\"))\n\nprint(\"\\nResultado detalhado:\")\ndisplay(Markdown(f\"$${sp.latex(result_h0)} = \\\\frac{{1}}{{\\\\sqrt{{2}}}} \\\\ket{{0}} + \\\\frac{{1}}{{\\\\sqrt{{2}}}} \\\\ket{{1}}$$\"))\n\nprint(\"\\nAgora aplicando H ao estado |1⟩:\\n\")\ndisplay(Markdown(f\"$$H \\\\ket{{1}} = {sp.latex(H)} \\\\cdot {sp.latex(ket_1)} = {sp.latex(result_h1)}$$\"))\n\nprint(\"\\nResultado detalhado:\")\ndisplay(Markdown(f\"$${sp.latex(result_h1)} = \\\\frac{{1}}{{\\\\sqrt{{2}}}} \\\\ket{{0}} - \\\\frac{{1}}{{\\\\sqrt{{2}}}} \\\\ket{{1}}$$\"))","id":8,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\n# Outra maneira de definir a porta H usando NumPy (faz a mesma coisa que o código anterior)\n# Porta H (Hadamard): Cria superposição\n# Matriz: (1/√2) * [[1, 1], [1, -1]]\ngate_h = (1 / np.sqrt(2)) * np.array([\n    [1, 1],\n    [1, -1]\n])\n\n# APLICANDO A PORTA HADAMARD em |0>\n# Operação: H * |0> = Superposição\nestado_superposicao = np.dot(gate_h, q_zero)\n\nprint(\"\\n--- Após aplicar a Porta Hadamard (H) ---\")\nprint(f\"Estado de Superposição:\\n{estado_superposicao}\")\n# Note que os valores são aprox 0.707 (que é 1/raiz(2))","id":9,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\n# Exemplo de produto interno\n\nbra_0 = ket_0.T\nbra_1 = ket_1.T\n\n# ⟨0|0⟩\nphi_00 = bra_0 * ket_0\n\n# ⟨0|1⟩\nphi_01 = bra_0 * ket_1\n\n# ⟨1|0⟩\nphi_10 = bra_1 * ket_0\n\n# ⟨1|1⟩\nphi_11 = bra_1 * ket_1\n\ndisplay(Markdown(f\"$$\\\\langle 0 | 0 \\\\rangle = {sp.latex(bra_0)} * {sp.latex(ket_0)} = {phi_00[0,0]}$$\"))\ndisplay(Markdown(f\"$$\\\\langle 0 | 1 \\\\rangle = {sp.latex(bra_0)} * {sp.latex(ket_1)} = {phi_01[0,0]}$$\"))\ndisplay(Markdown(f\"$$\\\\langle 1 | 0 \\\\rangle = {sp.latex(bra_1)} * {sp.latex(ket_0)} = {phi_10[0,0]}$$\"))\ndisplay(Markdown(f\"$$\\\\langle 1 | 1 \\\\rangle = {sp.latex(bra_1)} * {sp.latex(ket_1)} = {phi_11[0,0]}$$\"))","id":10,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\n# Exemplo de produto tensorial\n\n# |0⟩ ⊗ |0⟩\ntensor_00 = sp.kronecker_product(ket_0, ket_0)\ndisplay(\n    Markdown(\n        f\"$$\\\\ket{{0}} \\\\otimes \\\\ket{{0}} = {sp.latex(ket_0)} \\\\otimes {sp.latex(ket_0)} = \\\\begin{{bmatrix}} 1 \\\\cdot {sp.latex(ket_0)} \\\\\\\\ 0 \\\\cdot {sp.latex(ket_0)} \\\\end{{bmatrix}} = {sp.latex(tensor_00)} = \\\\ket{{00}}$$\"\n    )\n)\n\n# |0⟩ ⊗ |1⟩\ntensor_01 = sp.kronecker_product(ket_0, ket_1)\ndisplay(\n    Markdown(\n        f\"$$\\\\ket{{0}} \\\\otimes \\\\ket{{1}} = {sp.latex(ket_0)} \\\\otimes {sp.latex(ket_1)} = \\\\begin{{bmatrix}} 1 \\\\cdot {sp.latex(ket_1)} \\\\\\\\ 0 \\\\cdot {sp.latex(ket_1)} \\\\end{{bmatrix}} = {sp.latex(tensor_01)} = \\\\ket{{01}}$$\"\n    )\n)\n\n# |1⟩ ⊗ |0⟩\ntensor_10 = sp.kronecker_product(ket_1, ket_0)\ndisplay(\n    Markdown(\n        f\"$$\\\\ket{{1}} \\\\otimes \\\\ket{{0}} = {sp.latex(ket_1)} \\\\otimes {sp.latex(ket_0)} = \\\\begin{{bmatrix}} 0 \\\\cdot {sp.latex(ket_0)} \\\\\\\\ 1 \\\\cdot {sp.latex(ket_0)} \\\\end{{bmatrix}} = {sp.latex(tensor_10)} = \\\\ket{{10}}$$\"\n    )\n)\n\n# |1⟩ ⊗ |1⟩\ntensor_11 = sp.kronecker_product(ket_1, ket_1)\ndisplay(\n    Markdown(\n        f\"$$\\\\ket{{1}} \\\\otimes \\\\ket{{1}} = {sp.latex(ket_1)} \\\\otimes {sp.latex(ket_1)} = \\\\begin{{bmatrix}} 0 \\\\cdot {sp.latex(ket_1)} \\\\\\\\ 1 \\\\cdot {sp.latex(ket_1)} \\\\end{{bmatrix}} = {sp.latex(tensor_11)} = \\\\ket{{11}}$$\"\n    )\n)","id":11,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\n# Implementação do uso da porta CNOT\n\n# Definindo a porta CNOT\nCNOT = np.array([\n    [1, 0, 0, 0],\n    [0, 1, 0, 0],\n    [0, 0, 0, 1],\n    [0, 0, 1, 0]\n])  \n\n# |11> \n\nq_11 = np.array([\n    [0],\n    [0],\n    [0],\n    [1]\n])\n\n# Aplicando a porta CNOT em |11>\nnovo_estado_cnot = np.dot(CNOT, q_11)\nprint(\"\\n--- Após aplicar a Porta CNOT em |11> ---\")\nprint(f\"Esperamos |10>, obtivemos:\\n{novo_estado_cnot}\")\n\n# Aplicando a porta CNOT em |10>\nq_10 = np.array([\n    [0],\n    [0],\n    [1],\n    [0]\n])\n\nnovo_estado_cnot_10 = np.dot(CNOT, q_10)\nprint(\"\\n--- Após aplicar a Porta CNOT em |10> ---\")\nprint(f\"Esperamos |11>, obtivemos:\\n{novo_estado_cnot_10}\")","id":12,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\n# Implementação da porta CZ (Controlled-Z)\n\nCZ = np.array([\n    [1, 0, 0, 0],\n    [0, 1, 0, 0],\n    [0, 0, 1, 0],\n    [0, 0, 0, -1]\n])\n\n# |11>\nq_11 = np.array([\n    [0],\n    [0],\n    [0],\n    [1]\n])\n\n# Aplicando a porta CZ em |11>\nnovo_estado_cz = np.dot(CZ, q_11)\nprint(\"\\n--- Após aplicar a Porta CZ em |11> ---\")\nprint(f\"Esperamos -|11>, obtivemos:\\n{novo_estado_cz}\")\n\n# Vamos testar em |10>\nq_10 = np.array([\n    [0],\n    [0],\n    [1],\n    [0]\n])  \n\nnovo_estado_cz_10 = np.dot(CZ, q_10)\nprint(\"\\n--- Após aplicar a Porta CZ em |10> ---\")\nprint(f\"Esperamos |10>, obtivemos:\\n{novo_estado_cz_10}\")\nprint(\"\\n✅ A porta CZ funcionou como esperado! (a porta só inverte o sinal de |11>)\")","id":13,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\n# Implementação da Porta ZZ\n\nZZ = np.array([\n    [1, 0, 0, 0],\n    [0, -1, 0, 0],\n    [0, 0, -1, 0],\n    [0, 0, 0, 1]\n])\n\n# Testando a porta ZZ em |01>\nq_01 = np.array([\n    [0],\n    [1],\n    [0],\n    [0]\n])\n\nnovo_estado_zz = np.dot(ZZ, q_01)\nprint(\"\\n--- Após aplicar a Porta ZZ em |01> ---\")\nprint(f\"Esperamos -|01>, obtivemos:\\n{novo_estado_zz}\")\nprint(\"\\n✅ A porta ZZ funcionou como esperado! (inverte o sinal de |01> e |10>)\")","id":14,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\n# A Medição (O Colapso)\n# Na teoria: A probabilidade de medir 0 ou 1 é o quadrado da amplitude (módulo ao quadrado).\n\ndef medir_qubit(estado_vetor):\n    # Extrair amplitudes (alpha e beta)\n    alpha = estado_vetor[0][0]\n    beta = estado_vetor[1][0]\n    \n    # Calcular probabilidades (Born Rule): |amplitude|^2\n    prob_0 = abs(alpha) ** 2\n    prob_1 = abs(beta) ** 2\n    \n    print(f\"\\nProbabilidade calculada de ser 0: {prob_0:.2f}\")\n    print(f\"Probabilidade calculada de ser 1: {prob_1:.2f}\")\n    \n    # Simular o \"lance de dados\" da natureza\n    resultado = np.random.choice([0, 1], p=[prob_0, prob_1])\n    return resultado\n\n# Vamos medir nosso estado de superposição\nleitura = medir_qubit(estado_superposicao)\nprint(f\"Resultado da Medição (Colapso): |{leitura}>\")","id":15,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}}];
 
 
 </script>
@@ -431,6 +431,41 @@ globalThis.qpyodideInstance = await import(
     import matplotlib
     matplotlib.use("module://matplotlib_pyodide.html5_canvas_backend")
     from matplotlib import pyplot as plt
+
+    import builtins
+    import sys
+    import types
+
+    class _Markdown:
+        def __init__(self, data=""):
+            self.data = str(data)
+        def __repr__(self):
+            return self.data
+        def _repr_markdown_(self):
+            return self.data
+
+    def _display(*args, **kwargs):
+        for arg in args:
+            if hasattr(arg, 'data'):
+                print(arg.data)
+            elif hasattr(arg, '_repr_latex_'):
+                print(arg._repr_latex_())
+            elif hasattr(arg, '_repr_markdown_'):
+                print(arg._repr_markdown_())
+            else:
+                print(arg)
+
+    builtins.display = _display
+    builtins.Markdown = _Markdown
+
+    # Shim IPython.display if imported by any lesson
+    ipython = types.ModuleType("IPython")
+    ipython_display = types.ModuleType("IPython.display")
+    ipython_display.display = _display
+    ipython_display.Markdown = _Markdown
+    ipython.display = ipython_display
+    sys.modules["IPython"] = ipython
+    sys.modules["IPython.display"] = ipython_display
     `);
 
     // Unlock interactive buttons
@@ -441,7 +476,7 @@ globalThis.qpyodideInstance = await import(
 
     // Set document status to viable
     qpyodideUpdateStatusHeader(
-      "🟢 Ready!"
+      "🟢 Pronto!"
     );
 
     // Assign Pyodide into the global environment
@@ -677,21 +712,8 @@ window.Quarto = {
 <blockquote class="blockquote">
 <p>Observação As células com borda verde executam <strong>direto no seu navegador</strong> (Pyodide/WASM) ou podem ser executadas no <strong>Google Colab</strong> (link no topo da página).</p>
 </blockquote>
-<pre class="{python} {pyodide-python}"><code># Importando as bibliotecas necessárias
-# Não se preocupe se não entender todas agora - vamos usá-las ao longo do notebook
-
-import numpy as np                      # Para operações com matrizes e vetores
-import sympy as sp                      # Para matemática simbólica (fórmulas bonitas)
-from sympy import Matrix, symbols       # Para criar matrizes e símbolos matemáticos
-from IPython.display import Markdown    # Para exibir fórmulas formatadas
-from matplotlib import pyplot as plt    # Para criar gráficos
-
-# Imports do Qiskit (execução no Google Colab / ambiente local)
-try:
-    from qiskit.quantum_info import Statevector  # Para trabalhar com estados quânticos
-    from qiskit.visualization import plot_bloch_multivector, plot_state_qsphere  # Visualizações quânticas
-except ImportError:
-    Statevector = None</code></pre>
+<div id="qpyodide-insertion-location-1"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
 <section id="estados-quânticos-básicos" class="level2">
 <h2 class="anchored" data-anchor-id="estados-quânticos-básicos">🔬 Estados Quânticos Básicos</h2>
@@ -730,49 +752,13 @@ except ImportError:
 <li>Sempre vale: |<span class="math inline">\(\alpha\)</span>|² + |<span class="math inline">\(\beta\)</span>|² = 1 (normalização)</li>
 </ul>
 <p><strong>Por que vetores?</strong> Porque podemos aplicar transformações matemáticas (matrizes) neles, e isso é exatamente o que as portas quânticas naturalmente fazem!</p>
-<pre class="{python} {pyodide-python}"><code>
-# Vamos criar esses estados básicos usando SymPy (biblioteca de matemática simbólica)
-# Isso nos permite trabalhar com fórmulas matemáticas de forma elegante
-
-# Estado |0⟩ - primeiro número é 1, segundo é 0
-ket_0 = Matrix([[1], 
-                [0]])
-
-# Estado |1⟩ - primeiro número é 0, segundo é 1
-ket_1 = Matrix([[0], 
-                [1]])
-
-# Exibir de forma bonita com LaTeX (notação matemática profissional)
-display(Markdown(f"$$\\ket{{0}} = {sp.latex(ket_0)}$$"))
-display(Markdown(f"$$\\ket{{1}} = {sp.latex(ket_1)}$$"))
-
-print("\n✅ Estados básicos criados com sucesso!")</code></pre>
+<div id="qpyodide-insertion-location-2"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>
 ✅ Estados básicos criados com sucesso!
 </code></pre>
-<pre class="{python} {pyodide-python}"><code>
-# Agora vamos criar os MESMOS estados usando NumPy (só para fins de comparação de bibliotecas)
-# NumPy é mais eficiente para cálculos numéricos (com números reais)
-
-# Estado |0⟩ usando NumPy
-q_zero = np.array([
-    [1],   # Probabilidade 100% de medir 0
-    [0]    # Probabilidade 0% de medir 1
-])
-
-# Estado |1⟩ usando NumPy
-q_one = np.array([
-    [0],   # Probabilidade 0% de medir 0
-    [1]    # Probabilidade 100% de medir 1
-])
-
-print("=== Estado |0⟩ ===")
-print(q_zero)
-print("\n=== Estado |1⟩ ===")
-print(q_one)
-
-print("\n💡 Dica: Esses vetores representam a 'probabilidade' de medir cada resultado!")
-</code></pre>
+<div id="qpyodide-insertion-location-3"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>=== Estado |0⟩ ===
 [[1]
  [0]]
@@ -819,22 +805,8 @@ print("\n💡 Dica: Esses vetores representam a 'probabilidade' de medir cada re
 <p><span class="math display">\[|ψ⟩ = 𝛼 \begin{bmatrix} 1 \\ 0 \end{bmatrix} + 𝛽 \begin{bmatrix} 0 \\ 1 \end{bmatrix} = \begin{bmatrix} 𝛼 \\ 𝛽 \end{bmatrix}\]</span></p>
 <p><span class="math display">\[|ψ⟩ = 𝛼|0⟩ + 𝛽|1⟩\]</span></p>
 <p>Simples assim! O primeiro número é a amplitude para |0⟩, o segundo para |1⟩.</p>
-<pre class="{python} {pyodide-python}"><code>
-# Vamos criar um estado genérico em superposição!
-# Usamos símbolos 𝛼 (alpha) e 𝛽 (beta) para representar valores desconhecidos
-
-alpha, beta = symbols('alpha beta', complex=True)   # Definindo 𝛼 e 𝛽 como números complexos
-psi = alpha * ket_0 + beta * ket_1                  # Estado genérico em superposição
-
-print("Estado quântico genérico criado:")
-
-display(Markdown(f"$$\\ket{{\\psi}} = {sp.latex(psi)}$$"))
-
-print("\n💡 Isso significa:")
-print("   - Com probabilidade |α|², medimos 0")
-print("   - Com probabilidade |β|², medimos 1")
-print("   - Antes da medição, o qubit está em AMBOS os estados!")
-</code></pre>
+<div id="qpyodide-insertion-location-4"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>Estado quântico genérico criado:
 </code></pre>
 <pre><code>
@@ -858,7 +830,7 @@ print("   - Antes da medição, o qubit está em AMBOS os estados!")
 <p>⚡ O que acontece: O qubit (o objeto físico, como um elétron ou átomo) geralmente não é destruído (a menos que seja um fóton sendo absorvido por um detector). O que é “destruído” irremediavelmente é a informação da superposição (a parte quântica, o giro). O qubit continua lá, mas agora ele é apenas um bit clássico chato (está parado em cara ou coroa)</p>
 </blockquote>
 <p>Entender isso (e aceitar) é crucial para compreender como os computadores quânticos funcionam e por que eles são tão poderosos para certas tarefas. Daqui para frente, sempre que falarmos de qubits em superposição, lembre-se da moeda quântica girando no ar!</p>
-<p>Em <a href="03-mais-sobre-Hadamard.md">03-mais-sobre-Hadamard.md</a> existe um experimento físico feito com fótons 💡 que ilustra muito bem esse conceito de superposição e medição quântica. Recomendo fortemente a leitura para aprofundar sua compreensão, caso estejas curioso! Somente me convenci intuitivamente disso após ler aquele experimento.</p>
+<p>Em <a href="../../content/06-hadamard-experimento/">03-mais-sobre-Hadamard.md</a> existe um experimento físico feito com fótons 💡 que ilustra muito bem esse conceito de superposição e medição quântica. Recomendo fortemente a leitura para aprofundar sua compreensão, caso estejas curioso! Somente me convenci intuitivamente disso após ler aquele experimento.</p>
 <blockquote class="blockquote">
 <p>📊 O que acontece: quando aplicamos uma porta Hadamard (veremos depois) e colocamos o qubit em um estado de superposição (como o estado <span class="math inline">\(|+\rangle\)</span>), ele passa a ter 50% de chance de ser medido como 0 e 50% de chance de ser medido como 1. Ao fazer a medição, ele ‘colapsa’ (faz parar) essa superposição em um dos estados possíveis.”</p>
 </blockquote>
@@ -922,26 +894,8 @@ print("   - Antes da medição, o qubit está em AMBOS os estados!")
 <p>E para <span class="math inline">\(X|1⟩\)</span>?</p>
 <p><span class="math display">\[X|1⟩ = \begin{bmatrix} 0 &amp; 1 \\ 1 &amp; 0 \end{bmatrix} \begin{bmatrix} 0 \\ 1 \end{bmatrix} = \begin{bmatrix} 1 \\ 0 \end{bmatrix} = |0⟩\]</span></p>
 <p><strong>Dica:</strong> Multiplicação de matrizes é só “linha × coluna e somar”!</p>
-<pre class="{python} {pyodide-python}"><code>
-# Vamos testar a porta X na prática com Python!
-
-# Definir a matriz da porta X
-X = Matrix([[0, 1],
-            [1, 0]])
-
-print("🔄 Aplicando a Porta X...\n")
-
-# Aplicar X ao estado |0⟩
-result_0 = X * ket_0        # ket_0 é o estado |0⟩ com o vetor definido no código lá atrás, lembra?
-print("Teste 1: X|0⟩ deve dar |1⟩")
-display(Markdown(f"$$X \\ket{{0}} = {sp.latex(result_0)}$$ ✅"))
-
-# Aplicar X ao estado |1⟩
-result_1 = X * ket_1
-print("\nTeste 2: X|1⟩ deve dar |0⟩")
-display(Markdown(f"$$X \\ket{{1}} = {sp.latex(result_1)}$$ ✅"))
-
-print("\n💡 A porta X realmente inverte os estados, como esperado!")</code></pre>
+<div id="qpyodide-insertion-location-5"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>🔄 Aplicando a Porta X...
 
 Teste 1: X|0⟩ deve dar |1⟩
@@ -952,41 +906,16 @@ Teste 2: X|1⟩ deve dar |0⟩
 <pre><code>
 💡 A porta X realmente inverte os estados, como esperado!
 </code></pre>
-<pre class="{python} {pyodide-python}"><code>
-# Agora vamos definir a porta X usando NumPy (outra maneira de fazer a mesma coisa)
-
-gate_x = np.array([
-    [0, 1],  # Primeira linha da matriz
-    [1, 0]   # Segunda linha da matriz
-])
-
-print("Porta X definida com NumPy:")
-print(gate_x)
-print("\n✅ Pronta para usar em cálculos numéricos!")
-</code></pre>
+<div id="qpyodide-insertion-location-6"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>Porta X definida com NumPy:
 [[0 1]
  [1 0]]
 
 ✅ Pronta para usar em cálculos numéricos!
 </code></pre>
-<pre class="{python} {pyodide-python}"><code>
-# Vamos aplicar a porta X ao estado |0⟩ e ver o resultado numérico
-
-print("=== Aplicando Porta X ao estado |0⟩ ===\n")
-
-# Multiplicação de matriz por vetor: np.dot(matriz, vetor)
-novo_estado = np.dot(gate_x, q_zero)
-
-print("Estado inicial |0⟩:")
-print(q_zero)
-
-print("\nApós aplicar a porta X:")
-print(novo_estado)
-
-print("\n✅ Esperávamos |1⟩ (vetor [0, 1]), e foi isso que obtivemos!")
-print("💡 A porta X funcionou como um 'interruptor' que inverte o qubit!")
-</code></pre>
+<div id="qpyodide-insertion-location-7"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>=== Aplicando Porta X ao estado |0⟩ ===
 
 Estado inicial |0⟩:
@@ -1020,33 +949,8 @@ Após aplicar a porta X:
 <p>Vamos agora aplicar a porta H ao estado |1⟩:</p>
 <p><span class="math display">\[H|1⟩ = \frac{1}{\sqrt{2}} \begin{bmatrix} 1 &amp; 1 \\ 1 &amp; -1 \end{bmatrix} \begin{bmatrix} 0 \\ 1 \end{bmatrix} = \frac{1}{\sqrt{2}} \begin{bmatrix} 1 \cdot 0 + 1 \cdot 1 \\ 1 \cdot 0 + (-1) \cdot 1 \end{bmatrix} = \frac{1}{\sqrt{2}} \begin{bmatrix} 1 \\ -1 \end{bmatrix} = \frac{1}{\sqrt{2}}|0⟩ - \frac{1}{\sqrt{2}}|1⟩\]</span></p>
 <p>Note que a porta Hadamard é <strong>auto-adjunta</strong> (igual à sua transposta conjugada), propriedade fundamental das portas quânticas reversíveis.</p>
-<pre class="{python} {pyodide-python}"><code>
-# Exemplo de aplicação da porta H (Hadamard)
-
-# Definir a porta H
-H = (1 / sp.sqrt(2)) * Matrix([[1, 1],
-                               [1, -1]])
-
-# Aplicar a porta H ao estado |0⟩
-result_h0 = H * ket_0
-
-# Aplicar a porta H ao estado |1⟩
-result_h1 = H * ket_1
-
-# Explicar o resultado utilizando Markdown para formatação bonita (perfumaria)
-
-print("=== Aplicando Porta H (Hadamard) ===\n")
-print("A porta H cria superposição dos estados |0⟩ e |1⟩.\n")
-display(Markdown(f"$$H \\ket{{0}} = {sp.latex(H)} \\cdot {sp.latex(ket_0)} = {sp.latex(result_h0)}$$"))
-
-print("\nResultado detalhado:")
-display(Markdown(f"$${sp.latex(result_h0)} = \\frac{{1}}{{\\sqrt{{2}}}} \\ket{{0}} + \\frac{{1}}{{\\sqrt{{2}}}} \\ket{{1}}$$"))
-
-print("\nAgora aplicando H ao estado |1⟩:\n")
-display(Markdown(f"$$H \\ket{{1}} = {sp.latex(H)} \\cdot {sp.latex(ket_1)} = {sp.latex(result_h1)}$$"))
-
-print("\nResultado detalhado:")
-display(Markdown(f"$${sp.latex(result_h1)} = \\frac{{1}}{{\\sqrt{{2}}}} \\ket{{0}} - \\frac{{1}}{{\\sqrt{{2}}}} \\ket{{1}}$$"))</code></pre>
+<div id="qpyodide-insertion-location-8"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>=== Aplicando Porta H (Hadamard) ===
 
 A porta H cria superposição dos estados |0⟩ e |1⟩.
@@ -1060,23 +964,8 @@ Agora aplicando H ao estado |1⟩:
 <pre><code>
 Resultado detalhado:
 </code></pre>
-<pre class="{python} {pyodide-python}"><code>
-# Outra maneira de definir a porta H usando NumPy (faz a mesma coisa que o código anterior)
-# Porta H (Hadamard): Cria superposição
-# Matriz: (1/√2) * [[1, 1], [1, -1]]
-gate_h = (1 / np.sqrt(2)) * np.array([
-    [1, 1],
-    [1, -1]
-])
-
-# APLICANDO A PORTA HADAMARD em |0&gt;
-# Operação: H * |0&gt; = Superposição
-estado_superposicao = np.dot(gate_h, q_zero)
-
-print("\n--- Após aplicar a Porta Hadamard (H) ---")
-print(f"Estado de Superposição:\n{estado_superposicao}")
-# Note que os valores são aprox 0.707 (que é 1/raiz(2))
-</code></pre>
+<div id="qpyodide-insertion-location-9"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>
 --- Após aplicar a Porta Hadamard (H) ---
 Estado de Superposição:
@@ -1088,7 +977,7 @@ Estado de Superposição:
 <p><span class="math display">\[\begin{bmatrix} 0.707... \\ 0.707... \end{bmatrix}\]</span></p>
 <p>Isso significa que o qubit não é nem 0 e nem 1. Ele contém “informação” de ambos. Matematicamente, ele é:</p>
 <p><span class="math display">\[|\psi\rangle = 0.707|0\rangle + 0.707|1\rangle\]</span></p>
-<p>Se você ainda não entendeu completamente o conceito de fase quântica, talvez fica melhor de visualizar na Esfera de Bloch, que veremos em <a href="00b-phases.ipynb">00b-phases.ipynb</a>! Depois volte para cá para reforçar o entendimento.</p>
+<p>Se você ainda não entendeu completamente o conceito de fase quântica, talvez fica melhor de visualizar na Esfera de Bloch, que veremos em <a href="../../notebooks/00b-phases.ipynb">00b-phases.ipynb</a>! Depois volte para cá para reforçar o entendimento.</p>
 </section>
 <section id="produto-interno-inner-product-ou-bra-ket" class="level3">
 <h3 class="anchored" data-anchor-id="produto-interno-inner-product-ou-bra-ket">Produto interno (Inner Product) ou “bra-ket”</h3>
@@ -1099,68 +988,16 @@ Estado de Superposição:
 </blockquote>
 <p>Se <span class="math inline">\(|ψ⟩ = \begin{bmatrix} 𝛼 \\ 𝛽 \end{bmatrix}\)</span> e <span class="math inline">\(|φ⟩ = \begin{bmatrix} γ \\ δ \end{bmatrix}\)</span>, então:</p>
 <p><span class="math inline">\(⟨ψ|φ⟩ = \begin{bmatrix} 𝛼 &amp; 𝛽 \end{bmatrix} * \begin{bmatrix} γ \\ δ \end{bmatrix} = 𝛼*γ +𝛽*δ\)</span></p>
-<pre class="{python} {pyodide-python}"><code>
-# Exemplo de produto interno
-
-bra_0 = ket_0.T
-bra_1 = ket_1.T
-
-# ⟨0|0⟩
-phi_00 = bra_0 * ket_0
-
-# ⟨0|1⟩
-phi_01 = bra_0 * ket_1
-
-# ⟨1|0⟩
-phi_10 = bra_1 * ket_0
-
-# ⟨1|1⟩
-phi_11 = bra_1 * ket_1
-
-display(Markdown(f"$$\\langle 0 | 0 \\rangle = {sp.latex(bra_0)} * {sp.latex(ket_0)} = {phi_00[0,0]}$$"))
-display(Markdown(f"$$\\langle 0 | 1 \\rangle = {sp.latex(bra_0)} * {sp.latex(ket_1)} = {phi_01[0,0]}$$"))
-display(Markdown(f"$$\\langle 1 | 0 \\rangle = {sp.latex(bra_1)} * {sp.latex(ket_0)} = {phi_10[0,0]}$$"))
-display(Markdown(f"$$\\langle 1 | 1 \\rangle = {sp.latex(bra_1)} * {sp.latex(ket_1)} = {phi_11[0,0]}$$"))</code></pre>
+<div id="qpyodide-insertion-location-10"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
 <section id="produto-tensorial" class="level3">
 <h3 class="anchored" data-anchor-id="produto-tensorial">Produto tensorial</h3>
 <p>O produto tensorial (ou produto de Kronecker) é uma operação matemática que combina dois estados quânticos para formar um estado composto. Se |ψ⟩ e |φ⟩ são dois estados quânticos, o produto tensorial é denotado por |ψ⟩ ⊗ |φ⟩.</p>
 <p>Exemplo:</p>
 <p><span class="math display">\[|0\rangle \otimes |0\rangle = \begin{bmatrix} 1 \\ 0 \end{bmatrix} \otimes \begin{bmatrix} 1 \\ 0 \end{bmatrix} = \begin{bmatrix} 1 \cdot \begin{bmatrix} 1 \\ 0 \end{bmatrix} \\ 0 \cdot \begin{bmatrix} 1 \\ 0 \end{bmatrix} \end{bmatrix} = \begin{bmatrix} 1 \\ 0 \\ 0 \\ 0 \end{bmatrix}\]</span></p>
-<pre class="{python} {pyodide-python}"><code>
-# Exemplo de produto tensorial
-
-# |0⟩ ⊗ |0⟩
-tensor_00 = sp.kronecker_product(ket_0, ket_0)
-display(
-    Markdown(
-        f"$$\\ket{{0}} \\otimes \\ket{{0}} = {sp.latex(ket_0)} \\otimes {sp.latex(ket_0)} = \\begin{{bmatrix}} 1 \\cdot {sp.latex(ket_0)} \\\\ 0 \\cdot {sp.latex(ket_0)} \\end{{bmatrix}} = {sp.latex(tensor_00)} = \\ket{{00}}$$"
-    )
-)
-
-# |0⟩ ⊗ |1⟩
-tensor_01 = sp.kronecker_product(ket_0, ket_1)
-display(
-    Markdown(
-        f"$$\\ket{{0}} \\otimes \\ket{{1}} = {sp.latex(ket_0)} \\otimes {sp.latex(ket_1)} = \\begin{{bmatrix}} 1 \\cdot {sp.latex(ket_1)} \\\\ 0 \\cdot {sp.latex(ket_1)} \\end{{bmatrix}} = {sp.latex(tensor_01)} = \\ket{{01}}$$"
-    )
-)
-
-# |1⟩ ⊗ |0⟩
-tensor_10 = sp.kronecker_product(ket_1, ket_0)
-display(
-    Markdown(
-        f"$$\\ket{{1}} \\otimes \\ket{{0}} = {sp.latex(ket_1)} \\otimes {sp.latex(ket_0)} = \\begin{{bmatrix}} 0 \\cdot {sp.latex(ket_0)} \\\\ 1 \\cdot {sp.latex(ket_0)} \\end{{bmatrix}} = {sp.latex(tensor_10)} = \\ket{{10}}$$"
-    )
-)
-
-# |1⟩ ⊗ |1⟩
-tensor_11 = sp.kronecker_product(ket_1, ket_1)
-display(
-    Markdown(
-        f"$$\\ket{{1}} \\otimes \\ket{{1}} = {sp.latex(ket_1)} \\otimes {sp.latex(ket_1)} = \\begin{{bmatrix}} 0 \\cdot {sp.latex(ket_1)} \\\\ 1 \\cdot {sp.latex(ket_1)} \\end{{bmatrix}} = {sp.latex(tensor_11)} = \\ket{{11}}$$"
-    )
-)</code></pre>
+<div id="qpyodide-insertion-location-11"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
 </section>
 <section id="representação-de-dois-qubits" class="level2">
@@ -1185,43 +1022,8 @@ display(
 <p>Quando aplicamos a porta CNOT a um estado composto de dois qubits, o resultado depende do estado do qubit de controle. Por exemplo, se aplicarmos a porta CNOT ao estado |10⟩ (onde o primeiro qubit é o controle e o segundo é o alvo), o resultado será |11⟩, pois o qubit de controle está em |1⟩, então o qubit alvo é invertido.</p>
 <p>Por exemplo:</p>
 <p><span class="math display">\[\text{CNOT}|11⟩ = \begin{bmatrix} 1 &amp; 0 &amp; 0 &amp; 0 \\ 0 &amp; 1 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 0 &amp; 1 \\ 0 &amp; 0 &amp; 1 &amp; 0 \end{bmatrix} * \begin{bmatrix} 0 \\ 0 \\ 0 \\ 1 \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \\ 1 \\ 0 \end{bmatrix} = |10⟩\]</span></p>
-<pre class="{python} {pyodide-python}"><code>
-# Implementação do uso da porta CNOT
-
-# Definindo a porta CNOT
-CNOT = np.array([
-    [1, 0, 0, 0],
-    [0, 1, 0, 0],
-    [0, 0, 0, 1],
-    [0, 0, 1, 0]
-])  
-
-# |11&gt; 
-
-q_11 = np.array([
-    [0],
-    [0],
-    [0],
-    [1]
-])
-
-# Aplicando a porta CNOT em |11&gt;
-novo_estado_cnot = np.dot(CNOT, q_11)
-print("\n--- Após aplicar a Porta CNOT em |11&gt; ---")
-print(f"Esperamos |10&gt;, obtivemos:\n{novo_estado_cnot}")
-
-# Aplicando a porta CNOT em |10&gt;
-q_10 = np.array([
-    [0],
-    [0],
-    [1],
-    [0]
-])
-
-novo_estado_cnot_10 = np.dot(CNOT, q_10)
-print("\n--- Após aplicar a Porta CNOT em |10&gt; ---")
-print(f"Esperamos |11&gt;, obtivemos:\n{novo_estado_cnot_10}")
-</code></pre>
+<div id="qpyodide-insertion-location-12"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>
 --- Após aplicar a Porta CNOT em |11&gt; ---
 Esperamos |10&gt;, obtivemos:
@@ -1276,41 +1078,8 @@ $$ |11⟩ =
 \end{bmatrix}\]</span>
 <p>=</p>
 <p>-|11⟩ $$</p>
-<pre class="{python} {pyodide-python}"><code>
-# Implementação da porta CZ (Controlled-Z)
-
-CZ = np.array([
-    [1, 0, 0, 0],
-    [0, 1, 0, 0],
-    [0, 0, 1, 0],
-    [0, 0, 0, -1]
-])
-
-# |11&gt;
-q_11 = np.array([
-    [0],
-    [0],
-    [0],
-    [1]
-])
-
-# Aplicando a porta CZ em |11&gt;
-novo_estado_cz = np.dot(CZ, q_11)
-print("\n--- Após aplicar a Porta CZ em |11&gt; ---")
-print(f"Esperamos -|11&gt;, obtivemos:\n{novo_estado_cz}")
-
-# Vamos testar em |10&gt;
-q_10 = np.array([
-    [0],
-    [0],
-    [1],
-    [0]
-])  
-
-novo_estado_cz_10 = np.dot(CZ, q_10)
-print("\n--- Após aplicar a Porta CZ em |10&gt; ---")
-print(f"Esperamos |10&gt;, obtivemos:\n{novo_estado_cz_10}")
-print("\n✅ A porta CZ funcionou como esperado! (a porta só inverte o sinal de |11&gt;)")</code></pre>
+<div id="qpyodide-insertion-location-13"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>
 --- Após aplicar a Porta CZ em |11&gt; ---
 Esperamos -|11&gt;, obtivemos:
@@ -1371,28 +1140,8 @@ Esperamos |10&gt;, obtivemos:
 \end{bmatrix}
 = -|01⟩
 \]</span></p>
-<pre class="{python} {pyodide-python}"><code>
-# Implementação da Porta ZZ
-
-ZZ = np.array([
-    [1, 0, 0, 0],
-    [0, -1, 0, 0],
-    [0, 0, -1, 0],
-    [0, 0, 0, 1]
-])
-
-# Testando a porta ZZ em |01&gt;
-q_01 = np.array([
-    [0],
-    [1],
-    [0],
-    [0]
-])
-
-novo_estado_zz = np.dot(ZZ, q_01)
-print("\n--- Após aplicar a Porta ZZ em |01&gt; ---")
-print(f"Esperamos -|01&gt;, obtivemos:\n{novo_estado_zz}")
-print("\n✅ A porta ZZ funcionou como esperado! (inverte o sinal de |01&gt; e |10&gt;)")</code></pre>
+<div id="qpyodide-insertion-location-14"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>
 --- Após aplicar a Porta ZZ em |01&gt; ---
 Esperamos -|01&gt;, obtivemos:
@@ -1408,35 +1157,14 @@ Esperamos -|01&gt;, obtivemos:
 <section id="o-colapso-probabilidade" class="level2">
 <h2 class="anchored" data-anchor-id="o-colapso-probabilidade">O Colapso (Probabilidade)</h2>
 <p>Ao final, calculamos o quadrado desses números (0.707² ≈ 0.5). Isso diz ao computador: “Jogue uma moeda. Tem 50% de chance de dar Cara (0) e 50% de dar Coroa (1)”. É aqui que a computação quântica deixa de ser determinística (como a clássica) e passa a ser probabilística.</p>
-<pre class="{python} {pyodide-python}"><code>
-# A Medição (O Colapso)
-# Na teoria: A probabilidade de medir 0 ou 1 é o quadrado da amplitude (módulo ao quadrado).
-
-def medir_qubit(estado_vetor):
-    # Extrair amplitudes (alpha e beta)
-    alpha = estado_vetor[0][0]
-    beta = estado_vetor[1][0]
-    
-    # Calcular probabilidades (Born Rule): |amplitude|^2
-    prob_0 = abs(alpha) ** 2
-    prob_1 = abs(beta) ** 2
-    
-    print(f"\nProbabilidade calculada de ser 0: {prob_0:.2f}")
-    print(f"Probabilidade calculada de ser 1: {prob_1:.2f}")
-    
-    # Simular o "lance de dados" da natureza
-    resultado = np.random.choice([0, 1], p=[prob_0, prob_1])
-    return resultado
-
-# Vamos medir nosso estado de superposição
-leitura = medir_qubit(estado_superposicao)
-print(f"Resultado da Medição (Colapso): |{leitura}&gt;")</code></pre>
+<div id="qpyodide-insertion-location-15"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>
 Probabilidade calculada de ser 0: 0.50
 Probabilidade calculada de ser 1: 0.50
 Resultado da Medição (Colapso): |0&gt;
 </code></pre>
-<p>Por que não usar apenas NumPy sempre? Se é tão simples, por que precisamos do Qiskit ou PennyLane?</p>
+<p>Por que não usar apenas NumPy sempre? Se é tão simples, por que precisamos de frameworks quânticos como o Cirq?</p>
 <p>Porque as matrizes crescem exponencialmente.</p>
 <ul>
 <li>1 Qubit = Matriz <span class="math inline">\(2 \times 2\)</span></li>
@@ -1445,7 +1173,7 @@ Resultado da Medição (Colapso): |0&gt;
 <li>…</li>
 <li>50 Qubits = Matriz <span class="math inline">\(1.125.899.906.842.624 \times 1.125.899.906.842.624\)</span></li>
 </ul>
-<p>O seu computador não tem memória RAM suficiente para armazenar a matriz de 50 qubits usando NumPy. Os frameworks como Qiskit usam truques matemáticos e otimizações (ou enviam para computadores reais) para lidar com essa complexidade.</p>
+<p>O seu computador não tem memória RAM suficiente para armazenar a matriz de 50 qubits usando NumPy puro. Frameworks como o Cirq usam truques matemáticos, representações esparsas, contração de tensores e otimizações de portas (ou enviam circuitos para processadores quânticos reais como a arquitetura Sycamore do Google) para lidar com essa complexidade.</p>
 
 
 <!-- -->
@@ -1905,26 +1633,26 @@ Resultado da Medição (Colapso): |0&gt;
     }
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Código fonte</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Aula 02 — O Qubit: Fundamentos Matemáticos"</span></span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Fundamentos de Computação Quântica — Curso de Extensão"</span></span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Prof. Me. Maxwell Anderson Ielpo do Amaral"</span></span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="an">institute:</span><span class="co"> "Instituto Federal de Educação, Ciência e Tecnologia da Paraíba (IFPB) — Campus João Pessoa"</span></span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2026-09-15"</span></span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="an">lang:</span><span class="co"> pt-BR</span></span>
-<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
-<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
-<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
-<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
-<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📽️ Material da Aula</span></span>
-<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>📄 <span class="co">[</span><span class="ot">Baixar Apostila Completa em PDF</span><span class="co">](../apostila.pdf)</span>{target="_blank"}</span>
-<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>🧪 <span class="co">[</span><span class="ot">Galeria de Simuladores Interativos</span><span class="co">](/assets/simuladores/)</span>{target="_blank"}</span>
-<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>🚀 <span class="co">[</span><span class="ot">Executar no Google Colab</span><span class="co">](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/00a-math.ipynb)</span>{target="_blank"}</span>
-<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>{{&lt; include _content.qmd &gt;}}</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Aula 02 — O Qubit: Fundamentos Matemáticos"</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Fundamentos de Computação Quântica — Curso de Extensão"</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Prof. Me. Maxwell Anderson Ielpo do Amaral"</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="an">institute:</span><span class="co"> "Instituto Federal de Educação, Ciência e Tecnologia da Paraíba (IFPB) — Campus João Pessoa"</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2026-09-15"</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="an">lang:</span><span class="co"> pt-BR</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📽️ Material da Aula</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>📄 <span class="co">[</span><span class="ot">Baixar Apostila Completa em PDF</span><span class="co">](../apostila.pdf)</span>{target="_blank"}</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>🧪 <span class="co">[</span><span class="ot">Galeria de Simuladores Interativos</span><span class="co">](/assets/simuladores/)</span>{target="_blank"}</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>🚀 <span class="co">[</span><span class="ot">Executar no Google Colab</span><span class="co">](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/00a-math.ipynb)</span>{target="_blank"}</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>{{&lt; include _content.qmd &gt;}}</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <script type="module">
@@ -2080,31 +1808,40 @@ class InteractiveCell extends BaseCell {
         runCodeButton.disabled = true;
         runCodeButton.type = 'button';
         runCodeButton.id = `qpyodide-button-run-${this.id}`;
-        runCodeButton.textContent = '🟡 Loading Pyodide...';
-        runCodeButton.title = `Run code (Shift + Enter)`;
+        runCodeButton.innerHTML = '<i class="fa-solid fa-play qpyodide-icon-run-code"></i> <span>Run Code</span>';
+        runCodeButton.title = `Executar célula (Shift + Enter)`;
 
         // Append buttons to the leftButtonsDiv
         leftButtonsDiv.appendChild(runCodeButton);
 
-        // Create Reset button
+        // Create Start Over (Reset) button
         var resetButton = document.createElement('button');
         resetButton.className = 'btn btn-light btn-xs qpyodide-button qpyodide-button-reset';
         resetButton.type = 'button';
         resetButton.id = `qpyodide-button-reset-${this.id}`;
-        resetButton.title = 'Start over';
-        resetButton.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i>';
+        resetButton.title = 'Start over (Restaurar código original)';
+        resetButton.innerHTML = '<i class="fa-solid fa-rotate-left"></i>';
 
-        // Create Copy button
+        // Create Copy Code button
         var copyButton = document.createElement('button');
         copyButton.className = 'btn btn-light btn-xs qpyodide-button qpyodide-button-copy';
         copyButton.type = 'button';
         copyButton.id = `qpyodide-button-copy-${this.id}`;
-        copyButton.title = 'Copy code';
+        copyButton.title = 'Copy code (Copiar código)';
         copyButton.innerHTML = '<i class="fa-regular fa-copy"></i>';
+
+        // Create Fullscreen button (Tela cheia - ESC para sair)
+        var fullscreenButton = document.createElement('button');
+        fullscreenButton.className = 'btn btn-light btn-xs qpyodide-button qpyodide-button-fullscreen';
+        fullscreenButton.type = 'button';
+        fullscreenButton.id = `qpyodide-button-fullscreen-${this.id}`;
+        fullscreenButton.title = 'Tela cheia (ESC para sair)';
+        fullscreenButton.innerHTML = '<i class="fa-solid fa-expand"></i>';
 
         // Append buttons to the rightButtonsDiv
         rightButtonsDiv.appendChild(resetButton);
         rightButtonsDiv.appendChild(copyButton);
+        rightButtonsDiv.appendChild(fullscreenButton);
 
         // Create console area div
         var consoleAreaDiv = document.createElement('div');
@@ -2156,6 +1893,7 @@ class InteractiveCell extends BaseCell {
         this.runButton = document.getElementById(`qpyodide-button-run-${this.id}`);
         this.resetButton = document.getElementById(`qpyodide-button-reset-${this.id}`);
         this.copyButton = document.getElementById(`qpyodide-button-copy-${this.id}`);
+        this.fullscreenButton = document.getElementById(`qpyodide-button-fullscreen-${this.id}`);
         this.editorDiv = document.getElementById(`qpyodide-editor-${this.id}`);
         this.outputCodeDiv = document.getElementById(`qpyodide-output-code-area-${this.id}`);
         this.outputGraphDiv = document.getElementById(`qpyodide-output-graph-area-${this.id}`);
@@ -2293,7 +2031,7 @@ class InteractiveCell extends BaseCell {
             );
         };
         
-        // Add a click event listener to the reset button
+        // Add a click event listener to the copy button
         thiz.copyButton.onclick = function () {
             // Retrieve current code data
             const data = thiz.editor.getValue();
@@ -2302,10 +2040,61 @@ class InteractiveCell extends BaseCell {
             navigator.clipboard.writeText(data || "");
         };
         
-        // Add a click event listener to the copy button
+        // Add a click event listener to the reset button
         thiz.resetButton.onclick = function () {
             thiz.editor.setValue(thiz.editor.__qpyodideinitialCode);
         };
+
+        // Add a click event listener to the fullscreen button
+        if (thiz.fullscreenButton) {
+            thiz.fullscreenButton.onclick = function () {
+                thiz.toggleFullscreen();
+            };
+        }
+    }
+
+    /**
+     * Alternar modo de tela cheia para o bloco de código
+     */
+    toggleFullscreen() {
+        const area = document.getElementById(`qpyodide-interactive-area-${this.id}`);
+        if (!area) return;
+        const isFullscreen = area.classList.toggle('qpyodide-cell-fullscreen');
+        if (isFullscreen) {
+            if (this.fullscreenButton) {
+                this.fullscreenButton.innerHTML = '<i class="fa-solid fa-compress"></i>';
+                this.fullscreenButton.title = 'Sair da tela cheia (ESC)';
+            }
+            if (this.editorDiv) {
+                this.editorDiv.style.height = 'calc(100vh - 180px)';
+            }
+            if (this.editor) {
+                setTimeout(() => { this.editor.layout(); }, 50);
+            }
+            this._escHandler = (e) => {
+                if (e.key === 'Escape' || e.key === 'Esc') {
+                    if (area.classList.contains('qpyodide-cell-fullscreen')) {
+                        this.toggleFullscreen();
+                    }
+                }
+            };
+            window.addEventListener('keydown', this._escHandler);
+        } else {
+            if (this.fullscreenButton) {
+                this.fullscreenButton.innerHTML = '<i class="fa-solid fa-expand"></i>';
+                this.fullscreenButton.title = 'Tela cheia (ESC para sair)';
+            }
+            if (this.editorDiv) {
+                this.editorDiv.style.height = '';
+            }
+            if (this.editor) {
+                setTimeout(() => { this.editor.layout(); }, 50);
+            }
+            if (this._escHandler) {
+                window.removeEventListener('keydown', this._escHandler);
+                this._escHandler = null;
+            }
+        }
     }
 
     disableInteractiveCells() {
@@ -2371,20 +2160,56 @@ class InteractiveCell extends BaseCell {
         this.outputCodeDiv.innerHTML = "";
         this.outputGraphDiv.innerHTML = "";        
 
-        // Design an output object for messages
-        const pre = document.createElement("pre");
         if (/\S/.test(result)) {
-            // Display results as HTML elements to retain output styling
-            const div = document.createElement("div");
-            div.innerHTML = result;
-            pre.appendChild(div);
-        } else {
-            // If nothing is present, hide the element.
-            pre.style.visibility = "hidden";
+            // Check if output contains LaTeX math blocks: $$ ... $$
+            const mathRegex = /\$\$([\s\S]*?)\$\$/g;
+            if (mathRegex.test(result)) {
+                mathRegex.lastIndex = 0;
+                let lastIndex = 0;
+                let match;
+                while ((match = mathRegex.exec(result)) !== null) {
+                    if (match.index > lastIndex) {
+                        const textPart = result.slice(lastIndex, match.index).trim();
+                        if (textPart) {
+                            const pre = document.createElement("pre");
+                            pre.innerHTML = textPart;
+                            this.outputCodeDiv.appendChild(pre);
+                        }
+                    }
+                    let mathContent = match[1].trim();
+                    mathContent = mathContent.replace(/\\ket\{([^}]+)\}/g, '\\left| $1 \\right\\rangle');
+                    mathContent = mathContent.replace(/\\bra\{([^}]+)\}/g, '\\left\\langle $1 \\right|');
+                    const mathDiv = document.createElement("div");
+                    mathDiv.className = "qpyodide-output-math";
+                    mathDiv.innerHTML = `$$${mathContent}$$`;
+                    this.outputCodeDiv.appendChild(mathDiv);
+                    lastIndex = match.index + match[0].length;
+                }
+                if (lastIndex < result.length) {
+                    const textPart = result.slice(lastIndex).trim();
+                    if (textPart) {
+                        const pre = document.createElement("pre");
+                        pre.innerHTML = textPart;
+                        this.outputCodeDiv.appendChild(pre);
+                    }
+                }
+                // Trigger MathJax rendering for formatted output
+                if (window.MathJax && window.MathJax.typeset) {
+                    try {
+                        window.MathJax.typeset([this.outputCodeDiv]);
+                    } catch (e) {
+                        console.warn("MathJax typeset error:", e);
+                    }
+                }
+            } else {
+                // Design standard output object for non-math messages
+                const pre = document.createElement("pre");
+                const div = document.createElement("div");
+                div.innerHTML = result;
+                pre.appendChild(div);
+                this.outputCodeDiv.appendChild(pre);
+            }
         }
-
-        // Add output under interactive div
-        this.outputCodeDiv.appendChild(pre);
 
         // Place the graphics onto the page
         if (graphFigure) {

@@ -271,7 +271,7 @@ globalThis.qpyodideCustomizedPyodideOptions = {
 }
 
 // Store cell data
-globalThis.qpyodideCellDetails = [];
+globalThis.qpyodideCellDetails = [{"code":"# Instalação do motor quântico Cirq e bibliotecas\nimport micropip\nawait micropip.install(\"cirq-core==1.6.1\")\n\nimport cirq\nimport numpy as np\n\nprint(f\"✅ Cirq v{cirq.__version__} pronto para simulação do experimento óptico!\")\n\n# Passo 1: O fóton encontra o primeiro divisor de feixe (Beam Splitter 1)\nq0 = cirq.LineQubit(0)\nqc = cirq.Circuit(cirq.H(q0))\nsim = cirq.Simulator()\n\nprint(\"Circuito após o primeiro espelho:\")\nprint(qc)","id":1,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Cálculo do vetor de estado e coordenadas de Bloch após primeiro H\nvetor_apos_h1 = sim.simulate(qc).final_state_vector\nbx, by, bz = cirq.bloch_vector_from_state_vector_and_density_matrix(vetor_apos_h1, 0)\n\nprint(f\"Estado após primeiro H: {np.round(vetor_apos_h1, 4)}\")\nprint(f\"Probabilidade Detector 1 (|0⟩): {np.abs(vetor_apos_h1[0])**2 * 100:.1f}%\")\nprint(f\"Probabilidade Detector 2 (|1⟩): {np.abs(vetor_apos_h1[1])**2 * 100:.1f}%\")\nprint(f\"Coordenadas na Esfera de Bloch: x={bx:+.2f}, y={by:+.2f}, z={bz:+.2f} (Equador +X)\")","id":2,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Passo 2: O fóton viaja pelos caminhos e encontra o SEGUNDO espelho\n# A interferência quântica construtiva e destrutiva acontece aqui!\nqc.append(cirq.H(q0))\n\nprint(\"Circuito Completo do Interferômetro (H · H = I):\")\nprint(qc)","id":3,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Vetor de estado e coordenadas após segundo H (Interferência comprovada)\nvetor_apos_h2 = sim.simulate(qc).final_state_vector\nbx2, by2, bz2 = cirq.bloch_vector_from_state_vector_and_density_matrix(vetor_apos_h2, 0)\n\nprint(f\"Estado após segundo H: {np.round(vetor_apos_h2, 4)}\")\nprint(f\"Probabilidade Detector 1 (|0⟩): {np.abs(vetor_apos_h2[0])**2 * 100:.1f}%\")\nprint(f\"Probabilidade Detector 2 (|1⟩): {np.abs(vetor_apos_h2[1])**2 * 100:.1f}%\")\nprint(f\"Coordenadas na Esfera de Bloch: x={bx2:+.2f}, y={by2:+.2f}, z={bz2:+.2f} (Pólo Norte +Z puro)\")","id":4,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Verificação\nvetor = Statevector(qc)\nprint(vetor)","id":5,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Medição de 1000 fótons únicos no laboratório simulado\ncircuito_laboratorio = qc.copy()\ncircuito_laboratorio.append(cirq.measure(q0, key=\"detector\"))\n\nresultado_lab = sim.run(circuito_laboratorio, repetitions=1000)\ncontagens = resultado_lab.histogram(key=\"detector\")\n\nprint(\"--- Simulação de 1000 Fótons Disparados Individualmente ---\")\nprint(f\"Fótons detectados em D1 (Saída 0): {contagens.get(0, 0)} ({contagens.get(0, 0)/10:.1f}%)\")\nprint(f\"Fótons detectados em D2 (Saída 1): {contagens.get(1, 0)} ({contagens.get(1, 0)/10:.1f}%)\")\nprint(\"\\n✅ Comprovação Física: 100% dos fótons emergem pelo Detector 1!\")\nprint(\"As probabilidades para o Detector 2 se anulam por interferência destrutiva de fase.\")","id":6,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"qc.h(0)","id":7,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Resumo conceitual em Cirq\nq = cirq.LineQubit(0)\ncircuito_resumo = cirq.Circuit(\n    cirq.H(q),  # Primeiro divisor de feixe (cria superposição)\n    cirq.H(q)   # Segundo divisor de feixe (recombina com interferência)\n)\n\nvetor_final = sim.simulate(circuito_resumo).final_state_vector\nprint(\"Circuito:\")\nprint(circuito_resumo)\nprint(\"\\nVetor de Estado Final:\", np.round(vetor_final, 4))\nassert np.allclose(vetor_final, [1.0, 0.0])\nprint(\"✨ H · H = Identidade comprovada matematicamente e fisicamente!\")","id":8,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}}];
 
 
 </script>
@@ -431,6 +431,41 @@ globalThis.qpyodideInstance = await import(
     import matplotlib
     matplotlib.use("module://matplotlib_pyodide.html5_canvas_backend")
     from matplotlib import pyplot as plt
+
+    import builtins
+    import sys
+    import types
+
+    class _Markdown:
+        def __init__(self, data=""):
+            self.data = str(data)
+        def __repr__(self):
+            return self.data
+        def _repr_markdown_(self):
+            return self.data
+
+    def _display(*args, **kwargs):
+        for arg in args:
+            if hasattr(arg, 'data'):
+                print(arg.data)
+            elif hasattr(arg, '_repr_latex_'):
+                print(arg._repr_latex_())
+            elif hasattr(arg, '_repr_markdown_'):
+                print(arg._repr_markdown_())
+            else:
+                print(arg)
+
+    builtins.display = _display
+    builtins.Markdown = _Markdown
+
+    # Shim IPython.display if imported by any lesson
+    ipython = types.ModuleType("IPython")
+    ipython_display = types.ModuleType("IPython.display")
+    ipython_display.display = _display
+    ipython_display.Markdown = _Markdown
+    ipython.display = ipython_display
+    sys.modules["IPython"] = ipython
+    sys.modules["IPython.display"] = ipython_display
     `);
 
     // Unlock interactive buttons
@@ -441,7 +476,7 @@ globalThis.qpyodideInstance = await import(
 
     // Set document status to viable
     qpyodideUpdateStatusHeader(
-      "🟢 Ready!"
+      "🟢 Pronto!"
     );
 
     // Assign Pyodide into the global environment
@@ -649,56 +684,37 @@ window.Quarto = {
 <h1>Aula 06 — Experimento de Interferência com Hadamard (Mach-Zehnder)</h1>
 <section id="experimento-de-interferência-com-hadamard-interferômetro-de-mach-zehnder" class="level2">
 <h2 class="anchored" data-anchor-id="experimento-de-interferência-com-hadamard-interferômetro-de-mach-zehnder">Experimento de Interferência com Hadamard (Interferômetro de Mach-Zehnder)</h2>
-<p>Você pode replicar esse experimento físico agora mesmo no Qiskit. É a prova de que a porta Hadamard é reversível.</p>
+<p>Você pode replicar esse experimento físico agora mesmo no Cirq. É a prova de que a porta Hadamard é reversível.</p>
 <p>Matematicamente, aplicar dois Hadamards é igual a não fazer nada (Identidade), pois as superposições se cancelam e voltam ao estado original.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit <span class="im">import</span> QuantumCircuit</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.quantum_info <span class="im">import</span> Statevector</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.visualization <span class="im">import</span> plot_bloch_multivector, plot_state_qsphere</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">1</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Passo 1: O fóton encontra o primeiro espelho</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Estado: Superposição (50/50)</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>qc.h(<span class="dv">0</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="qpyodide-insertion-location-1"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <section id="visualização-após-o-primeiro-hadamard-espelho-semitransparente-1" class="level3">
 <h3 class="anchored" data-anchor-id="visualização-após-o-primeiro-hadamard-espelho-semitransparente-1">Visualização após o primeiro Hadamard (Espelho Semitransparente 1)</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Esfera de Bloch após o primeiro H</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>vetor_apos_h1 <span class="op">=</span> Statevector(qc)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>display(plot_bloch_multivector(vetor_apos_h1))</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Estado após primeiro H: </span><span class="sc">{</span>vetor_apos_h1<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="qpyodide-insertion-location-2"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>Estado após primeiro H: Statevector([0.70710678+0.j, 0.70710678+0.j],
             dims=(2,))
 </code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Q-Sphere após o primeiro H</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>display(plot_state_qsphere(vetor_apos_h1))</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-<pre class="{python} {pyodide-python}"><code>
-# Passo 2: O fóton viaja pelos caminhos e encontra o SEGUNDO espelho
-# A interferência acontece aqui.
-qc.h(0)
-</code></pre>
+<div id="qpyodide-insertion-location-3"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
 <section id="visualização-após-o-segundo-hadamard-espelho-semitransparente-2---interferência" class="level3">
 <h3 class="anchored" data-anchor-id="visualização-após-o-segundo-hadamard-espelho-semitransparente-2---interferência">Visualização após o segundo Hadamard (Espelho Semitransparente 2 - Interferência)</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Esfera de Bloch após o segundo H</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>vetor_apos_h2 <span class="op">=</span> Statevector(qc)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>display(plot_bloch_multivector(vetor_apos_h2))</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Estado após segundo H: </span><span class="sc">{</span>vetor_apos_h2<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="qpyodide-insertion-location-4"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>Estado após segundo H: Statevector([1.+0.j, 0.+0.j],
             dims=(2,))
 </code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Q-Sphere após o segundo H</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>display(plot_state_qsphere(vetor_apos_h2))</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="visualização-do-circuito-completo" class="level3">
 <h3 class="anchored" data-anchor-id="visualização-do-circuito-completo">Visualização do Circuito Completo</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Verificação</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>vetor <span class="op">=</span> Statevector(qc)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(vetor)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="qpyodide-insertion-location-5"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>Statevector([1.+0.j, 0.+0.j],
             dims=(2,))
 </code></pre>
-<pre class="{python} {pyodide-python}"><code>
-# Desenho do circuito quântico
-qc.draw('mpl')</code></pre>
+<div id="qpyodide-insertion-location-6"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <hr>
 </section>
 </section>
@@ -708,7 +724,7 @@ qc.draw('mpl')</code></pre>
 <section id="mais-sobre-a-porta-hadamard-e-sua-interpretação-física" class="level2">
 <h2 class="anchored" data-anchor-id="mais-sobre-a-porta-hadamard-e-sua-interpretação-física">Mais Sobre a Porta Hadamard e sua Interpretação Física</h2>
 <p><strong>Se um fóton ultrapassa uma espelho perfeitamente semitransparente, qual o percentual de luz que transpassa o espelho e qual o percentual de luz que é refletida?</strong></p>
-<p>Essa pergunta é fundamental, pois ela é o elo entre o mundo físico e o código que foi escrito em <a href="01-intro.ipynb">01-intro.ipynb</a> (<code>qc.h(0)</code>) e em <a href="00-math.ipynb">00-math.ipynb</a>.</p>
+<p>Essa pergunta é fundamental, pois ela é o elo entre o mundo físico e o código que foi escrito em <a href="../../notebooks/01-intro.ipynb">01-intro.ipynb</a> (<code>qc.h(0)</code>) e em <a href="../../notebooks/00-math.ipynb">00-math.ipynb</a>.</p>
 <p>A resposta depende se você está falando de <strong>um raio de luz</strong> (mundo clássico) ou de <strong>um único fóton</strong> (mundo quântico).</p>
 <section id="a-resposta-clássica-um-feixe-de-luz" class="level3">
 <h3 class="anchored" data-anchor-id="a-resposta-clássica-um-feixe-de-luz">1. A Resposta Clássica (Um feixe de luz)</h3>
@@ -733,7 +749,8 @@ qc.draw('mpl')</code></pre>
 <p>Lembra-se da porta Hadamard (<code>qc.h(0)</code>) e do fator <span class="math inline">\(\frac{1}{\sqrt{2}}\)</span>?</p>
 <p>Fisicamente, a <strong>Porta Hadamard É esse espelho semitransparente</strong>.</p>
 <p>Quando você escreve em Python:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>qc.h(<span class="dv">0</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="qpyodide-insertion-location-7"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <p>Você está dizendo matematicamente:</p>
 <p><span class="math display">\[|0\rangle \rightarrow \frac{|0\rangle + |1\rangle}{\sqrt{2}}\]</span></p>
 <p>Isso é a descrição matemática exata de um fóton encontrando um espelho 50/50:</p>
@@ -809,27 +826,13 @@ qc.draw('mpl')</code></pre>
 </section>
 <section id="como-isso-se-traduz-no-código-python" class="level3">
 <h3 class="anchored" data-anchor-id="como-isso-se-traduz-no-código-python">4. Como isso se traduz no código Python?</h3>
-<p>Você pode replicar esse experimento físico agora mesmo no Qiskit. É a prova de que a porta Hadamard é reversível.</p>
+<p>Você pode replicar esse experimento físico agora mesmo no Cirq. É a prova de que a porta Hadamard é reversível.</p>
 <p>Matematicamente, aplicar dois Hadamards é igual a não fazer nada (Identidade), pois as superposições se cancelam e voltam ao estado original.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit <span class="im">import</span> QuantumCircuit</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.quantum_info <span class="im">import</span> Statevector</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">1</span>)</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Passo 1: O fóton encontra o primeiro espelho</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Estado: Superposição (50/50)</span></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>qc.h(<span class="dv">0</span>) </span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Passo 2: O fóton viaja pelos caminhos e encontra o SEGUNDO espelho</span></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co"># A interferência acontece aqui.</span></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>qc.h(<span class="dv">0</span>)</span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Verificação</span></span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>vetor <span class="op">=</span> Statevector(qc)</span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(vetor)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="qpyodide-insertion-location-8"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <p><strong>Resultado:</strong> Você verá que o vetor volta a ser <code>[1, 0]</code> (Estado puro). O computador quântico simulou a interferência destrutiva que ocorreria no laboratório.</p>
 <blockquote class="blockquote">
-<p>Veja código completo em <a href="04-Hadamard-experiment.ipynb">Código 04-Hadamard-experiment.ipynb</a></p>
+<p>Veja código completo em <a href="../../notebooks/04-Hadamard-experiment.ipynb">Código 04-Hadamard-experiment.ipynb</a></p>
 </blockquote>
 </section>
 <section id="curiosidade-histórica-o-prêmio-nobel-de-2022" class="level3">
@@ -1296,26 +1299,26 @@ qc.draw('mpl')</code></pre>
     }
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Código fonte</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Aula 06 — Experimento de Interferência com Hadamard"</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Fundamentos de Computação Quântica — Curso de Extensão"</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Prof. Me. Maxwell Anderson Ielpo do Amaral"</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="an">institute:</span><span class="co"> "Instituto Federal de Educação, Ciência e Tecnologia da Paraíba (IFPB) — Campus João Pessoa"</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2026-10-13"</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="an">lang:</span><span class="co"> pt-BR</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📽️ Material da Aula</span></span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>📄 <span class="co">[</span><span class="ot">Baixar Apostila Completa em PDF</span><span class="co">](../apostila.pdf)</span>{target="_blank"}</span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>🧪 <span class="co">[</span><span class="ot">Galeria de Simuladores Interativos</span><span class="co">](/assets/simuladores/)</span>{target="_blank"}</span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>🚀 <span class="co">[</span><span class="ot">Executar no Google Colab</span><span class="co">](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/04-Hadamard-experiment.ipynb)</span>{target="_blank"}</span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>{{&lt; include _content.qmd &gt;}}</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Aula 06 — Experimento de Interferência com Hadamard"</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Fundamentos de Computação Quântica — Curso de Extensão"</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Prof. Me. Maxwell Anderson Ielpo do Amaral"</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="an">institute:</span><span class="co"> "Instituto Federal de Educação, Ciência e Tecnologia da Paraíba (IFPB) — Campus João Pessoa"</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2026-10-13"</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="an">lang:</span><span class="co"> pt-BR</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📽️ Material da Aula</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>📄 <span class="co">[</span><span class="ot">Baixar Apostila Completa em PDF</span><span class="co">](../apostila.pdf)</span>{target="_blank"}</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>🧪 <span class="co">[</span><span class="ot">Galeria de Simuladores Interativos</span><span class="co">](/assets/simuladores/)</span>{target="_blank"}</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>🚀 <span class="co">[</span><span class="ot">Executar no Google Colab</span><span class="co">](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/04-Hadamard-experiment.ipynb)</span>{target="_blank"}</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>{{&lt; include _content.qmd &gt;}}</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <script type="module">
@@ -1471,31 +1474,40 @@ class InteractiveCell extends BaseCell {
         runCodeButton.disabled = true;
         runCodeButton.type = 'button';
         runCodeButton.id = `qpyodide-button-run-${this.id}`;
-        runCodeButton.textContent = '🟡 Loading Pyodide...';
-        runCodeButton.title = `Run code (Shift + Enter)`;
+        runCodeButton.innerHTML = '<i class="fa-solid fa-play qpyodide-icon-run-code"></i> <span>Run Code</span>';
+        runCodeButton.title = `Executar célula (Shift + Enter)`;
 
         // Append buttons to the leftButtonsDiv
         leftButtonsDiv.appendChild(runCodeButton);
 
-        // Create Reset button
+        // Create Start Over (Reset) button
         var resetButton = document.createElement('button');
         resetButton.className = 'btn btn-light btn-xs qpyodide-button qpyodide-button-reset';
         resetButton.type = 'button';
         resetButton.id = `qpyodide-button-reset-${this.id}`;
-        resetButton.title = 'Start over';
-        resetButton.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i>';
+        resetButton.title = 'Start over (Restaurar código original)';
+        resetButton.innerHTML = '<i class="fa-solid fa-rotate-left"></i>';
 
-        // Create Copy button
+        // Create Copy Code button
         var copyButton = document.createElement('button');
         copyButton.className = 'btn btn-light btn-xs qpyodide-button qpyodide-button-copy';
         copyButton.type = 'button';
         copyButton.id = `qpyodide-button-copy-${this.id}`;
-        copyButton.title = 'Copy code';
+        copyButton.title = 'Copy code (Copiar código)';
         copyButton.innerHTML = '<i class="fa-regular fa-copy"></i>';
+
+        // Create Fullscreen button (Tela cheia - ESC para sair)
+        var fullscreenButton = document.createElement('button');
+        fullscreenButton.className = 'btn btn-light btn-xs qpyodide-button qpyodide-button-fullscreen';
+        fullscreenButton.type = 'button';
+        fullscreenButton.id = `qpyodide-button-fullscreen-${this.id}`;
+        fullscreenButton.title = 'Tela cheia (ESC para sair)';
+        fullscreenButton.innerHTML = '<i class="fa-solid fa-expand"></i>';
 
         // Append buttons to the rightButtonsDiv
         rightButtonsDiv.appendChild(resetButton);
         rightButtonsDiv.appendChild(copyButton);
+        rightButtonsDiv.appendChild(fullscreenButton);
 
         // Create console area div
         var consoleAreaDiv = document.createElement('div');
@@ -1547,6 +1559,7 @@ class InteractiveCell extends BaseCell {
         this.runButton = document.getElementById(`qpyodide-button-run-${this.id}`);
         this.resetButton = document.getElementById(`qpyodide-button-reset-${this.id}`);
         this.copyButton = document.getElementById(`qpyodide-button-copy-${this.id}`);
+        this.fullscreenButton = document.getElementById(`qpyodide-button-fullscreen-${this.id}`);
         this.editorDiv = document.getElementById(`qpyodide-editor-${this.id}`);
         this.outputCodeDiv = document.getElementById(`qpyodide-output-code-area-${this.id}`);
         this.outputGraphDiv = document.getElementById(`qpyodide-output-graph-area-${this.id}`);
@@ -1684,7 +1697,7 @@ class InteractiveCell extends BaseCell {
             );
         };
         
-        // Add a click event listener to the reset button
+        // Add a click event listener to the copy button
         thiz.copyButton.onclick = function () {
             // Retrieve current code data
             const data = thiz.editor.getValue();
@@ -1693,10 +1706,61 @@ class InteractiveCell extends BaseCell {
             navigator.clipboard.writeText(data || "");
         };
         
-        // Add a click event listener to the copy button
+        // Add a click event listener to the reset button
         thiz.resetButton.onclick = function () {
             thiz.editor.setValue(thiz.editor.__qpyodideinitialCode);
         };
+
+        // Add a click event listener to the fullscreen button
+        if (thiz.fullscreenButton) {
+            thiz.fullscreenButton.onclick = function () {
+                thiz.toggleFullscreen();
+            };
+        }
+    }
+
+    /**
+     * Alternar modo de tela cheia para o bloco de código
+     */
+    toggleFullscreen() {
+        const area = document.getElementById(`qpyodide-interactive-area-${this.id}`);
+        if (!area) return;
+        const isFullscreen = area.classList.toggle('qpyodide-cell-fullscreen');
+        if (isFullscreen) {
+            if (this.fullscreenButton) {
+                this.fullscreenButton.innerHTML = '<i class="fa-solid fa-compress"></i>';
+                this.fullscreenButton.title = 'Sair da tela cheia (ESC)';
+            }
+            if (this.editorDiv) {
+                this.editorDiv.style.height = 'calc(100vh - 180px)';
+            }
+            if (this.editor) {
+                setTimeout(() => { this.editor.layout(); }, 50);
+            }
+            this._escHandler = (e) => {
+                if (e.key === 'Escape' || e.key === 'Esc') {
+                    if (area.classList.contains('qpyodide-cell-fullscreen')) {
+                        this.toggleFullscreen();
+                    }
+                }
+            };
+            window.addEventListener('keydown', this._escHandler);
+        } else {
+            if (this.fullscreenButton) {
+                this.fullscreenButton.innerHTML = '<i class="fa-solid fa-expand"></i>';
+                this.fullscreenButton.title = 'Tela cheia (ESC para sair)';
+            }
+            if (this.editorDiv) {
+                this.editorDiv.style.height = '';
+            }
+            if (this.editor) {
+                setTimeout(() => { this.editor.layout(); }, 50);
+            }
+            if (this._escHandler) {
+                window.removeEventListener('keydown', this._escHandler);
+                this._escHandler = null;
+            }
+        }
     }
 
     disableInteractiveCells() {
@@ -1762,20 +1826,56 @@ class InteractiveCell extends BaseCell {
         this.outputCodeDiv.innerHTML = "";
         this.outputGraphDiv.innerHTML = "";        
 
-        // Design an output object for messages
-        const pre = document.createElement("pre");
         if (/\S/.test(result)) {
-            // Display results as HTML elements to retain output styling
-            const div = document.createElement("div");
-            div.innerHTML = result;
-            pre.appendChild(div);
-        } else {
-            // If nothing is present, hide the element.
-            pre.style.visibility = "hidden";
+            // Check if output contains LaTeX math blocks: $$ ... $$
+            const mathRegex = /\$\$([\s\S]*?)\$\$/g;
+            if (mathRegex.test(result)) {
+                mathRegex.lastIndex = 0;
+                let lastIndex = 0;
+                let match;
+                while ((match = mathRegex.exec(result)) !== null) {
+                    if (match.index > lastIndex) {
+                        const textPart = result.slice(lastIndex, match.index).trim();
+                        if (textPart) {
+                            const pre = document.createElement("pre");
+                            pre.innerHTML = textPart;
+                            this.outputCodeDiv.appendChild(pre);
+                        }
+                    }
+                    let mathContent = match[1].trim();
+                    mathContent = mathContent.replace(/\\ket\{([^}]+)\}/g, '\\left| $1 \\right\\rangle');
+                    mathContent = mathContent.replace(/\\bra\{([^}]+)\}/g, '\\left\\langle $1 \\right|');
+                    const mathDiv = document.createElement("div");
+                    mathDiv.className = "qpyodide-output-math";
+                    mathDiv.innerHTML = `$$${mathContent}$$`;
+                    this.outputCodeDiv.appendChild(mathDiv);
+                    lastIndex = match.index + match[0].length;
+                }
+                if (lastIndex < result.length) {
+                    const textPart = result.slice(lastIndex).trim();
+                    if (textPart) {
+                        const pre = document.createElement("pre");
+                        pre.innerHTML = textPart;
+                        this.outputCodeDiv.appendChild(pre);
+                    }
+                }
+                // Trigger MathJax rendering for formatted output
+                if (window.MathJax && window.MathJax.typeset) {
+                    try {
+                        window.MathJax.typeset([this.outputCodeDiv]);
+                    } catch (e) {
+                        console.warn("MathJax typeset error:", e);
+                    }
+                }
+            } else {
+                // Design standard output object for non-math messages
+                const pre = document.createElement("pre");
+                const div = document.createElement("div");
+                div.innerHTML = result;
+                pre.appendChild(div);
+                this.outputCodeDiv.appendChild(pre);
+            }
         }
-
-        // Add output under interactive div
-        this.outputCodeDiv.appendChild(pre);
 
         // Place the graphics onto the page
         if (graphFigure) {

@@ -271,7 +271,7 @@ globalThis.qpyodideCustomizedPyodideOptions = {
 }
 
 // Store cell data
-globalThis.qpyodideCellDetails = [];
+globalThis.qpyodideCellDetails = [{"code":"# Instalação do motor quântico Cirq e bibliotecas necessárias\nimport micropip\nawait micropip.install(\"cirq-core==1.6.1\")\n\nimport cirq\nimport numpy as np\nfrom IPython.display import display, Markdown\n\nprint(f\"✅ Cirq v{cirq.__version__} pronto para execução interativa!\")\n\n# Demonstração do Phase Kickback em Cirq\nq_controle = cirq.LineQubit(0)\nq_alvo = cirq.LineQubit(1)\n\nqc = cirq.Circuit(\n    # 1. PREPARAÇÃO: Controle em |+⟩ e Alvo em |-⟩\n    cirq.H(q_controle),\n    cirq.X(q_alvo),\n    cirq.H(q_alvo),\n    \n    # 2. O KICKBACK: CNOT faz a fase (-1) chutar de volta para o controle!\n    cirq.CNOT(q_controle, q_alvo),\n    \n    # 3. VERIFICAÇÃO: Hadamard converte |-⟩ em |1⟩ com certeza absoluta\n    cirq.H(q_controle),\n    cirq.measure(q_controle, key=\"controle\")\n)\n\nprint(\"Circuito de Phase Kickback:\")\nprint(qc)\n\nsim = cirq.Simulator()\nresultado = sim.run(qc, repetitions=1000)\ncontagens = resultado.histogram(key=\"controle\")\nprint(\"\\nResultado da Medição do Controle (1000 repetições):\", dict(contagens))\nprint(\"O controle mediu 1 em 100% das vezes, provando o Phase Kickback!\")","id":1,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\n# 1. PREPARAÇÃO\n# Colocar o Qubit 0 (Controle) em Superposição |+>\nqc.h(0)\n\n# Colocar o Qubit 1 (Alvo) no estado |- > \n# Para isso: aplicamos X (vira 1) e depois H (vira menos)\nqc.x(1)\nqc.h(1)\n\n# Desenhar o circuito\nqc.draw('mpl')","id":2,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Visualizar o estado após preparação\nestado_inicial = Statevector(qc)\nprint(f\"Estado inicial: {estado_inicial}\")\ndisplay(plot_bloch_multivector(estado_inicial))","id":3,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"print(\"\\nQ-Sphere mostrando ambos os qubits:\")\ndisplay(plot_state_qsphere(estado_inicial))","id":4,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\n# 🌐 Visualização INTERATIVA da Q-Sphere\n# Importar a função do módulo quantum_viz (localizado em ../src)\nimport sys\nfrom pathlib import Path\nfor p in [Path.cwd(), Path.cwd().parent, Path.cwd().parent.parent]:\n    if (p / \"src\").is_dir() and str(p / \"src\") not in sys.path:\n        sys.path.insert(0, str(p / \"src\"))\nfrom quantum_viz import plot_qsphere_interactive\n\n# 🎨 Criar e exibir a visualização\nprint(\"\\n🌐 Q-Sphere INTERATIVA:\")\nprint(\"   → Magenta = Fase positiva (+)\")\nprint(\"   → Ciano = Fase negativa (-)\")\nprint(\"   → Tamanho = Probabilidade\\n\")\n\n# A função plot_qsphere_interactive salva automaticamente e abre no navegador\nfig = plot_qsphere_interactive(estado_inicial)","id":5,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\n# 2. O KICKBACK\n# Aplicamos CNOT. O alvo (q1) está em |->.\n# Isso deve fazer o q0 virar |-> \"por tabela\".\nqc.cx(0, 1)","id":6,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Visualizar após o CNOT (Phase Kickback aconteceu)\nestado_apos_kickback = Statevector(qc)\nprint(f\"Estado após CNOT: {estado_apos_kickback}\")\nprint(\"\\nEsfera de Bloch - Note a mudança de fase no qubit 0:\")\ndisplay(plot_bloch_multivector(estado_apos_kickback))\nprint(\"\\nQ-Sphere:\")\ndisplay(plot_state_qsphere(estado_apos_kickback))","id":7,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\n# 3. VERIFICAÇÃO\n# Como saber se q0 virou |->?\n# Se aplicarmos H novamente:\n# H em |+> volta para 0\n# H em |-> volta para 1\nqc.h(0)","id":8,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"estado_verificacao = Statevector(qc)\nprint(f\"Estado após verificação (H no q0): {estado_verificacao}\")\ndisplay(plot_bloch_multivector(estado_verificacao))\nprint(\"\\nQ-Sphere:\")\ndisplay(plot_state_qsphere(estado_verificacao))","id":9,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Medimos APENAS o qubit de controle (q0)\nqc.measure(0, 0)\n\n# Executar\nsimulador = AerSimulator()\njob = simulador.run(transpile(qc, simulador), shots=1000)\nprint(\"Resultado do Controle:\", job.result().get_counts())","id":10,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\nimport random\n\ndef eh_constante_ou_balanceada(tabela_oculta):\n    \"\"\"\n    Entra um vetor parecido com [0,1,0,1,1], este com 5 bits, por exemplo.\n    Procura saber se o vetor é constante (só tem 0s ou 1s) ou balanceada (tem 0s e 1s misturados)\n    \"\"\"\n    historico_saidas = []\n    \n    # Testar até o limite do pior caso\n    for i in range(limite_pior_caso):\n        print(f\"Input: {i:03b} -> Output: {tabela_oculta[i]}\")\n        historico_saidas.append(tabela_oculta[i])\n        \n        # Se a lista tiver somente 0s ou somente 1s, continuar\n        # Caso contrário, já sabemos que é balanceada\n        if 0 in historico_saidas and 1 in historico_saidas:\n            print(\"Achamos ambos os valores! A função é balanceada.\")\n            return \"Balanceada\"\n    \n    print(\"Todos os valores são iguais! A função é constante.\")\n    return \"Constante\"\n\n# Utilizando inicialmente 3 bits de entrada (000) para execução rápida e\n# simplificação. Experimente depois aumentar para 15 bits. Você verá \n# como é lentooo...\nn_bits = 3\n\n# Número total de entradas possíveis (2^n_bits)\ntotal_inputs = 2 ** n_bits\n\n# Vamos fazer o teste contante aqui\ntabela_oculta = []                          # Lista que representa a função oculta\nvalor = random.choice([0, 1])               # Escolhe aleatoriamente 0 ou 1 para toda a lista\ntabela_oculta = [valor] * total_inputs      # Preenche a lista com o valor escolhido\n\nprint(\"Tabela oculta (caixa preta):\")\nprint(tabela_oculta)                        # Exibe a tabela oculta\n\nlimite_pior_caso = (2 ** (n_bits-1)) + 1    # Limite para o pior caso (metade + 1)\n\n# Aqui começa o teste\n# Deverá verificar se a função é constante ou balanceada\n# Se todos os valores forem iguais, é constante\n# Se encontrar ambos os valores (0 e 1) dentro da lista, é balanceada.\n# Obviamente vai ser contante, pois preenchemos assim.\n\nprint(\"\\nTestando se a função é constante ou balanceada:\")\neh_constante_ou_balanceada(tabela_oculta)\n    \n# Agora vamos fazer o teste balanceado\ntabela_oculta = []                          # Resetar a lista\nmetade = total_inputs // 2                  # Calcular a metade do total de entradas\ntabela_oculta = [0] * metade + [1] * metade # Preencher metade com 0s e metade com 1s\nrandom.shuffle(tabela_oculta)               # Embaralhar a lista para aleatoriedade\n\nprint(\"\\nTabela oculta (caixa preta):\")\nprint(tabela_oculta)                        # Exibe a tabela oculta\n\nprint(\"\\nTestando se a função é constante ou balanceada:\")\neh_constante_ou_balanceada(tabela_oculta)","id":11,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# ============================================\n# DEFINIÇÃO DOS ORÁCULOS NO CIRQ\n# ============================================\n\ndef criar_oraculo_balanceado(qubits_in, qubit_target):\n    \"\"\"\n    Retorna as operações para uma função BALANCEADA.\n    Implementação: CNOTs dos qubits de entrada para o qubit alvo.\n    \"\"\"\n    return [cirq.CNOT(q, qubit_target) for q in qubits_in]\n\ndef criar_oraculo_constante(qubits_in, qubit_target, valor=0):\n    \"\"\"\n    Retorna as operações para uma função CONSTANTE (sempre 0 ou sempre 1).\n    \"\"\"\n    if valor == 1:\n        return [cirq.X(qubit_target)]\n    return []  # Identidade para constante 0","id":12,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# 🎮 EXPERIMENTO INTERATIVO: Teste Ambos os Tipos de Função\n\nimport random\n\ndef executar_deutsch_jozsa(n_bits, tipo_funcao):\n    \"\"\"\n    Executa o Algoritmo de Deutsch-Jozsa para um tipo específico de função.\n    \n    Args:\n        n_bits: Número de bits de entrada\n        tipo_funcao: \"constante\" ou \"balanceada\"\n    \"\"\"\n    qc = QuantumCircuit(n_bits + 1, n_bits)\n    \n    # PASSO 1: Preparação\n    for i in range(n_bits):\n        qc.h(i)\n    qc.x(n_bits)\n    qc.h(n_bits)\n    qc.barrier()\n    \n    # PASSO 2: Aplicar oráculo\n    if tipo_funcao == \"constante\":\n        valor_constante = random.choice([0, 1])\n        oraculo = oraculo_constante(n_bits)\n        if valor_constante == 1:\n            oraculo.x(n_bits)\n        tipo_real = \"CONSTANTE\"\n        tabela_classica = [valor_constante] * (2**n_bits)\n    else:\n        oraculo = oraculo_balanceado(n_bits)\n        tipo_real = \"BALANCEADA\"\n        metade = 2**(n_bits-1)\n        tabela_classica = [0]*metade + [1]*metade\n        random.shuffle(tabela_classica)\n    \n    qc = qc.compose(oraculo)\n    qc.barrier()\n    \n    # PASSO 3: Interferência\n    for i in range(n_bits):\n        qc.h(i)\n    \n    # PASSO 4: Medição\n    qc.measure(range(n_bits), range(n_bits))\n    \n    # PASSO 5: Executar\n    simulador = AerSimulator()\n    job = simulador.run(transpile(qc, simulador), shots=1)\n    resultado = job.result().get_counts()\n    medicao = list(resultado.keys())[0]\n    \n    # Interpretar\n    if medicao == '0' * n_bits:\n        resultado_quantum = \"CONSTANTE\"\n    else:\n        resultado_quantum = \"BALANCEADA\"\n    \n    # Exibir resultados\n    print(\"=\"*70)\n    print(f\"🧪 TESTE COM FUNÇÃO {tipo_real}\")\n    print(\"=\"*70)\n    print(f\"📋 Tabela clássica (primeiros 8 valores): {tabela_classica[:8]}...\")\n    print(f\"⚛️  Medição quântica: {medicao}\")\n    print(f\"🎯 Resultado do algoritmo: {resultado_quantum}\")\n    \n    if resultado_quantum == tipo_real:\n        print(\"✅ CORRETO! O algoritmo identificou o tipo corretamente!\")\n    else:\n        print(\"❌ ERRO! Algo deu errado...\")\n    \n    print(f\"\\n💡 Consultas necessárias:\")\n    print(f\"   • Clássico: até {(2**(n_bits-1)) + 1} consultas\")\n    print(f\"   • Quântico: 1 consulta\")\n    print(\"=\"*70)\n    \n    return qc\n\n# ============================================\n# TESTAR AMBOS OS CASOS\n# ============================================\n\nn = 3  # Experimente com 5, 10 ou até 15 bits!\n\nprint(\"\\n🔬 EXPERIMENTO 1: Função Constante\\n\")\ncirc1 = executar_deutsch_jozsa(n, \"constante\")\n\nprint(\"\\n🔬 EXPERIMENTO 2: Função Balanceada\\n\")\ncirc2 = executar_deutsch_jozsa(n, \"balanceada\")\n\nprint(\"\\n📊 CONCLUSÃO:\")\nprint(f\"   Com {n} bits de entrada, o computador quântico resolve o problema\")\nprint(f\"   com apenas 1 consulta, enquanto o clássico precisaria de até\")\nprint(f\"   {(2**(n-1)) + 1} consultas no pior caso!\")\nprint(f\"   Isso é uma vantagem de {(2**(n-1)) + 1}x! 🚀\")","id":13,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\n# Desenhar o circuito completo\nprint(\"Circuito quântico do Algoritmo de Deutsch-Jozsa:\")\ndisplay(circ2.draw('mpl'))","id":14,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# ============================================\n# DEFINIÇÃO DOS ORÁCULOS\n# ============================================\n\ndef oraculo_balanceado(n_qubits):\n    \"\"\"\n    Cria um circuito que representa uma função BALANCEADA.\n    \n    Esta função retorna 0 para metade das entradas e 1 para a outra metade.\n    Implementação: CNOTs de todos os qubits de entrada para o qubit de saída.\n    \n    Equivalente quântico de: tabela_oculta = [0]*metade + [1]*metade (embaralhado)\n    \"\"\"\n    qc = QuantumCircuit(n_qubits + 1)\n    for qubit in range(n_qubits):\n        qc.cx(qubit, n_qubits) # CNOT de todos inputs para o alvo\n    return qc\n\ndef oraculo_constante(n_qubits):\n    \"\"\"\n    Cria um circuito que representa uma função CONSTANTE.\n    \n    Esta função retorna sempre 0 ou sempre 1 (independente da entrada).\n    \n    Implementação:\n    - Retorna sempre 0: não faz nada (circuito identidade)\n    - Retorna sempre 1: aplica X no qubit de saída\n    \n    Equivalente quântico de: tabela_oculta = [0] * total_inputs\n                          ou: tabela_oculta = [1] * total_inputs\n    \"\"\"\n    qc = QuantumCircuit(n_qubits + 1)\n    # Não adicionamos portas, então a saída é constante 0\n    # Para constante 1, descomente a linha abaixo:\n    # qc.x(n_qubits)\n    return qc","id":15,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# ============================================\n# CONSTRUÇÃO DO ALGORITMO PASSO A PASSO\n# ============================================\n\nn = 3  # Número de bits de entrada\nqc = QuantumCircuit(n + 1, n)\n\nprint(\"=\"*70)\nprint(\"🎯 ALGORITMO DE DEUTSCH-JOZSA - CONSTRUÇÃO PASSO A PASSO\")\nprint(\"=\"*70)\nprint(f\"Testando com {n} qubits de entrada\")\nprint(\"=\"*70)\n\n# ─────────────────────────────────────────────\n# PASSO 1: Inicialização\n# ─────────────────────────────────────────────\nprint(\"\\n📍 PASSO 1: Inicialização\")\nprint(\"   Colocando qubits de entrada em superposição |+⟩\")\nprint(\"   Preparando qubit auxiliar no estado |−⟩ para phase kickback\")\n\n# Inputs (0 a n-1) em Superposição |+>\nqc.h(range(n))\n\n# Alvo (último qubit) no estado |-> para gerar o KICKBACK\nqc.x(n)\nqc.h(n)\n\nqc.barrier()\n\nprint(\"   ✅ Preparação concluída!\")","id":16,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Visualizar estado inicial\nestado_inicial_dj = Statevector(qc)\nprint(\"Estado inicial - Superposição uniforme de todos os 8 estados:\")\ndisplay(plot_state_qsphere(estado_inicial_dj))","id":17,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\n# ─────────────────────────────────────────────\n# PASSO 2: Aplicação do Oráculo\n# ─────────────────────────────────────────────\nprint(\"\\n📍 PASSO 2: Aplicação do Oráculo\")\nprint(\"   Vamos usar um oráculo BALANCEADO\")\nprint(\"   Aqui acontece a 'mágica': testamos TODAS as entradas simultaneamente!\")\n\n# Vamos usar o balanceado. O algoritmo deve descobrir isso.\noraculo = oraculo_balanceado(n)\n# Adicionamos o oráculo ao nosso circuito principal\nqc = qc.compose(oraculo)\n\nqc.barrier()\n\nprint(\"   ✅ Oráculo aplicado! Informação codificada nas fases.\")","id":18,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Visualizar estado após oráculo\nestado_apos_oraculo_dj = Statevector(qc)\nprint(\"Estado após oráculo - Note as mudanças de fase:\")\ndisplay(plot_state_qsphere(estado_apos_oraculo_dj))","id":19,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\n# ─────────────────────────────────────────────\n# PASSO 3: Interferência Final\n# ─────────────────────────────────────────────\nprint(\"\\n📍 PASSO 3: Interferência\")\nprint(\"   Aplicando Hadamard novamente para converter FASE em AMPLITUDE\")\n\n# Aplicamos H em todos os inputs novamente.\n# Isso transforma o padrão de fase (criado pelo kickback) em resposta binária.\nqc.h(range(n))\n\nprint(\"   ✅ Interferência concluída! Pronto para medir.\")","id":20,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Visualizar estado antes da medição\nestado_antes_medicao = Statevector(qc)\nprint(\"Estado antes da medição - Após interferência:\")\ndisplay(plot_state_qsphere(estado_antes_medicao))","id":21,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"\n# ─────────────────────────────────────────────\n# PASSO 4: Medição\n# ─────────────────────────────────────────────\nprint(\"\\n📍 PASSO 4: Medição\")\nprint(\"   Medindo apenas os qubits de entrada (não precisamos medir o auxiliar)\")\n\n# Medimos APENAS os qubits de entrada (0 a n-1)\nqc.measure(range(n), range(n))\n\nprint(\"   ✅ Circuito completo! Pronto para executar.\")\nprint(\"=\"*70)","id":22,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# ─────────────────────────────────────────────\n# PASSO 5: Execução e Interpretação\n# ─────────────────────────────────────────────\nprint(\"\\n🚀 EXECUTANDO O ALGORITMO...\\n\")\n\n# Executar no simulador\nsimulador = AerSimulator()\njob = simulador.run(transpile(qc, simulador), shots=1000)\nresultado = job.result().get_counts()\n\nprint(f\"📊 Resultado da medição (1000 execuções): {resultado}\")\nprint(\"\\n\" + \"=\"*70)\nprint(\"📋 INTERPRETAÇÃO DO RESULTADO\")\nprint(\"=\"*70)\n\nif '000' in resultado:\n    print(\"   ❌ Medimos '000' → A função é CONSTANTE\")\n    print(\"   (Interferência construtiva em |000⟩)\")\nelse:\n    print(\"   ✅ Nunca medimos '000' → A função é BALANCEADA\")\n    print(\"   (Interferência destrutiva em |000⟩)\")\n\nprint(\"\\n💡 VANTAGEM QUÂNTICA:\")\nprint(f\"   • Versão Clássica: até {(2**(n-1)) + 1} consultas necessárias\")\nprint(f\"   • Versão Quântica: 1 consulta (sempre!)\")\nprint(f\"   • Speedup: {(2**(n-1)) + 1}x mais rápido!\")\nprint(\"=\"*70)\n    \n# Visualizar histograma\nplot_histogram(resultado)","id":23,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Na célula onde definimos o oráculo, mude esta linha:\noraculo = oraculo_constante(n)  # Em vez de oraculo_balanceado(n)","id":24,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}}];
 
 
 </script>
@@ -431,6 +431,41 @@ globalThis.qpyodideInstance = await import(
     import matplotlib
     matplotlib.use("module://matplotlib_pyodide.html5_canvas_backend")
     from matplotlib import pyplot as plt
+
+    import builtins
+    import sys
+    import types
+
+    class _Markdown:
+        def __init__(self, data=""):
+            self.data = str(data)
+        def __repr__(self):
+            return self.data
+        def _repr_markdown_(self):
+            return self.data
+
+    def _display(*args, **kwargs):
+        for arg in args:
+            if hasattr(arg, 'data'):
+                print(arg.data)
+            elif hasattr(arg, '_repr_latex_'):
+                print(arg._repr_latex_())
+            elif hasattr(arg, '_repr_markdown_'):
+                print(arg._repr_markdown_())
+            else:
+                print(arg)
+
+    builtins.display = _display
+    builtins.Markdown = _Markdown
+
+    # Shim IPython.display if imported by any lesson
+    ipython = types.ModuleType("IPython")
+    ipython_display = types.ModuleType("IPython.display")
+    ipython_display.display = _display
+    ipython_display.Markdown = _Markdown
+    ipython.display = ipython_display
+    sys.modules["IPython"] = ipython
+    sys.modules["IPython.display"] = ipython_display
     `);
 
     // Unlock interactive buttons
@@ -441,7 +476,7 @@ globalThis.qpyodideInstance = await import(
 
     // Set document status to viable
     qpyodideUpdateStatusHeader(
-      "🟢 Ready!"
+      "🟢 Pronto!"
     );
 
     // Assign Pyodide into the global environment
@@ -695,9 +730,9 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="pré-requisitos">📚 Pré-requisitos</h3>
 <p>Antes de continuar, certifique-se de que você entende:</p>
 <ul>
-<li>✅ <strong>Superposição</strong> - de <a href="01-intro.ipynb">01-intro.ipynb</a></li>
-<li>✅ <strong>Emaranhamento</strong> - de <a href="02-teletransport.ipynb">02-teletransport.ipynb</a></li>
-<li>✅ <strong>Porta Hadamard</strong> - de <a href="04-Hadamard-experiment.ipynb">04-Hadamard-experiment.ipynb</a></li>
+<li>✅ <strong>Superposição</strong> - de <a href="../../notebooks/01-intro.ipynb">01-intro.ipynb</a></li>
+<li>✅ <strong>Emaranhamento</strong> - de <a href="../../notebooks/02-teletransport.ipynb">02-teletransport.ipynb</a></li>
+<li>✅ <strong>Porta Hadamard</strong> - de <a href="../../notebooks/04-Hadamard-experiment.ipynb">04-Hadamard-experiment.ipynb</a></li>
 <li>✅ <strong>Interferência básica</strong> - H × H = I</li>
 </ul>
 </section>
@@ -746,7 +781,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="phase-kickback-e-o-algoritmo-de-deutsch-jozsa">Phase Kickback e o Algoritmo de Deutsch-Jozsa</h2>
 <p>Vamos mergulhar no mecanismo que faz os algoritmos quânticos funcionarem.</p>
 <p>Até agora, a intuição foi: “O qubit de controle manda no qubit alvo”.</p>
-<p>Lembra da porta CNOT em <a href="01-intro.ipynb">01-intro.ipynb</a>?</p>
+<p>Lembra da porta CNOT em <a href="../../notebooks/01-intro.ipynb">01-intro.ipynb</a>?</p>
 <p>No <strong>Phase Kickback</strong> (Coice de Fase), descobrimos que a relação é uma via de mão dupla. O qubit alvo pode alterar o estado do qubit de controle.</p>
 <p>É aqui que a “mágica” acontece.</p>
 <hr>
@@ -804,57 +839,15 @@ window.Quarto = {
 </section>
 <section id="código-completo-do-phase-kickback" class="level4">
 <h4 class="anchored" data-anchor-id="código-completo-do-phase-kickback">Código completo do Phase Kickback</h4>
-<p>Segue o código completo para demonstrar o Phase Kickback usando Qiskit. Logo após, faremos uma análise detalhada de cada etapa.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit <span class="im">import</span> QuantumCircuit, transpile</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit_aer <span class="im">import</span> AerSimulator</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.quantum_info <span class="im">import</span> Statevector</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.visualization <span class="im">import</span> plot_bloch_multivector, plot_state_qsphere</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Criar circuito com 2 qubits</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">2</span>, <span class="dv">1</span>)  <span class="co"># 2 Qubits, 1 Bit clássico</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>qc.draw(<span class="st">"mpl"</span>)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. PREPARAÇÃO</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Colocar o Qubit 0 (Controle) em Superposição |+&gt;</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>qc.h(<span class="dv">0</span>)</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Colocar o Qubit 1 (Alvo) no estado |- &gt;</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Para isso: aplicamos X (vira 1) e depois H (vira menos)</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>qc.x(<span class="dv">1</span>)</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>qc.h(<span class="dv">1</span>)</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. O KICKBACK</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplicamos CNOT. O alvo (q1) está em |-&gt;.</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Isso deve fazer o q0 virar |-&gt; "por tabela".</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>qc.cx(<span class="dv">0</span>, <span class="dv">1</span>)</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. VERIFICAÇÃO</span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Como saber se q0 virou |-&gt;?</span></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Se aplicarmos H novamente:</span></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co"># H em |+&gt; volta para 0</span></span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co"># H em |-&gt; volta para 1</span></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>qc.h(<span class="dv">0</span>)</span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Medimos APENAS o qubit de controle (q0)</span></span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>qc.measure(<span class="dv">0</span>, <span class="dv">0</span>)</span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Executar</span></span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>simulador <span class="op">=</span> AerSimulator()</span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>job <span class="op">=</span> simulador.run(transpile(qc, simulador), shots<span class="op">=</span><span class="dv">1000</span>)</span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Resultado do Controle:"</span>, job.result().get_counts())</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Segue o código completo para demonstrar o Phase Kickback usando Cirq. Logo após, faremos uma análise detalhada de cada etapa.</p>
+<div id="qpyodide-insertion-location-1"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>Resultado do Controle: {'1': 1000}
 </code></pre>
-<pre class="{python} {pyodide-python}"><code>
-# Visualizar o circuito completo
-qc.draw('mpl')</code></pre>
 </section>
 <section id="demonstração-detalhada-de-phase-kickback" class="level4">
 <h4 class="anchored" data-anchor-id="demonstração-detalhada-de-phase-kickback">Demonstração detalhada de Phase Kickback</h4>
 <p>Vamos provar que o qubit de controle muda sem que nenhuma porta toque nele diretamente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Criar circuito com 2 qubits</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">2</span>, <span class="dv">1</span>) <span class="co"># 2 Qubits, 1 Bit clássico</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Desenhar o circuito</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>qc.draw(<span class="st">'mpl'</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Matematicamente, os estados dos qubits, quando criados, são:</p>
 <ul>
 <li>Qubit 0 (Controle): <span class="math inline">\(|0\rangle\)</span></li>
@@ -865,18 +858,8 @@ qc.draw('mpl')</code></pre>
 </section>
 <section id="o-estado-inicial" class="level3">
 <h3 class="anchored" data-anchor-id="o-estado-inicial">O Estado Inicial</h3>
-<pre class="{python} {pyodide-python}"><code>
-# 1. PREPARAÇÃO
-# Colocar o Qubit 0 (Controle) em Superposição |+&gt;
-qc.h(0)
-
-# Colocar o Qubit 1 (Alvo) no estado |- &gt; 
-# Para isso: aplicamos X (vira 1) e depois H (vira menos)
-qc.x(1)
-qc.h(1)
-
-# Desenhar o circuito
-qc.draw('mpl')</code></pre>
+<div id="qpyodide-insertion-location-2"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <section id="demonstração-matemática-preparação-do-estado-inicial" class="level4">
 <h4 class="anchored" data-anchor-id="demonstração-matemática-preparação-do-estado-inicial">Demonstração Matemática: Preparação do Estado Inicial</h4>
 <p>O estado inicial preparado após a aplicação das portas Hadamard é:</p>
@@ -908,7 +891,7 @@ qc.draw('mpl')</code></pre>
 <p><span class="math display">\[|\psi_0\rangle = \frac{1}{2}\begin{pmatrix} 1 \\ -1 \\ 1 \\ -1 \end{pmatrix} = \begin{pmatrix} \frac{1}{2} \cdot 1 \\ \frac{1}{2} \cdot (-1) \\ \frac{1}{2} \cdot 1 \\ \frac{1}{2} \cdot (-1) \end{pmatrix} = \begin{pmatrix} \frac{1}{2} \\ -\frac{1}{2} \\ \frac{1}{2} \\ -\frac{1}{2} \end{pmatrix}\]</span></p>
 <p>Lembre-se que se expandirmos em termos da base computacional <span class="math inline">\(\{|00\rangle, |01\rangle, |10\rangle, |11\rangle\}\)</span>:</p>
 <p><span class="math display">\[|00\rangle = \begin{pmatrix} 1 \\ 0 \\ 0 \\ 0 \end{pmatrix}, \quad |01\rangle = \begin{pmatrix} 0 \\ 1 \\ 0 \\ 0 \end{pmatrix}, \quad |10\rangle = \begin{pmatrix} 0 \\ 0 \\ 1 \\ 0 \end{pmatrix}, \quad |11\rangle = \begin{pmatrix} 0 \\ 0 \\ 0 \\ 1 \end{pmatrix}\]</span></p>
-<p>Lembra disso acima? Se não, volte para a seção de produto tensorial em <a href="00-math.ipynb">00-math.ipynb</a>.</p>
+<p>Lembra disso acima? Se não, volte para a seção de produto tensorial em <a href="../../notebooks/00-math.ipynb">00-math.ipynb</a>.</p>
 <p>Portanto, o vetor <span class="math inline">\(\frac{1}{2}\begin{pmatrix} 1 \\ -1 \\ 1 \\ -1 \end{pmatrix}\)</span> pode ser escrito como:</p>
 <p><span class="math display">\[|\psi_0\rangle = \frac{1}{2} \cdot 1 \cdot \begin{pmatrix} 1 \\ 0 \\ 0 \\ 0 \end{pmatrix} + \frac{1}{2} \cdot (-1) \cdot \begin{pmatrix} 0 \\ 1 \\ 0 \\ 0 \end{pmatrix} + \frac{1}{2} \cdot 1 \cdot \begin{pmatrix} 0 \\ 0 \\ 1 \\ 0 \end{pmatrix} + \frac{1}{2} \cdot (-1) \cdot \begin{pmatrix} 0 \\ 0 \\ 0 \\ 1 \end{pmatrix} \implies\]</span></p>
 <p><span class="math display">\[|\psi_0\rangle = \frac{1}{2} \cdot 1 \cdot |00\rangle + \frac{1}{2} \cdot (-1) \cdot |01\rangle + \frac{1}{2} \cdot 1 \cdot |10\rangle + \frac{1}{2} \cdot (-1) \cdot |11\rangle\]</span></p>
@@ -919,10 +902,8 @@ qc.draw('mpl')</code></pre>
 </section>
 <section id="visualização-estado-inicial-preparado" class="level3">
 <h3 class="anchored" data-anchor-id="visualização-estado-inicial-preparado">Visualização: Estado Inicial Preparado</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar o estado após preparação</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>estado_inicial <span class="op">=</span> Statevector(qc)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Estado inicial: </span><span class="sc">{</span>estado_inicial<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>display(plot_bloch_multivector(estado_inicial))</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="qpyodide-insertion-location-3"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>Estado inicial: Statevector([ 0.5+0.j,  0.5+0.j, -0.5+0.j, -0.5+0.j],
             dims=(2, 2))
 </code></pre>
@@ -988,8 +969,8 @@ qc.draw('mpl')</code></pre>
 </section>
 <section id="q-sphere" class="level2">
 <h2 class="anchored" data-anchor-id="q-sphere">Q-Sphere</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Q-Sphere mostrando ambos os qubits:"</span>)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>display(plot_state_qsphere(estado_inicial))</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="qpyodide-insertion-location-4"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>
 Q-Sphere mostrando ambos os qubits:
 </code></pre>
@@ -1074,24 +1055,8 @@ Q-Sphere mostrando ambos os qubits:
 <li>Especificamente, veremos uma reorganização do padrão de cores mostrando que a fase do sistema mudou</li>
 </ul>
 <p>Essa mudança de fase sem alterar probabilidades é a assinatura característica do <strong>Phase Kickback</strong>!</p>
-<pre class="{python} {pyodide-python}"><code>
-# 🌐 Visualização INTERATIVA da Q-Sphere
-# Importar a função do módulo quantum_viz (localizado em ../src)
-import sys
-from pathlib import Path
-for p in [Path.cwd(), Path.cwd().parent, Path.cwd().parent.parent]:
-    if (p / "src").is_dir() and str(p / "src") not in sys.path:
-        sys.path.insert(0, str(p / "src"))
-from quantum_viz import plot_qsphere_interactive
-
-# 🎨 Criar e exibir a visualização
-print("\n🌐 Q-Sphere INTERATIVA:")
-print("   → Magenta = Fase positiva (+)")
-print("   → Ciano = Fase negativa (-)")
-print("   → Tamanho = Probabilidade\n")
-
-# A função plot_qsphere_interactive salva automaticamente e abre no navegador
-fig = plot_qsphere_interactive(estado_inicial)</code></pre>
+<div id="qpyodide-insertion-location-5"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>
 🌐 Q-Sphere INTERATIVA:
    → Magenta = Fase positiva (+)
@@ -1104,12 +1069,8 @@ fig = plot_qsphere_interactive(estado_inicial)</code></pre>
 💡 Dica: Você pode arrastar, girar e dar zoom na esfera!
    O arquivo HTML pode ser aberto a qualquer momento.
 </code></pre>
-<pre class="{python} {pyodide-python}"><code>
-# 2. O KICKBACK
-# Aplicamos CNOT. O alvo (q1) está em |-&gt;.
-# Isso deve fazer o q0 virar |-&gt; "por tabela".
-qc.cx(0, 1)
-</code></pre>
+<div id="qpyodide-insertion-location-6"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
 <section id="demonstração-matemática-o-phase-kickback" class="level4">
 <h4 class="anchored" data-anchor-id="demonstração-matemática-o-phase-kickback">Demonstração Matemática: O Phase Kickback</h4>
@@ -1123,13 +1084,8 @@ qc.cx(0, 1)
 <p><span class="math display">\[= \frac{1}{\sqrt{2}}[|0\rangle \otimes |-\rangle + (-1)|1\rangle \otimes |-\rangle]\]</span></p>
 <p><span class="math display">\[= \frac{1}{\sqrt{2}}(|0\rangle - |1\rangle) \otimes |-\rangle = |-\rangle \otimes |-\rangle\]</span></p>
 <p><strong>Conclusão:</strong> O qubit de controle mudou de <span class="math inline">\(|+\rangle\)</span> para <span class="math inline">\(|-\rangle\)</span> sem que nenhuma porta tenha agido diretamente sobre ele!</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar após o CNOT (Phase Kickback aconteceu)</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>estado_apos_kickback <span class="op">=</span> Statevector(qc)</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Estado após CNOT: </span><span class="sc">{</span>estado_apos_kickback<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Esfera de Bloch - Note a mudança de fase no qubit 0:"</span>)</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>display(plot_bloch_multivector(estado_apos_kickback))</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Q-Sphere:"</span>)</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>display(plot_state_qsphere(estado_apos_kickback))</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="qpyodide-insertion-location-7"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>Estado após CNOT: Statevector([ 0.5+0.j, -0.5+0.j, -0.5+0.j,  0.5+0.j],
             dims=(2, 2))
 
@@ -1141,14 +1097,8 @@ Q-Sphere:
 </section>
 <section id="visualização-após-o-phase-kickback-cnot" class="level4">
 <h4 class="anchored" data-anchor-id="visualização-após-o-phase-kickback-cnot">Visualização: Após o Phase Kickback (CNOT)</h4>
-<pre class="{python} {pyodide-python}"><code>
-# 3. VERIFICAÇÃO
-# Como saber se q0 virou |-&gt;?
-# Se aplicarmos H novamente:
-# H em |+&gt; volta para 0
-# H em |-&gt; volta para 1
-qc.h(0)
-</code></pre>
+<div id="qpyodide-insertion-location-8"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
 <section id="demonstração-matemática-verificação-com-hadamard" class="level4">
 <h4 class="anchored" data-anchor-id="demonstração-matemática-verificação-com-hadamard">Demonstração Matemática: Verificação com Hadamard</h4>
@@ -1161,11 +1111,8 @@ qc.h(0)
 <li>Se medirmos <strong>1</strong>, o estado antes era <span class="math inline">\(|-\rangle\)</span></li>
 </ul>
 <p>Como o Phase Kickback transformou <span class="math inline">\(|+\rangle \to |-\rangle\)</span>, esperamos medir <strong>1</strong> em 100% das vezes!</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>estado_verificacao <span class="op">=</span> Statevector(qc)</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Estado após verificação (H no q0): </span><span class="sc">{</span>estado_verificacao<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>display(plot_bloch_multivector(estado_verificacao))</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Q-Sphere:"</span>)</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>display(plot_state_qsphere(estado_verificacao))</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="qpyodide-insertion-location-9"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>Estado após verificação (H no q0): Statevector([ 2.29934717e-17+0.j,  7.07106781e-01+0.j, -2.29934717e-17+0.j,
              -7.07106781e-01+0.j],
             dims=(2, 2))
@@ -1173,13 +1120,8 @@ qc.h(0)
 <pre><code>
 Q-Sphere:
 </code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Medimos APENAS o qubit de controle (q0)</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>qc.measure(<span class="dv">0</span>, <span class="dv">0</span>)</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Executar</span></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>simulador <span class="op">=</span> AerSimulator()</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>job <span class="op">=</span> simulador.run(transpile(qc, simulador), shots<span class="op">=</span><span class="dv">1000</span>)</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Resultado do Controle:"</span>, job.result().get_counts())</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="qpyodide-insertion-location-10"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>Resultado do Controle: {'1': 1000}
 </code></pre>
 <p><strong>Resultado esperado:</strong> <code>{'1': 1000}</code>. Você mediu 1. Isso prova que o estado antes da medição era <span class="math inline">\(\ket{1}\)</span>. O controle foi alterado pelo alvo!</p>
@@ -1212,69 +1154,8 @@ Q-Sphere:
 <section id="teste-com-3-bits-em-computador-clássico" class="level4">
 <h4 class="anchored" data-anchor-id="teste-com-3-bits-em-computador-clássico">Teste com 3 bits em computador clássico</h4>
 <p>Para os curiosos, resolvi criar à parte o problema da caixa preta para ser utilizado em um computador clássico. Segue o código:</p>
-<pre class="{python} {pyodide-python}"><code>
-import random
-
-def eh_constante_ou_balanceada(tabela_oculta):
-    """
-    Entra um vetor parecido com [0,1,0,1,1], este com 5 bits, por exemplo.
-    Procura saber se o vetor é constante (só tem 0s ou 1s) ou balanceada (tem 0s e 1s misturados)
-    """
-    historico_saidas = []
-    
-    # Testar até o limite do pior caso
-    for i in range(limite_pior_caso):
-        print(f"Input: {i:03b} -&gt; Output: {tabela_oculta[i]}")
-        historico_saidas.append(tabela_oculta[i])
-        
-        # Se a lista tiver somente 0s ou somente 1s, continuar
-        # Caso contrário, já sabemos que é balanceada
-        if 0 in historico_saidas and 1 in historico_saidas:
-            print("Achamos ambos os valores! A função é balanceada.")
-            return "Balanceada"
-    
-    print("Todos os valores são iguais! A função é constante.")
-    return "Constante"
-
-# Utilizando inicialmente 3 bits de entrada (000) para execução rápida e
-# simplificação. Experimente depois aumentar para 15 bits. Você verá 
-# como é lentooo...
-n_bits = 3
-
-# Número total de entradas possíveis (2^n_bits)
-total_inputs = 2 ** n_bits
-
-# Vamos fazer o teste contante aqui
-tabela_oculta = []                          # Lista que representa a função oculta
-valor = random.choice([0, 1])               # Escolhe aleatoriamente 0 ou 1 para toda a lista
-tabela_oculta = [valor] * total_inputs      # Preenche a lista com o valor escolhido
-
-print("Tabela oculta (caixa preta):")
-print(tabela_oculta)                        # Exibe a tabela oculta
-
-limite_pior_caso = (2 ** (n_bits-1)) + 1    # Limite para o pior caso (metade + 1)
-
-# Aqui começa o teste
-# Deverá verificar se a função é constante ou balanceada
-# Se todos os valores forem iguais, é constante
-# Se encontrar ambos os valores (0 e 1) dentro da lista, é balanceada.
-# Obviamente vai ser contante, pois preenchemos assim.
-
-print("\nTestando se a função é constante ou balanceada:")
-eh_constante_ou_balanceada(tabela_oculta)
-    
-# Agora vamos fazer o teste balanceado
-tabela_oculta = []                          # Resetar a lista
-metade = total_inputs // 2                  # Calcular a metade do total de entradas
-tabela_oculta = [0] * metade + [1] * metade # Preencher metade com 0s e metade com 1s
-random.shuffle(tabela_oculta)               # Embaralhar a lista para aleatoriedade
-
-print("\nTabela oculta (caixa preta):")
-print(tabela_oculta)                        # Exibe a tabela oculta
-
-print("\nTestando se a função é constante ou balanceada:")
-eh_constante_ou_balanceada(tabela_oculta)
-</code></pre>
+<div id="qpyodide-insertion-location-11"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>Tabela oculta (caixa preta):
 [0, 0, 0, 0, 0, 0, 0, 0]
 
@@ -1316,141 +1197,10 @@ Achamos ambos os valores! A função é balanceada.
 <section id="versão-quântica-do-problema" class="level2">
 <h2 class="anchored" data-anchor-id="versão-quântica-do-problema">🚀 Versão Quântica do Problema</h2>
 <p>Agora vamos implementar o <strong>Algoritmo de Deutsch-Jozsa</strong> - a versão quântica que resolve o mesmo problema com <strong>apenas 1 consulta ao oráculo</strong>!</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit <span class="im">import</span> QuantumCircuit, transpile</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit_aer <span class="im">import</span> AerSimulator</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.quantum_info <span class="im">import</span> Statevector</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.visualization <span class="im">import</span> plot_bloch_multivector, plot_state_qsphere, plot_histogram</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ============================================</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co"># DEFINIÇÃO DOS ORÁCULOS</span></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ============================================</span></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> oraculo_balanceado(n_qubits):</span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="co">    Cria um circuito que representa uma função BALANCEADA.</span></span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
-<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="co">    Esta função retorna 0 para metade das entradas e 1 para a outra metade.</span></span>
-<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="co">    Implementação: CNOTs de todos os qubits de entrada para o qubit de saída.</span></span>
-<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
-<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a><span class="co">    Equivalente quântico de: tabela_oculta = [0]*metade + [1]*metade (embaralhado)</span></span>
-<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>    qc <span class="op">=</span> QuantumCircuit(n_qubits <span class="op">+</span> <span class="dv">1</span>)</span>
-<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> qubit <span class="kw">in</span> <span class="bu">range</span>(n_qubits):</span>
-<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>        qc.cx(qubit, n_qubits) <span class="co"># CNOT de todos inputs para o alvo</span></span>
-<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> qc</span>
-<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> oraculo_constante(n_qubits):</span>
-<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a><span class="co">    Cria um circuito que representa uma função CONSTANTE.</span></span>
-<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
-<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a><span class="co">    Esta função retorna sempre 0 ou sempre 1 (independente da entrada).</span></span>
-<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
-<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a><span class="co">    Implementação:</span></span>
-<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a><span class="co">    - Retorna sempre 0: não faz nada (circuito identidade)</span></span>
-<span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a><span class="co">    - Retorna sempre 1: aplica X no qubit de saída</span></span>
-<span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
-<span id="cb27-29"><a href="#cb27-29" aria-hidden="true" tabindex="-1"></a><span class="co">    Equivalente quântico de: tabela_oculta = [0] * total_inputs</span></span>
-<span id="cb27-30"><a href="#cb27-30" aria-hidden="true" tabindex="-1"></a><span class="co">                          ou: tabela_oculta = [1] * total_inputs</span></span>
-<span id="cb27-31"><a href="#cb27-31" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb27-32"><a href="#cb27-32" aria-hidden="true" tabindex="-1"></a>    qc <span class="op">=</span> QuantumCircuit(n_qubits <span class="op">+</span> <span class="dv">1</span>)</span>
-<span id="cb27-33"><a href="#cb27-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Não adicionamos portas, então a saída é constante 0</span></span>
-<span id="cb27-34"><a href="#cb27-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Para constante 1, descomente a linha abaixo:</span></span>
-<span id="cb27-35"><a href="#cb27-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># qc.x(n_qubits)</span></span>
-<span id="cb27-36"><a href="#cb27-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> qc</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 🎮 EXPERIMENTO INTERATIVO: Teste Ambos os Tipos de Função</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> executar_deutsch_jozsa(n_bits, tipo_funcao):</span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="co">    Executa o Algoritmo de Deutsch-Jozsa para um tipo específico de função.</span></span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
-<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="co">        n_bits: Número de bits de entrada</span></span>
-<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="co">        tipo_funcao: "constante" ou "balanceada"</span></span>
-<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>    qc <span class="op">=</span> QuantumCircuit(n_bits <span class="op">+</span> <span class="dv">1</span>, n_bits)</span>
-<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># PASSO 1: Preparação</span></span>
-<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n_bits):</span>
-<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>        qc.h(i)</span>
-<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>    qc.x(n_bits)</span>
-<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>    qc.h(n_bits)</span>
-<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>    qc.barrier()</span>
-<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># PASSO 2: Aplicar oráculo</span></span>
-<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> tipo_funcao <span class="op">==</span> <span class="st">"constante"</span>:</span>
-<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a>        valor_constante <span class="op">=</span> random.choice([<span class="dv">0</span>, <span class="dv">1</span>])</span>
-<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>        oraculo <span class="op">=</span> oraculo_constante(n_bits)</span>
-<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> valor_constante <span class="op">==</span> <span class="dv">1</span>:</span>
-<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a>            oraculo.x(n_bits)</span>
-<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a>        tipo_real <span class="op">=</span> <span class="st">"CONSTANTE"</span></span>
-<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a>        tabela_classica <span class="op">=</span> [valor_constante] <span class="op">*</span> (<span class="dv">2</span><span class="op">**</span>n_bits)</span>
-<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a>        oraculo <span class="op">=</span> oraculo_balanceado(n_bits)</span>
-<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a>        tipo_real <span class="op">=</span> <span class="st">"BALANCEADA"</span></span>
-<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a>        metade <span class="op">=</span> <span class="dv">2</span><span class="op">**</span>(n_bits<span class="op">-</span><span class="dv">1</span>)</span>
-<span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a>        tabela_classica <span class="op">=</span> [<span class="dv">0</span>]<span class="op">*</span>metade <span class="op">+</span> [<span class="dv">1</span>]<span class="op">*</span>metade</span>
-<span id="cb28-35"><a href="#cb28-35" aria-hidden="true" tabindex="-1"></a>        random.shuffle(tabela_classica)</span>
-<span id="cb28-36"><a href="#cb28-36" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb28-37"><a href="#cb28-37" aria-hidden="true" tabindex="-1"></a>    qc <span class="op">=</span> qc.compose(oraculo)</span>
-<span id="cb28-38"><a href="#cb28-38" aria-hidden="true" tabindex="-1"></a>    qc.barrier()</span>
-<span id="cb28-39"><a href="#cb28-39" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb28-40"><a href="#cb28-40" aria-hidden="true" tabindex="-1"></a>    <span class="co"># PASSO 3: Interferência</span></span>
-<span id="cb28-41"><a href="#cb28-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n_bits):</span>
-<span id="cb28-42"><a href="#cb28-42" aria-hidden="true" tabindex="-1"></a>        qc.h(i)</span>
-<span id="cb28-43"><a href="#cb28-43" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb28-44"><a href="#cb28-44" aria-hidden="true" tabindex="-1"></a>    <span class="co"># PASSO 4: Medição</span></span>
-<span id="cb28-45"><a href="#cb28-45" aria-hidden="true" tabindex="-1"></a>    qc.measure(<span class="bu">range</span>(n_bits), <span class="bu">range</span>(n_bits))</span>
-<span id="cb28-46"><a href="#cb28-46" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb28-47"><a href="#cb28-47" aria-hidden="true" tabindex="-1"></a>    <span class="co"># PASSO 5: Executar</span></span>
-<span id="cb28-48"><a href="#cb28-48" aria-hidden="true" tabindex="-1"></a>    simulador <span class="op">=</span> AerSimulator()</span>
-<span id="cb28-49"><a href="#cb28-49" aria-hidden="true" tabindex="-1"></a>    job <span class="op">=</span> simulador.run(transpile(qc, simulador), shots<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb28-50"><a href="#cb28-50" aria-hidden="true" tabindex="-1"></a>    resultado <span class="op">=</span> job.result().get_counts()</span>
-<span id="cb28-51"><a href="#cb28-51" aria-hidden="true" tabindex="-1"></a>    medicao <span class="op">=</span> <span class="bu">list</span>(resultado.keys())[<span class="dv">0</span>]</span>
-<span id="cb28-52"><a href="#cb28-52" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb28-53"><a href="#cb28-53" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Interpretar</span></span>
-<span id="cb28-54"><a href="#cb28-54" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> medicao <span class="op">==</span> <span class="st">'0'</span> <span class="op">*</span> n_bits:</span>
-<span id="cb28-55"><a href="#cb28-55" aria-hidden="true" tabindex="-1"></a>        resultado_quantum <span class="op">=</span> <span class="st">"CONSTANTE"</span></span>
-<span id="cb28-56"><a href="#cb28-56" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb28-57"><a href="#cb28-57" aria-hidden="true" tabindex="-1"></a>        resultado_quantum <span class="op">=</span> <span class="st">"BALANCEADA"</span></span>
-<span id="cb28-58"><a href="#cb28-58" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb28-59"><a href="#cb28-59" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Exibir resultados</span></span>
-<span id="cb28-60"><a href="#cb28-60" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"="</span><span class="op">*</span><span class="dv">70</span>)</span>
-<span id="cb28-61"><a href="#cb28-61" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"🧪 TESTE COM FUNÇÃO </span><span class="sc">{</span>tipo_real<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb28-62"><a href="#cb28-62" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"="</span><span class="op">*</span><span class="dv">70</span>)</span>
-<span id="cb28-63"><a href="#cb28-63" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"📋 Tabela clássica (primeiros 8 valores): </span><span class="sc">{</span>tabela_classica[:<span class="dv">8</span>]<span class="sc">}</span><span class="ss">..."</span>)</span>
-<span id="cb28-64"><a href="#cb28-64" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"⚛️  Medição quântica: </span><span class="sc">{</span>medicao<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb28-65"><a href="#cb28-65" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"🎯 Resultado do algoritmo: </span><span class="sc">{</span>resultado_quantum<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb28-66"><a href="#cb28-66" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb28-67"><a href="#cb28-67" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> resultado_quantum <span class="op">==</span> tipo_real:</span>
-<span id="cb28-68"><a href="#cb28-68" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"✅ CORRETO! O algoritmo identificou o tipo corretamente!"</span>)</span>
-<span id="cb28-69"><a href="#cb28-69" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb28-70"><a href="#cb28-70" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"❌ ERRO! Algo deu errado..."</span>)</span>
-<span id="cb28-71"><a href="#cb28-71" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb28-72"><a href="#cb28-72" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">💡 Consultas necessárias:"</span>)</span>
-<span id="cb28-73"><a href="#cb28-73" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"   • Clássico: até </span><span class="sc">{</span>(<span class="dv">2</span><span class="op">**</span>(n_bits<span class="op">-</span><span class="dv">1</span>)) <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss"> consultas"</span>)</span>
-<span id="cb28-74"><a href="#cb28-74" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"   • Quântico: 1 consulta"</span>)</span>
-<span id="cb28-75"><a href="#cb28-75" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"="</span><span class="op">*</span><span class="dv">70</span>)</span>
-<span id="cb28-76"><a href="#cb28-76" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb28-77"><a href="#cb28-77" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> qc</span>
-<span id="cb28-78"><a href="#cb28-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-79"><a href="#cb28-79" aria-hidden="true" tabindex="-1"></a><span class="co"># ============================================</span></span>
-<span id="cb28-80"><a href="#cb28-80" aria-hidden="true" tabindex="-1"></a><span class="co"># TESTAR AMBOS OS CASOS</span></span>
-<span id="cb28-81"><a href="#cb28-81" aria-hidden="true" tabindex="-1"></a><span class="co"># ============================================</span></span>
-<span id="cb28-82"><a href="#cb28-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-83"><a href="#cb28-83" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="dv">3</span>  <span class="co"># Experimente com 5, 10 ou até 15 bits!</span></span>
-<span id="cb28-84"><a href="#cb28-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-85"><a href="#cb28-85" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">🔬 EXPERIMENTO 1: Função Constante</span><span class="ch">\n</span><span class="st">"</span>)</span>
-<span id="cb28-86"><a href="#cb28-86" aria-hidden="true" tabindex="-1"></a>circ1 <span class="op">=</span> executar_deutsch_jozsa(n, <span class="st">"constante"</span>)</span>
-<span id="cb28-87"><a href="#cb28-87" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-88"><a href="#cb28-88" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">🔬 EXPERIMENTO 2: Função Balanceada</span><span class="ch">\n</span><span class="st">"</span>)</span>
-<span id="cb28-89"><a href="#cb28-89" aria-hidden="true" tabindex="-1"></a>circ2 <span class="op">=</span> executar_deutsch_jozsa(n, <span class="st">"balanceada"</span>)</span>
-<span id="cb28-90"><a href="#cb28-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-91"><a href="#cb28-91" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">📊 CONCLUSÃO:"</span>)</span>
-<span id="cb28-92"><a href="#cb28-92" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"   Com </span><span class="sc">{</span>n<span class="sc">}</span><span class="ss"> bits de entrada, o computador quântico resolve o problema"</span>)</span>
-<span id="cb28-93"><a href="#cb28-93" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"   com apenas 1 consulta, enquanto o clássico precisaria de até"</span>)</span>
-<span id="cb28-94"><a href="#cb28-94" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"   </span><span class="sc">{</span>(<span class="dv">2</span><span class="op">**</span>(n<span class="op">-</span><span class="dv">1</span>)) <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss"> consultas no pior caso!"</span>)</span>
-<span id="cb28-95"><a href="#cb28-95" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"   Isso é uma vantagem de </span><span class="sc">{</span>(<span class="dv">2</span><span class="op">**</span>(n<span class="op">-</span><span class="dv">1</span>)) <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">x! 🚀"</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="qpyodide-insertion-location-12"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<div id="qpyodide-insertion-location-13"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>
 🔬 EXPERIMENTO 1: Função Constante
 
@@ -1490,10 +1240,8 @@ Achamos ambos os valores! A função é balanceada.
 </code></pre>
 <section id="visualização-circuito-completo-deutsch-jozsa" class="level4">
 <h4 class="anchored" data-anchor-id="visualização-circuito-completo-deutsch-jozsa">Visualização: Circuito Completo Deutsch-Jozsa</h4>
-<pre class="{python} {pyodide-python}"><code>
-# Desenhar o circuito completo
-print("Circuito quântico do Algoritmo de Deutsch-Jozsa:")
-display(circ2.draw('mpl'))</code></pre>
+<div id="qpyodide-insertion-location-14"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>Circuito quântico do Algoritmo de Deutsch-Jozsa:
 </code></pre>
 </section>
@@ -1554,72 +1302,10 @@ display(circ2.draw('mpl'))</code></pre>
 <section id="o-circuito-detalhado-deutsch-jozsa-em-python" class="level4">
 <h4 class="anchored" data-anchor-id="o-circuito-detalhado-deutsch-jozsa-em-python">O circuito detalhado Deutsch-Jozsa em Python</h4>
 <p>Primeiro, importamos as bibliotecas necessárias:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ============================================</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="co"># DEFINIÇÃO DOS ORÁCULOS</span></span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ============================================</span></span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> oraculo_balanceado(n_qubits):</span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="co">    Cria um circuito que representa uma função BALANCEADA.</span></span>
-<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
-<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a><span class="co">    Esta função retorna 0 para metade das entradas e 1 para a outra metade.</span></span>
-<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a><span class="co">    Implementação: CNOTs de todos os qubits de entrada para o qubit de saída.</span></span>
-<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
-<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a><span class="co">    Equivalente quântico de: tabela_oculta = [0]*metade + [1]*metade (embaralhado)</span></span>
-<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>    qc <span class="op">=</span> QuantumCircuit(n_qubits <span class="op">+</span> <span class="dv">1</span>)</span>
-<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> qubit <span class="kw">in</span> <span class="bu">range</span>(n_qubits):</span>
-<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>        qc.cx(qubit, n_qubits) <span class="co"># CNOT de todos inputs para o alvo</span></span>
-<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> qc</span>
-<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> oraculo_constante(n_qubits):</span>
-<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a><span class="co">    Cria um circuito que representa uma função CONSTANTE.</span></span>
-<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
-<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a><span class="co">    Esta função retorna sempre 0 ou sempre 1 (independente da entrada).</span></span>
-<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
-<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a><span class="co">    Implementação:</span></span>
-<span id="cb32-26"><a href="#cb32-26" aria-hidden="true" tabindex="-1"></a><span class="co">    - Retorna sempre 0: não faz nada (circuito identidade)</span></span>
-<span id="cb32-27"><a href="#cb32-27" aria-hidden="true" tabindex="-1"></a><span class="co">    - Retorna sempre 1: aplica X no qubit de saída</span></span>
-<span id="cb32-28"><a href="#cb32-28" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
-<span id="cb32-29"><a href="#cb32-29" aria-hidden="true" tabindex="-1"></a><span class="co">    Equivalente quântico de: tabela_oculta = [0] * total_inputs</span></span>
-<span id="cb32-30"><a href="#cb32-30" aria-hidden="true" tabindex="-1"></a><span class="co">                          ou: tabela_oculta = [1] * total_inputs</span></span>
-<span id="cb32-31"><a href="#cb32-31" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb32-32"><a href="#cb32-32" aria-hidden="true" tabindex="-1"></a>    qc <span class="op">=</span> QuantumCircuit(n_qubits <span class="op">+</span> <span class="dv">1</span>)</span>
-<span id="cb32-33"><a href="#cb32-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Não adicionamos portas, então a saída é constante 0</span></span>
-<span id="cb32-34"><a href="#cb32-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Para constante 1, descomente a linha abaixo:</span></span>
-<span id="cb32-35"><a href="#cb32-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># qc.x(n_qubits)</span></span>
-<span id="cb32-36"><a href="#cb32-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> qc</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ============================================</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co"># CONSTRUÇÃO DO ALGORITMO PASSO A PASSO</span></span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ============================================</span></span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="dv">3</span>  <span class="co"># Número de bits de entrada</span></span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(n <span class="op">+</span> <span class="dv">1</span>, n)</span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"="</span><span class="op">*</span><span class="dv">70</span>)</span>
-<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"🎯 ALGORITMO DE DEUTSCH-JOZSA - CONSTRUÇÃO PASSO A PASSO"</span>)</span>
-<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"="</span><span class="op">*</span><span class="dv">70</span>)</span>
-<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Testando com </span><span class="sc">{</span>n<span class="sc">}</span><span class="ss"> qubits de entrada"</span>)</span>
-<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"="</span><span class="op">*</span><span class="dv">70</span>)</span>
-<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────────────────────────────────────────────</span></span>
-<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a><span class="co"># PASSO 1: Inicialização</span></span>
-<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────────────────────────────────────────────</span></span>
-<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">📍 PASSO 1: Inicialização"</span>)</span>
-<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"   Colocando qubits de entrada em superposição |+⟩"</span>)</span>
-<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"   Preparando qubit auxiliar no estado |−⟩ para phase kickback"</span>)</span>
-<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Inputs (0 a n-1) em Superposição |+&gt;</span></span>
-<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a>qc.h(<span class="bu">range</span>(n))</span>
-<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Alvo (último qubit) no estado |-&gt; para gerar o KICKBACK</span></span>
-<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a>qc.x(n)</span>
-<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a>qc.h(n)</span>
-<span id="cb33-27"><a href="#cb33-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-28"><a href="#cb33-28" aria-hidden="true" tabindex="-1"></a>qc.barrier()</span>
-<span id="cb33-29"><a href="#cb33-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-30"><a href="#cb33-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"   ✅ Preparação concluída!"</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="qpyodide-insertion-location-15"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<div id="qpyodide-insertion-location-16"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>======================================================================
 🎯 ALGORITMO DE DEUTSCH-JOZSA - CONSTRUÇÃO PASSO A PASSO
 ======================================================================
@@ -1631,10 +1317,8 @@ Testando com 3 qubits de entrada
    Preparando qubit auxiliar no estado |−⟩ para phase kickback
    ✅ Preparação concluída!
 </code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar estado inicial</span></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>estado_inicial_dj <span class="op">=</span> Statevector(qc)</span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Estado inicial - Superposição uniforme de todos os 8 estados:"</span>)</span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>display(plot_state_qsphere(estado_inicial_dj))</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="qpyodide-insertion-location-17"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>Estado inicial - Superposição uniforme de todos os 8 estados:
 </code></pre>
 </section>
@@ -1647,33 +1331,16 @@ Testando com 3 qubits de entrada
 <p><span class="math display">\[= \left(\frac{1}{\sqrt{2^3}} \sum_{x=0}^{7} |x\rangle\right) \otimes |-\rangle\]</span></p>
 <p><span class="math display">\[= \frac{1}{2\sqrt{2}} (|000\rangle + |001\rangle + |010\rangle + ... + |111\rangle) \otimes \frac{|0\rangle - |1\rangle}{\sqrt{2}}\]</span></p>
 <p>Cada um dos 8 estados possíveis tem amplitude <span class="math inline">\(\frac{1}{2\sqrt{2}}\)</span>, criando uma <strong>superposição uniforme</strong>.</p>
-<pre class="{python} {pyodide-python}"><code>
-# ─────────────────────────────────────────────
-# PASSO 2: Aplicação do Oráculo
-# ─────────────────────────────────────────────
-print("\n📍 PASSO 2: Aplicação do Oráculo")
-print("   Vamos usar um oráculo BALANCEADO")
-print("   Aqui acontece a 'mágica': testamos TODAS as entradas simultaneamente!")
-
-# Vamos usar o balanceado. O algoritmo deve descobrir isso.
-oraculo = oraculo_balanceado(n)
-# Adicionamos o oráculo ao nosso circuito principal
-qc = qc.compose(oraculo)
-
-qc.barrier()
-
-print("   ✅ Oráculo aplicado! Informação codificada nas fases.")
-</code></pre>
+<div id="qpyodide-insertion-location-18"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>
 📍 PASSO 2: Aplicação do Oráculo
    Vamos usar um oráculo BALANCEADO
    Aqui acontece a 'mágica': testamos TODAS as entradas simultaneamente!
    ✅ Oráculo aplicado! Informação codificada nas fases.
 </code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar estado após oráculo</span></span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>estado_apos_oraculo_dj <span class="op">=</span> Statevector(qc)</span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Estado após oráculo - Note as mudanças de fase:"</span>)</span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>display(plot_state_qsphere(estado_apos_oraculo_dj))</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="qpyodide-insertion-location-19"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>Estado após oráculo - Note as mudanças de fase:
 </code></pre>
 </section>
@@ -1692,28 +1359,15 @@ print("   ✅ Oráculo aplicado! Informação codificada nas fases.")
 <p>Aplicando ao estado com qubit auxiliar em <span class="math inline">\(|-\rangle\)</span>:</p>
 <p><span class="math display">\[|\psi_2\rangle = \frac{1}{2\sqrt{2}} \sum_{x=0}^{7} (-1)^{f(x)} |x\rangle \otimes |-\rangle\]</span></p>
 <p>Os estados agora têm <strong>fases diferentes</strong> baseadas em <span class="math inline">\(f(x)\)</span>!</p>
-<pre class="{python} {pyodide-python}"><code>
-# ─────────────────────────────────────────────
-# PASSO 3: Interferência Final
-# ─────────────────────────────────────────────
-print("\n📍 PASSO 3: Interferência")
-print("   Aplicando Hadamard novamente para converter FASE em AMPLITUDE")
-
-# Aplicamos H em todos os inputs novamente.
-# Isso transforma o padrão de fase (criado pelo kickback) em resposta binária.
-qc.h(range(n))
-
-print("   ✅ Interferência concluída! Pronto para medir.")
-</code></pre>
+<div id="qpyodide-insertion-location-20"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>
 📍 PASSO 3: Interferência
    Aplicando Hadamard novamente para converter FASE em AMPLITUDE
    ✅ Interferência concluída! Pronto para medir.
 </code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar estado antes da medição</span></span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>estado_antes_medicao <span class="op">=</span> Statevector(qc)</span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Estado antes da medição - Após interferência:"</span>)</span>
-<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>display(plot_state_qsphere(estado_antes_medicao))</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="qpyodide-insertion-location-21"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>Estado antes da medição - Após interferência:
 </code></pre>
 </section>
@@ -1730,55 +1384,16 @@ print("   ✅ Interferência concluída! Pronto para medir.")
 <p><span class="math display">\[\text{amplitude}(|111\rangle) = \frac{1}{8} \sum_{x=0}^{7} (-1)^{f(x) + x \cdot 111}\]</span></p>
 <p>Pode-se mostrar que esta amplitude é <strong>não-zero</strong> para funções balanceadas.</p>
 <p><strong>Conclusão:</strong> Nunca medimos <span class="math inline">\(|000\rangle\)</span> → função é balanceada!</p>
-<pre class="{python} {pyodide-python}"><code>
-# ─────────────────────────────────────────────
-# PASSO 4: Medição
-# ─────────────────────────────────────────────
-print("\n📍 PASSO 4: Medição")
-print("   Medindo apenas os qubits de entrada (não precisamos medir o auxiliar)")
-
-# Medimos APENAS os qubits de entrada (0 a n-1)
-qc.measure(range(n), range(n))
-
-print("   ✅ Circuito completo! Pronto para executar.")
-print("="*70)
-</code></pre>
+<div id="qpyodide-insertion-location-22"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>
 📍 PASSO 4: Medição
    Medindo apenas os qubits de entrada (não precisamos medir o auxiliar)
    ✅ Circuito completo! Pronto para executar.
 ======================================================================
 </code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────────────────────────────────────────────</span></span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="co"># PASSO 5: Execução e Interpretação</span></span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────────────────────────────────────────────</span></span>
-<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">🚀 EXECUTANDO O ALGORITMO...</span><span class="ch">\n</span><span class="st">"</span>)</span>
-<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Executar no simulador</span></span>
-<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>simulador <span class="op">=</span> AerSimulator()</span>
-<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>job <span class="op">=</span> simulador.run(transpile(qc, simulador), shots<span class="op">=</span><span class="dv">1000</span>)</span>
-<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>resultado <span class="op">=</span> job.result().get_counts()</span>
-<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"📊 Resultado da medição (1000 execuções): </span><span class="sc">{</span>resultado<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">"</span> <span class="op">+</span> <span class="st">"="</span><span class="op">*</span><span class="dv">70</span>)</span>
-<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"📋 INTERPRETAÇÃO DO RESULTADO"</span>)</span>
-<span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"="</span><span class="op">*</span><span class="dv">70</span>)</span>
-<span id="cb47-15"><a href="#cb47-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-16"><a href="#cb47-16" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="st">'000'</span> <span class="kw">in</span> resultado:</span>
-<span id="cb47-17"><a href="#cb47-17" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"   ❌ Medimos '000' → A função é CONSTANTE"</span>)</span>
-<span id="cb47-18"><a href="#cb47-18" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"   (Interferência construtiva em |000⟩)"</span>)</span>
-<span id="cb47-19"><a href="#cb47-19" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
-<span id="cb47-20"><a href="#cb47-20" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"   ✅ Nunca medimos '000' → A função é BALANCEADA"</span>)</span>
-<span id="cb47-21"><a href="#cb47-21" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"   (Interferência destrutiva em |000⟩)"</span>)</span>
-<span id="cb47-22"><a href="#cb47-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-23"><a href="#cb47-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">💡 VANTAGEM QUÂNTICA:"</span>)</span>
-<span id="cb47-24"><a href="#cb47-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"   • Versão Clássica: até </span><span class="sc">{</span>(<span class="dv">2</span><span class="op">**</span>(n<span class="op">-</span><span class="dv">1</span>)) <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss"> consultas necessárias"</span>)</span>
-<span id="cb47-25"><a href="#cb47-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"   • Versão Quântica: 1 consulta (sempre!)"</span>)</span>
-<span id="cb47-26"><a href="#cb47-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"   • Speedup: </span><span class="sc">{</span>(<span class="dv">2</span><span class="op">**</span>(n<span class="op">-</span><span class="dv">1</span>)) <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">x mais rápido!"</span>)</span>
-<span id="cb47-27"><a href="#cb47-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"="</span><span class="op">*</span><span class="dv">70</span>)</span>
-<span id="cb47-28"><a href="#cb47-28" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb47-29"><a href="#cb47-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar histograma</span></span>
-<span id="cb47-30"><a href="#cb47-30" aria-hidden="true" tabindex="-1"></a>plot_histogram(resultado)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="qpyodide-insertion-location-23"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <pre><code>
 🚀 EXECUTANDO O ALGORITMO...
 
@@ -1910,8 +1525,8 @@ print("="*70)
 <section id="experimento-teste-você-mesmo" class="level3">
 <h3 class="anchored" data-anchor-id="experimento-teste-você-mesmo">🔬 Experimento: Teste Você Mesmo!</h3>
 <p>Experimente modificar o código acima para usar <code>oraculo_constante(3)</code> em vez de <code>oraculo_balanceado(3)</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Na célula onde definimos o oráculo, mude esta linha:</span></span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>oraculo <span class="op">=</span> oraculo_constante(n)  <span class="co"># Em vez de oraculo_balanceado(n)</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="qpyodide-insertion-location-24"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <p>Você deverá ver:</p>
 <ul>
 <li>Resultado: <code>{'000': 1000}</code> (100% das vezes)</li>
@@ -2071,10 +1686,10 @@ print("="*70)
 <p>Você acabou de implementar um algoritmo que demonstra <strong>supremacia quântica</strong> em termos de complexidade de consulta! O Deutsch-Jozsa prova que computadores quânticos podem resolver certos problemas fundamentalmente mais rápido que computadores clássicos.</p>
 <p>A jornada de aprendizado em computação quântica é como subir uma escada:</p>
 <ul>
-<li>✅ <strong>Superposição</strong> - você aprendeu em <a href="01-intro.ipynb">01-intro.ipynb</a></li>
-<li>✅ <strong>Emaranhamento</strong> - você aprendeu em <a href="02-teletransport.ipynb">02-teletransport.ipynb</a><br>
+<li>✅ <strong>Superposição</strong> - você aprendeu em <a href="../../notebooks/01-intro.ipynb">01-intro.ipynb</a></li>
+<li>✅ <strong>Emaranhamento</strong> - você aprendeu em <a href="../../notebooks/02-teletransport.ipynb">02-teletransport.ipynb</a><br>
 </li>
-<li>✅ <strong>Interferência</strong> - você aprendeu em <a href="04-Hadamard-experiment.ipynb">04-Hadamard-experiment.ipynb</a></li>
+<li>✅ <strong>Interferência</strong> - você aprendeu em <a href="../../notebooks/04-Hadamard-experiment.ipynb">04-Hadamard-experiment.ipynb</a></li>
 <li>✅ <strong>Phase Kickback</strong> - você dominou neste notebook!</li>
 <li>🚀 <strong>Algoritmos Avançados</strong> - você está pronto!</li>
 </ul>
@@ -2086,7 +1701,7 @@ print("="*70)
 <ul>
 <li><strong>Deutsch-Jozsa Algorithm:</strong> Deutsch, D., &amp; Jozsa, R. (1992). “Rapid solution of problems by quantum computation.” <em>Proceedings of the Royal Society of London A</em>, 439(1907), 553-558.</li>
 <li><strong>Nielsen &amp; Chuang:</strong> Chapter 1.4 (Deutsch-Jozsa), Chapter 6 (Quantum Algorithms)</li>
-<li><strong>Qiskit Textbook:</strong> <a href="https://qiskit.org/textbook/ch-algorithms/deutsch-jozsa.html">Deutsch-Jozsa Algorithm</a></li>
+<li><strong>Cirq Textbook:</strong> <a href="https://cirq.org/textbook/ch-algorithms/deutsch-jozsa.html">Deutsch-Jozsa Algorithm</a></li>
 </ul>
 <hr>
 
@@ -2549,26 +2164,26 @@ print("="*70)
     }
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Código fonte</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Aula 07 — Interferência e Algoritmo de Deutsch-Jozsa"</span></span>
-<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Fundamentos de Computação Quântica — Curso de Extensão"</span></span>
-<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Prof. Me. Maxwell Anderson Ielpo do Amaral"</span></span>
-<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a><span class="an">institute:</span><span class="co"> "Instituto Federal de Educação, Ciência e Tecnologia da Paraíba (IFPB) — Campus João Pessoa"</span></span>
-<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2026-10-20"</span></span>
-<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a><span class="an">lang:</span><span class="co"> pt-BR</span></span>
-<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
-<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
-<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
-<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
-<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📽️ Material da Aula</span></span>
-<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>📄 <span class="co">[</span><span class="ot">Baixar Apostila Completa em PDF</span><span class="co">](../apostila.pdf)</span>{target="_blank"}</span>
-<span id="cb50-16"><a href="#cb50-16" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>🧪 <span class="co">[</span><span class="ot">Galeria de Simuladores Interativos</span><span class="co">](/assets/simuladores/)</span>{target="_blank"}</span>
-<span id="cb50-17"><a href="#cb50-17" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>🚀 <span class="co">[</span><span class="ot">Executar no Google Colab</span><span class="co">](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/05-interference.ipynb)</span>{target="_blank"}</span>
-<span id="cb50-18"><a href="#cb50-18" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb50-19"><a href="#cb50-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-20"><a href="#cb50-20" aria-hidden="true" tabindex="-1"></a>{{&lt; include _content.qmd &gt;}}</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Aula 07 — Interferência e Algoritmo de Deutsch-Jozsa"</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Fundamentos de Computação Quântica — Curso de Extensão"</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Prof. Me. Maxwell Anderson Ielpo do Amaral"</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="an">institute:</span><span class="co"> "Instituto Federal de Educação, Ciência e Tecnologia da Paraíba (IFPB) — Campus João Pessoa"</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2026-10-20"</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="an">lang:</span><span class="co"> pt-BR</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📽️ Material da Aula</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>📄 <span class="co">[</span><span class="ot">Baixar Apostila Completa em PDF</span><span class="co">](../apostila.pdf)</span>{target="_blank"}</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>🧪 <span class="co">[</span><span class="ot">Galeria de Simuladores Interativos</span><span class="co">](/assets/simuladores/)</span>{target="_blank"}</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>🚀 <span class="co">[</span><span class="ot">Executar no Google Colab</span><span class="co">](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/05-interference.ipynb)</span>{target="_blank"}</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>{{&lt; include _content.qmd &gt;}}</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <script type="module">
@@ -2724,31 +2339,40 @@ class InteractiveCell extends BaseCell {
         runCodeButton.disabled = true;
         runCodeButton.type = 'button';
         runCodeButton.id = `qpyodide-button-run-${this.id}`;
-        runCodeButton.textContent = '🟡 Loading Pyodide...';
-        runCodeButton.title = `Run code (Shift + Enter)`;
+        runCodeButton.innerHTML = '<i class="fa-solid fa-play qpyodide-icon-run-code"></i> <span>Run Code</span>';
+        runCodeButton.title = `Executar célula (Shift + Enter)`;
 
         // Append buttons to the leftButtonsDiv
         leftButtonsDiv.appendChild(runCodeButton);
 
-        // Create Reset button
+        // Create Start Over (Reset) button
         var resetButton = document.createElement('button');
         resetButton.className = 'btn btn-light btn-xs qpyodide-button qpyodide-button-reset';
         resetButton.type = 'button';
         resetButton.id = `qpyodide-button-reset-${this.id}`;
-        resetButton.title = 'Start over';
-        resetButton.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i>';
+        resetButton.title = 'Start over (Restaurar código original)';
+        resetButton.innerHTML = '<i class="fa-solid fa-rotate-left"></i>';
 
-        // Create Copy button
+        // Create Copy Code button
         var copyButton = document.createElement('button');
         copyButton.className = 'btn btn-light btn-xs qpyodide-button qpyodide-button-copy';
         copyButton.type = 'button';
         copyButton.id = `qpyodide-button-copy-${this.id}`;
-        copyButton.title = 'Copy code';
+        copyButton.title = 'Copy code (Copiar código)';
         copyButton.innerHTML = '<i class="fa-regular fa-copy"></i>';
+
+        // Create Fullscreen button (Tela cheia - ESC para sair)
+        var fullscreenButton = document.createElement('button');
+        fullscreenButton.className = 'btn btn-light btn-xs qpyodide-button qpyodide-button-fullscreen';
+        fullscreenButton.type = 'button';
+        fullscreenButton.id = `qpyodide-button-fullscreen-${this.id}`;
+        fullscreenButton.title = 'Tela cheia (ESC para sair)';
+        fullscreenButton.innerHTML = '<i class="fa-solid fa-expand"></i>';
 
         // Append buttons to the rightButtonsDiv
         rightButtonsDiv.appendChild(resetButton);
         rightButtonsDiv.appendChild(copyButton);
+        rightButtonsDiv.appendChild(fullscreenButton);
 
         // Create console area div
         var consoleAreaDiv = document.createElement('div');
@@ -2800,6 +2424,7 @@ class InteractiveCell extends BaseCell {
         this.runButton = document.getElementById(`qpyodide-button-run-${this.id}`);
         this.resetButton = document.getElementById(`qpyodide-button-reset-${this.id}`);
         this.copyButton = document.getElementById(`qpyodide-button-copy-${this.id}`);
+        this.fullscreenButton = document.getElementById(`qpyodide-button-fullscreen-${this.id}`);
         this.editorDiv = document.getElementById(`qpyodide-editor-${this.id}`);
         this.outputCodeDiv = document.getElementById(`qpyodide-output-code-area-${this.id}`);
         this.outputGraphDiv = document.getElementById(`qpyodide-output-graph-area-${this.id}`);
@@ -2937,7 +2562,7 @@ class InteractiveCell extends BaseCell {
             );
         };
         
-        // Add a click event listener to the reset button
+        // Add a click event listener to the copy button
         thiz.copyButton.onclick = function () {
             // Retrieve current code data
             const data = thiz.editor.getValue();
@@ -2946,10 +2571,61 @@ class InteractiveCell extends BaseCell {
             navigator.clipboard.writeText(data || "");
         };
         
-        // Add a click event listener to the copy button
+        // Add a click event listener to the reset button
         thiz.resetButton.onclick = function () {
             thiz.editor.setValue(thiz.editor.__qpyodideinitialCode);
         };
+
+        // Add a click event listener to the fullscreen button
+        if (thiz.fullscreenButton) {
+            thiz.fullscreenButton.onclick = function () {
+                thiz.toggleFullscreen();
+            };
+        }
+    }
+
+    /**
+     * Alternar modo de tela cheia para o bloco de código
+     */
+    toggleFullscreen() {
+        const area = document.getElementById(`qpyodide-interactive-area-${this.id}`);
+        if (!area) return;
+        const isFullscreen = area.classList.toggle('qpyodide-cell-fullscreen');
+        if (isFullscreen) {
+            if (this.fullscreenButton) {
+                this.fullscreenButton.innerHTML = '<i class="fa-solid fa-compress"></i>';
+                this.fullscreenButton.title = 'Sair da tela cheia (ESC)';
+            }
+            if (this.editorDiv) {
+                this.editorDiv.style.height = 'calc(100vh - 180px)';
+            }
+            if (this.editor) {
+                setTimeout(() => { this.editor.layout(); }, 50);
+            }
+            this._escHandler = (e) => {
+                if (e.key === 'Escape' || e.key === 'Esc') {
+                    if (area.classList.contains('qpyodide-cell-fullscreen')) {
+                        this.toggleFullscreen();
+                    }
+                }
+            };
+            window.addEventListener('keydown', this._escHandler);
+        } else {
+            if (this.fullscreenButton) {
+                this.fullscreenButton.innerHTML = '<i class="fa-solid fa-expand"></i>';
+                this.fullscreenButton.title = 'Tela cheia (ESC para sair)';
+            }
+            if (this.editorDiv) {
+                this.editorDiv.style.height = '';
+            }
+            if (this.editor) {
+                setTimeout(() => { this.editor.layout(); }, 50);
+            }
+            if (this._escHandler) {
+                window.removeEventListener('keydown', this._escHandler);
+                this._escHandler = null;
+            }
+        }
     }
 
     disableInteractiveCells() {
@@ -3015,20 +2691,56 @@ class InteractiveCell extends BaseCell {
         this.outputCodeDiv.innerHTML = "";
         this.outputGraphDiv.innerHTML = "";        
 
-        // Design an output object for messages
-        const pre = document.createElement("pre");
         if (/\S/.test(result)) {
-            // Display results as HTML elements to retain output styling
-            const div = document.createElement("div");
-            div.innerHTML = result;
-            pre.appendChild(div);
-        } else {
-            // If nothing is present, hide the element.
-            pre.style.visibility = "hidden";
+            // Check if output contains LaTeX math blocks: $$ ... $$
+            const mathRegex = /\$\$([\s\S]*?)\$\$/g;
+            if (mathRegex.test(result)) {
+                mathRegex.lastIndex = 0;
+                let lastIndex = 0;
+                let match;
+                while ((match = mathRegex.exec(result)) !== null) {
+                    if (match.index > lastIndex) {
+                        const textPart = result.slice(lastIndex, match.index).trim();
+                        if (textPart) {
+                            const pre = document.createElement("pre");
+                            pre.innerHTML = textPart;
+                            this.outputCodeDiv.appendChild(pre);
+                        }
+                    }
+                    let mathContent = match[1].trim();
+                    mathContent = mathContent.replace(/\\ket\{([^}]+)\}/g, '\\left| $1 \\right\\rangle');
+                    mathContent = mathContent.replace(/\\bra\{([^}]+)\}/g, '\\left\\langle $1 \\right|');
+                    const mathDiv = document.createElement("div");
+                    mathDiv.className = "qpyodide-output-math";
+                    mathDiv.innerHTML = `$$${mathContent}$$`;
+                    this.outputCodeDiv.appendChild(mathDiv);
+                    lastIndex = match.index + match[0].length;
+                }
+                if (lastIndex < result.length) {
+                    const textPart = result.slice(lastIndex).trim();
+                    if (textPart) {
+                        const pre = document.createElement("pre");
+                        pre.innerHTML = textPart;
+                        this.outputCodeDiv.appendChild(pre);
+                    }
+                }
+                // Trigger MathJax rendering for formatted output
+                if (window.MathJax && window.MathJax.typeset) {
+                    try {
+                        window.MathJax.typeset([this.outputCodeDiv]);
+                    } catch (e) {
+                        console.warn("MathJax typeset error:", e);
+                    }
+                }
+            } else {
+                // Design standard output object for non-math messages
+                const pre = document.createElement("pre");
+                const div = document.createElement("div");
+                div.innerHTML = result;
+                pre.appendChild(div);
+                this.outputCodeDiv.appendChild(pre);
+            }
         }
-
-        // Add output under interactive div
-        this.outputCodeDiv.appendChild(pre);
 
         // Place the graphics onto the page
         if (graphFigure) {

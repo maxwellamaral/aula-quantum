@@ -271,7 +271,7 @@ globalThis.qpyodideCustomizedPyodideOptions = {
 }
 
 // Store cell data
-globalThis.qpyodideCellDetails = [];
+globalThis.qpyodideCellDetails = [{"code":"# Instalação do motor quântico Cirq e bibliotecas necessárias\nimport micropip\nawait micropip.install(\"cirq-core==1.6.1\")\n\nimport cirq\nimport numpy as np\nimport matplotlib.pyplot as plt\n\nprint(f\"✅ Cirq v{cirq.__version__} pronto para execução interativa!\")","id":1,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# 1. CONSTRUÇÃO DO CIRCUITO\n# Definimos 2 qubits indexados\nq0, q1 = cirq.LineQubit.range(2)\n\n# Criamos um circuito vazio\ncircuito = cirq.Circuit()\n\n# Simulador quântico do Cirq\nsim = cirq.Simulator()\n\n# Visualizar o estado inicial (começa sempre em |00⟩)\nestado_inicial = sim.simulate(circuito, qubit_order=[q0, q1]).final_state_vector\nprint(\"Estado inicial |00⟩:\")\nprint(\"Vetor de amplitudes:\", estado_inicial)\nprint(\"\\nCircuito inicial (vazio):\")\nprint(circuito if len(circuito) > 0 else \"(circuito vazio - qubits em |00⟩)\")","id":2,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Aplicamos a porta Hadamard (H) no qubit 0\ncircuito.append(cirq.H(q0))\n\nprint(\"Circuito após aplicar Hadamard no q0:\")\nprint(circuito)\n\nestado_apos_h = sim.simulate(circuito, qubit_order=[q0, q1]).final_state_vector\nprint(\"\\nEstado após H: 1/√2(|00⟩ + |10⟩)\")\nprint(\"Vetor de amplitudes:\", np.round(estado_apos_h, 4))","id":3,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Aplicamos a porta CNOT: q0 é o controle, q1 é o alvo\ncircuito.append(cirq.CNOT(q0, q1))\n\nprint(\"Circuito após CNOT (Gerador do Estado de Bell):\")\nprint(circuito)\n\nestado_apos_cnot = sim.simulate(circuito, qubit_order=[q0, q1]).final_state_vector\nprint(\"\\nEstado após CNOT: 1/√2(|00⟩ + |11⟩) - Estado de Bell |Φ+⟩\")\nprint(\"Vetor de amplitudes:\", np.round(estado_apos_cnot, 4))\n\n# Mostrando as probabilidades de cada estado da base computacional\nestados_base = [\"|00⟩\", \"|01⟩\", \"|10⟩\", \"|11⟩\"]\nprint(\"\\nDistribuição de Probabilidades Teóricas:\")\nfor base, amp in zip(estados_base, estado_apos_cnot):\n    prob = np.abs(amp) ** 2\n    print(f\"  {base}: amplitude = {amp.real:+.4f}, probabilidade = {prob*100:.1f}%\")","id":4,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Criamos uma cópia do circuito para adicionar a medição\ncircuito_medicao = circuito.copy()\ncircuito_medicao.append(cirq.measure(q0, q1, key=\"resultado\"))\n\nprint(\"Circuito Completo com Medição:\")\nprint(circuito_medicao)","id":5,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Executamos a simulação estatística por 1000 repetições\nresultado_shots = sim.run(circuito_medicao, repetitions=1000)\n\n# Obter o histograma de contagens\n# Os valores medidos são inteiros binários: 0 para '00' e 3 para '11'\ncontagens = resultado_shots.histogram(key=\"resultado\")\n\ncontagem_00 = contagens.get(0, 0)\ncontagem_11 = contagens.get(3, 0)\ncontagem_outros = sum(v for k, v in contagens.items() if k not in (0, 3))\n\nprint(\"--- Resultados da Medição (1000 repetições) ---\")\nprint(f\"Estado |00⟩: {contagem_00} vezes ({contagem_00/10:.1f}%)\")\nprint(f\"Estado |11⟩: {contagem_11} vezes ({contagem_11/10:.1f}%)\")\nprint(f\"Outros (|01⟩ ou |10⟩): {contagem_outros} vezes ({contagem_outros/10:.1f}%)\")","id":6,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"q_unico = cirq.LineQubit(0)\n\n# Estado 1: Inicial |0⟩\ns_zero = sim.simulate(cirq.Circuit()).final_state_vector\n\n# Estado 2: Após Hadamard |+⟩\ns_plus = sim.simulate(cirq.Circuit(cirq.H(q_unico))).final_state_vector\n\n# Estado 3: Após Porta X |1⟩\ns_one = sim.simulate(cirq.Circuit(cirq.X(q_unico))).final_state_vector\n\n# Estado 4: Superposição com fase negativa |-⟩ (H seguido de Z)\ns_minus = sim.simulate(cirq.Circuit(cirq.H(q_unico), cirq.Z(q_unico))).final_state_vector\n\nestados_demo = [\n    (\"Estado Inicial |0⟩ (Pólo Norte)\", s_zero),\n    (\"Superposição |+⟩ (Equador +X)\", s_plus),\n    (\"Estado Invertido |1⟩ (Pólo Sul)\", s_one),\n    (\"Superposição com Fase |-⟩ (Equador -X)\", s_minus)\n]\n\nprint(\"=\" * 65)\nprint(\"COORDENADAS NA ESFERA DE BLOCH (x, y, z) VIA CIRQ:\")\nprint(\"=\" * 65)\nfor descricao, vec in estados_demo:\n    x, y, z = cirq.bloch_vector_from_state_vector_and_density_matrix(vec, 0)\n    print(f\"{descricao:<38}: x = {x:+.2f}, y = {y:+.2f}, z = {z:+.2f}\")\nprint(\"=\" * 65)","id":7,"options":{"autorun":"","classes":"","comment":"","context":"interactive","dpi":72,"fig-cap":"","fig-height":5,"fig-width":7,"label":"","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}}];
 
 
 </script>
@@ -431,6 +431,41 @@ globalThis.qpyodideInstance = await import(
     import matplotlib
     matplotlib.use("module://matplotlib_pyodide.html5_canvas_backend")
     from matplotlib import pyplot as plt
+
+    import builtins
+    import sys
+    import types
+
+    class _Markdown:
+        def __init__(self, data=""):
+            self.data = str(data)
+        def __repr__(self):
+            return self.data
+        def _repr_markdown_(self):
+            return self.data
+
+    def _display(*args, **kwargs):
+        for arg in args:
+            if hasattr(arg, 'data'):
+                print(arg.data)
+            elif hasattr(arg, '_repr_latex_'):
+                print(arg._repr_latex_())
+            elif hasattr(arg, '_repr_markdown_'):
+                print(arg._repr_markdown_())
+            else:
+                print(arg)
+
+    builtins.display = _display
+    builtins.Markdown = _Markdown
+
+    # Shim IPython.display if imported by any lesson
+    ipython = types.ModuleType("IPython")
+    ipython_display = types.ModuleType("IPython.display")
+    ipython_display.display = _display
+    ipython_display.Markdown = _Markdown
+    ipython.display = ipython_display
+    sys.modules["IPython"] = ipython
+    sys.modules["IPython.display"] = ipython_display
     `);
 
     // Unlock interactive buttons
@@ -441,7 +476,7 @@ globalThis.qpyodideInstance = await import(
 
     // Set document status to viable
     qpyodideUpdateStatusHeader(
-      "🟢 Ready!"
+      "🟢 Pronto!"
     );
 
     // Assign Pyodide into the global environment
@@ -547,38 +582,31 @@ window.Quarto = {
    
   <ul>
   <li><a href="#aula-04-primeiros-circuitos-estados-de-bell-e-emaranhamento" id="toc-aula-04-primeiros-circuitos-estados-de-bell-e-emaranhamento" class="nav-link active" data-scroll-target="#aula-04-primeiros-circuitos-estados-de-bell-e-emaranhamento">Aula 04 — Primeiros Circuitos, Estados de Bell e Emaranhamento</a></li>
-  <li><a href="#introdução-ao-qiskit" id="toc-introdução-ao-qiskit" class="nav-link" data-scroll-target="#introdução-ao-qiskit">🚀 Introdução ao Qiskit</a>
+  <li><a href="#primeiros-circuitos-com-cirq" id="toc-primeiros-circuitos-com-cirq" class="nav-link" data-scroll-target="#primeiros-circuitos-com-cirq">🚀 Primeiros Circuitos com Cirq</a>
   <ul class="collapse">
   <li><a href="#o-que-vamos-aprender" id="toc-o-que-vamos-aprender" class="nav-link" data-scroll-target="#o-que-vamos-aprender">📚 O que vamos aprender</a></li>
-  <li><a href="#bibliotecas-necessárias" id="toc-bibliotecas-necessárias" class="nav-link" data-scroll-target="#bibliotecas-necessárias">🔧 Bibliotecas Necessárias</a></li>
+  <li><a href="#inicialização-do-cirq-no-navegador" id="toc-inicialização-do-cirq-no-navegador" class="nav-link" data-scroll-target="#inicialização-do-cirq-no-navegador">🔧 Inicialização do Cirq no Navegador</a></li>
   <li><a href="#construindo-um-circuito-quântico-simples" id="toc-construindo-um-circuito-quântico-simples" class="nav-link" data-scroll-target="#construindo-um-circuito-quântico-simples">1️⃣ Construindo um Circuito Quântico Simples</a>
   <ul class="collapse">
   <li><a href="#o-que-faremos" id="toc-o-que-faremos" class="nav-link" data-scroll-target="#o-que-faremos">O que faremos:</a></li>
-  <li><a href="#passo-1-criar-o-circuito-base" id="toc-passo-1-criar-o-circuito-base" class="nav-link" data-scroll-target="#passo-1-criar-o-circuito-base">Passo 1: Criar o circuito base</a></li>
+  <li><a href="#passo-1-criar-o-circuito-base-e-estado-inicial-00" id="toc-passo-1-criar-o-circuito-base-e-estado-inicial-00" class="nav-link" data-scroll-target="#passo-1-criar-o-circuito-base-e-estado-inicial-00">Passo 1: Criar o circuito base e estado inicial |00⟩</a></li>
   <li><a href="#passo-2-aplicar-a-porta-hadamard-h" id="toc-passo-2-aplicar-a-porta-hadamard-h" class="nav-link" data-scroll-target="#passo-2-aplicar-a-porta-hadamard-h">Passo 2: Aplicar a Porta Hadamard (H)</a></li>
   <li><a href="#passo-3-criar-emaranhamento-com-cnot" id="toc-passo-3-criar-emaranhamento-com-cnot" class="nav-link" data-scroll-target="#passo-3-criar-emaranhamento-com-cnot">Passo 3: Criar Emaranhamento com CNOT</a></li>
   <li><a href="#passo-4-medir-os-qubits" id="toc-passo-4-medir-os-qubits" class="nav-link" data-scroll-target="#passo-4-medir-os-qubits">Passo 4: Medir os Qubits</a></li>
   </ul></li>
-  <li><a href="#executando-o-circuito-simulação" id="toc-executando-o-circuito-simulação" class="nav-link" data-scroll-target="#executando-o-circuito-simulação">2️⃣ Executando o Circuito (Simulação)</a>
+  <li><a href="#executando-o-circuito-simulação-estatística" id="toc-executando-o-circuito-simulação-estatística" class="nav-link" data-scroll-target="#executando-o-circuito-simulação-estatística">2️⃣ Executando o Circuito (Simulação Estatística)</a>
   <ul class="collapse">
-  <li><a href="#processo" id="toc-processo" class="nav-link" data-scroll-target="#processo">Processo:</a></li>
   <li><a href="#interpretando-os-resultados" id="toc-interpretando-os-resultados" class="nav-link" data-scroll-target="#interpretando-os-resultados">📊 Interpretando os Resultados</a></li>
-  <li><a href="#o-estado-de-bell" id="toc-o-estado-de-bell" class="nav-link" data-scroll-target="#o-estado-de-bell">🎯 O Estado de Bell</a></li>
   </ul></li>
   <li><a href="#visualização-avançada-a-esfera-de-bloch" id="toc-visualização-avançada-a-esfera-de-bloch" class="nav-link" data-scroll-target="#visualização-avançada-a-esfera-de-bloch">3️⃣ Visualização Avançada: A Esfera de Bloch</a>
   <ul class="collapse">
   <li><a href="#o-conceito-navegando-na-esfera" id="toc-o-conceito-navegando-na-esfera" class="nav-link" data-scroll-target="#o-conceito-navegando-na-esfera">🌍 O Conceito: Navegando na Esfera</a></li>
-  <li><a href="#matemática-da-esfera" id="toc-matemática-da-esfera" class="nav-link" data-scroll-target="#matemática-da-esfera">📐 Matemática da Esfera</a></li>
-  <li><a href="#exemplos-práticos" id="toc-exemplos-práticos" class="nav-link" data-scroll-target="#exemplos-práticos">💡 Exemplos Práticos</a></li>
-  <li><a href="#interpretando-as-visualizações" id="toc-interpretando-as-visualizações" class="nav-link" data-scroll-target="#interpretando-as-visualizações">📊 Interpretando as Visualizações</a></li>
+  <li><a href="#calculando-vetores-de-bloch-com-cirq" id="toc-calculando-vetores-de-bloch-com-cirq" class="nav-link" data-scroll-target="#calculando-vetores-de-bloch-com-cirq">💡 Calculando Vetores de Bloch com Cirq</a></li>
   <li><a href="#entendendo-a-fase-quântica" id="toc-entendendo-a-fase-quântica" class="nav-link" data-scroll-target="#entendendo-a-fase-quântica">🎯 Entendendo a Fase Quântica</a></li>
   </ul></li>
-  <li><a href="#resumo-do-que-aprendemos" id="toc-resumo-do-que-aprendemos" class="nav-link" data-scroll-target="#resumo-do-que-aprendemos">🎓 Resumo do que Aprendemos</a>
+  <li><a href="#resumo-da-programação-no-cirq" id="toc-resumo-da-programação-no-cirq" class="nav-link" data-scroll-target="#resumo-da-programação-no-cirq">🎓 Resumo da Programação no Cirq</a>
   <ul class="collapse">
-  <li><a href="#conceitos-matemáticos" id="toc-conceitos-matemáticos" class="nav-link" data-scroll-target="#conceitos-matemáticos">✅ Conceitos Matemáticos</a></li>
-  <li><a href="#programação-no-qiskit" id="toc-programação-no-qiskit" class="nav-link" data-scroll-target="#programação-no-qiskit">✅ Programação no Qiskit</a></li>
-  <li><a href="#visualização" id="toc-visualização" class="nav-link" data-scroll-target="#visualização">✅ Visualização</a></li>
-  <li><a href="#próximos-passos" id="toc-próximos-passos" class="nav-link" data-scroll-target="#próximos-passos">🚀 Próximos Passos</a></li>
+  <li><a href="#principais-construtos-do-cirq" id="toc-principais-construtos-do-cirq" class="nav-link" data-scroll-target="#principais-construtos-do-cirq">✅ Principais Construtos do Cirq</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -656,190 +684,95 @@ window.Quarto = {
 <section id="aula-04-primeiros-circuitos-estados-de-bell-e-emaranhamento" class="level1">
 <h1>Aula 04 — Primeiros Circuitos, Estados de Bell e Emaranhamento</h1>
 </section>
-<section id="introdução-ao-qiskit" class="level1">
-<h1>🚀 Introdução ao Qiskit</h1>
-<p>Este notebook demonstra os conceitos fundamentais de programação quântica usando o Qiskit.</p>
+<section id="primeiros-circuitos-com-cirq" class="level1">
+<h1>🚀 Primeiros Circuitos com Cirq</h1>
+<p>Esta aula demonstra os conceitos fundamentais de programação quântica usando o motor <strong>Cirq (v1.6.1)</strong> executado diretamente no seu navegador em tempo real via Pyodide.</p>
 <section id="o-que-vamos-aprender" class="level2">
 <h2 class="anchored" data-anchor-id="o-que-vamos-aprender">📚 O que vamos aprender</h2>
 <ol type="1">
-<li>Criar circuitos quânticos</li>
-<li>Aplicar portas quânticas (H, CNOT, medições)</li>
-<li>Executar simulações</li>
-<li>Visualizar resultados</li>
-<li>Entender a Esfera de Bloch</li>
+<li>Criar circuitos quânticos com <code>cirq.Circuit</code> e qubits com <code>cirq.LineQubit</code></li>
+<li>Aplicar portas quânticas fundamentais (Hadamard, CNOT, medições)</li>
+<li>Executar simulações quânticas determinísticas e estatísticas com <code>cirq.Simulator</code></li>
+<li>Criar e entender o estado de Bell e o fenômeno do emaranhamento quântico</li>
+<li>Interpretar estados na Esfera de Bloch</li>
 </ol>
 </section>
-<section id="bibliotecas-necessárias" class="level2">
-<h2 class="anchored" data-anchor-id="bibliotecas-necessárias">🔧 Bibliotecas Necessárias</h2>
-<p>Primeiro, vamos importar as bibliotecas que usaremos:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit <span class="im">import</span> QuantumCircuit, transpile</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit_aer <span class="im">import</span> AerSimulator</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.visualization <span class="im">import</span> plot_histogram, plot_bloch_multivector, plot_state_qsphere</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.quantum_info <span class="im">import</span> Statevector</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="inicialização-do-cirq-no-navegador" class="level2">
+<h2 class="anchored" data-anchor-id="inicialização-do-cirq-no-navegador">🔧 Inicialização do Cirq no Navegador</h2>
+<p>Primeiro, instalamos e importamos o Cirq via <code>micropip</code>:</p>
+<div id="qpyodide-insertion-location-1"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <hr>
 </section>
 <section id="construindo-um-circuito-quântico-simples" class="level2">
 <h2 class="anchored" data-anchor-id="construindo-um-circuito-quântico-simples">1️⃣ Construindo um Circuito Quântico Simples</h2>
-<p>Vamos criar nosso primeiro circuito quântico com <strong>2 qubits</strong> e <strong>2 bits clássicos</strong> para armazenar os resultados das medições.</p>
+<p>Vamos criar nosso primeiro circuito quântico com <strong>2 qubits</strong> (<code>q0</code> e <code>q1</code>).</p>
 <section id="o-que-faremos" class="level3">
 <h3 class="anchored" data-anchor-id="o-que-faremos">O que faremos:</h3>
 <ul>
 <li>Criar um estado de <strong>superposição</strong> usando a porta Hadamard (H)</li>
 <li>Criar <strong>emaranhamento</strong> usando a porta CNOT</li>
-<li>Medir os qubits para obter resultados</li>
+<li>Medir os qubits para obter resultados estatísticos</li>
 </ul>
 </section>
-<section id="passo-1-criar-o-circuito-base" class="level3">
-<h3 class="anchored" data-anchor-id="passo-1-criar-o-circuito-base">Passo 1: Criar o circuito base</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. CONSTRUÇÃO DO CIRCUITO</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Criamos um circuito com 2 Qubits e 2 Bits Clássicos (para guardar o resultado)</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">2</span>, <span class="dv">2</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar estado inicial</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>estado_inicial <span class="op">=</span> Statevector.from_instruction(qc)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Estado inicial: |00⟩"</span>)</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(estado_inicial)</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Desenha o circuito</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Circuito inicial:"</span>)</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>qc.draw(<span class="st">'mpl'</span>)</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># É uma boa prática para quem está aprendendo sempre desenhar o circuito após cada modificação.</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>Estado inicial: |00⟩
-Statevector([1.+0.j, 0.+0.j, 0.+0.j, 0.+0.j],
-            dims=(2, 2))
-</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Esfera de Bloch - Estado inicial</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>plot_bloch_multivector(estado_inicial)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="passo-1-criar-o-circuito-base-e-estado-inicial-00" class="level3">
+<h3 class="anchored" data-anchor-id="passo-1-criar-o-circuito-base-e-estado-inicial-00">Passo 1: Criar o circuito base e estado inicial |00⟩</h3>
+<div id="qpyodide-insertion-location-2"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
 <section id="passo-2-aplicar-a-porta-hadamard-h" class="level3">
 <h3 class="anchored" data-anchor-id="passo-2-aplicar-a-porta-hadamard-h">Passo 2: Aplicar a Porta Hadamard (H)</h3>
-<p>A porta Hadamard cria uma <strong>superposição</strong>: transforma |0⟩ em um estado que é simultaneamente 0 e 1.</p>
-<p>Matematicamente: <span class="math display">\[H|0\rangle = \frac{|0\rangle + |1\rangle}{\sqrt{2}} = |+\rangle\]</span></p>
+<p>A porta Hadamard cria uma <strong>superposição</strong>: transforma <span class="math inline">\(|0
+angle\)</span> em um estado que é simultaneamente 0 e 1.</p>
+<p>Matematicamente: <span class="math display">\[H|0
+angle = \frac{|0
+angle + |1
+angle}{\sqrt{2}} = |+
+angle\]</span></p>
 <p>Isso significa 50% de probabilidade de medir 0 e 50% de medir 1.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplicamos a porta Hadamard (H) no qubit 0</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Matematicamente: Leva |0&gt; para uma superposição (50% 0, 50% 1)</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>qc.h(<span class="dv">0</span>)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar estado após Hadamard</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>estado_apos_h <span class="op">=</span> Statevector.from_instruction(qc)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Estado após H: 1/√2(|00⟩ + |10⟩)"</span>)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(estado_apos_h)</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>qc.draw(<span class="st">'mpl'</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>Estado após H: 1/√2(|00⟩ + |10⟩)
-Statevector([0.70710678+0.j, 0.70710678+0.j, 0.        +0.j,
-             0.        +0.j],
-            dims=(2, 2))
-</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Esfera de Bloch - Após Hadamard</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>plot_bloch_multivector(estado_apos_h)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Veja que somente aplicamos a porta H no qubit 0, o qubit 1 permanece em |0⟩.</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="qpyodide-insertion-location-3"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
 <section id="passo-3-criar-emaranhamento-com-cnot" class="level3">
 <h3 class="anchored" data-anchor-id="passo-3-criar-emaranhamento-com-cnot">Passo 3: Criar Emaranhamento com CNOT</h3>
 <p>A porta CNOT (Controlled-NOT) é uma porta de <strong>dois qubits</strong>:</p>
 <ul>
-<li><strong>Qubit 0</strong> (controle): Se estiver em |1⟩, inverte o qubit alvo</li>
-<li><strong>Qubit 1</strong> (alvo): É invertido se o controle for |1⟩</li>
+<li><strong>Qubit 0</strong> (controle): Se estiver em <span class="math inline">\(|1
+angle\)</span>, inverte o qubit alvo</li>
+<li><strong>Qubit 1</strong> (alvo): É invertido se o controle for <span class="math inline">\(|1
+angle\)</span></li>
 </ul>
-<p>Como o qubit 0 está em superposição, isso cria <strong>emaranhamento</strong> entre os dois qubits!</p>
-<p>Matematicamente, criamos o estado de Bell: <span class="math display">\[|\Phi^+\rangle = \frac{|00\rangle + |11\rangle}{\sqrt{2}}\]</span></p>
-<p>Isso significa: ou <strong>ambos são 0</strong>, ou <strong>ambos são 1</strong> - nunca 01 ou 10!</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplicamos a porta CNOT (Control-NOT)</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># O Qubit 0 é o controle, o Qubit 1 é o alvo.</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Se o Qubit 0 for 1, ele inverte o Qubit 1.</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Como o Qubit 0 está em superposição, eles ficam EMARANHADOS.</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>qc.cx(<span class="dv">0</span>, <span class="dv">1</span>)</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar estado após CNOT (Estado de Bell)</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>estado_apos_cnot <span class="op">=</span> Statevector.from_instruction(qc)</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Estado após CNOT: 1/√2(|00⟩ + |11⟩) - Estado de Bell |Φ+⟩"</span>)</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(estado_apos_cnot)</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>qc.draw(<span class="st">'mpl'</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>Estado após CNOT: 1/√2(|00⟩ + |11⟩) - Estado de Bell |Φ+⟩
-Statevector([0.70710678+0.j, 0.        +0.j, 0.        +0.j,
-             0.70710678+0.j],
-            dims=(2, 2))
-</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Q-Sphere - Melhor para visualizar o estado emaranhado completo</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">🌐 Q-Sphere - Mostra todas as amplitudes do estado emaranhado:"</span>)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>plot_state_qsphere(estado_apos_cnot)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>
-🌐 Q-Sphere - Mostra todas as amplitudes do estado emaranhado:
-</code></pre>
+<p>Como o qubit 0 está em superposição, a porta CNOT cria <strong>emaranhamento</strong> genuíno entre os dois qubits!</p>
+<p>Matematicamente, criamos o estado de Bell: <span class="math display">\[|\Phi^+
+angle = \frac{|00
+angle + |11
+angle}{\sqrt{2}}\]</span></p>
+<p>Isso significa: ou <strong>ambos colapsam em 0</strong>, ou <strong>ambos colapsam em 1</strong> — as combinações <span class="math inline">\(01\)</span> e <span class="math inline">\(10\)</span> possuem probabilidade exatamente zero!</p>
+<div id="qpyodide-insertion-location-4"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
 <section id="passo-4-medir-os-qubits" class="level3">
 <h3 class="anchored" data-anchor-id="passo-4-medir-os-qubits">Passo 4: Medir os Qubits</h3>
-<p>A medição <strong>colapsa</strong> o estado quântico para um resultado clássico:</p>
-<ul>
-<li>Qubit 0 → armazena no bit clássico 0</li>
-<li>Qubit 1 → armazena no bit clássico 1</li>
-</ul>
-<p>Após a medição, teremos apenas 0s e 1s (não mais superposição).</p>
-<pre class="{python} {pyodide-python}"><code>
-# Medimos os qubits
-# Qubit 0 -&gt; guarda no Bit 0
-# Qubit 1 -&gt; guarda no Bit 1
-qc.measure([0, 1], [0, 1])
-
-# Desenhar circuito completo
-qc.draw('mpl')</code></pre>
-<p>⚠️ <strong>Nota:</strong> Após adicionar as medições, não podemos mais extrair o Statevector (a medição colapsa o estado). As visualizações acima mostram o estado <strong>antes</strong> da medição.</p>
+<p>A medição <strong>colapsa</strong> a superposição quântica para um resultado clássico determinado pela Regra de Born.</p>
+<div id="qpyodide-insertion-location-5"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <hr>
 </section>
 </section>
-<section id="executando-o-circuito-simulação" class="level2">
-<h2 class="anchored" data-anchor-id="executando-o-circuito-simulação">2️⃣ Executando o Circuito (Simulação)</h2>
-<p>Agora vamos <strong>executar</strong> o circuito usando um simulador quântico. Rodaremos 1000 vezes para ver a distribuição de probabilidades.</p>
-<section id="processo" class="level3">
-<h3 class="anchored" data-anchor-id="processo">Processo:</h3>
-<ol type="1">
-<li><strong>Transpilação</strong>: Otimiza o circuito para o simulador</li>
-<li><strong>Execução</strong>: Roda 1000 vezes (shots)</li>
-<li><strong>Análise</strong>: Coleta os resultados estatísticos</li>
-</ol>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. EXECUÇÃO (SIMULAÇÃO)</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>simulador <span class="op">=</span> AerSimulator()</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Transpilação: otimiza o circuito para o backend específico (neste caso, o simulador)</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>circuito_compilado <span class="op">=</span> transpile(qc, simulador)</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Rodamos a simulação 1000 vezes (shots)</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>job <span class="op">=</span> simulador.run(circuito_compilado, shots<span class="op">=</span><span class="dv">1000</span>)</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. ANÁLISE DE RESULTADOS</span></span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>resultado <span class="op">=</span> job.result()</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>contagens <span class="op">=</span> resultado.get_counts()</span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">--- Resultados da Medição (1000 execuções) ---"</span>)</span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(contagens)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>
---- Resultados da Medição (1000 execuções) ---
-{'00': 503, '11': 497}
-</code></pre>
-</section>
+<section id="executando-o-circuito-simulação-estatística" class="level2">
+<h2 class="anchored" data-anchor-id="executando-o-circuito-simulação-estatística">2️⃣ Executando o Circuito (Simulação Estatística)</h2>
+<p>Agora vamos <strong>executar</strong> o circuito simulando 1000 medições repetidas (<em>shots</em>) para conferir a distribuição estatística no laboratório:</p>
+<div id="qpyodide-insertion-location-6"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <section id="interpretando-os-resultados" class="level3">
 <h3 class="anchored" data-anchor-id="interpretando-os-resultados">📊 Interpretando os Resultados</h3>
-<p>Observe os resultados acima - você verá apenas <strong>00</strong> e <strong>11</strong>, aproximadamente 50% cada.</p>
+<p>Observe os resultados acima: obtemos quase exatamente 50% de <strong>00</strong> e 50% de <strong>11</strong>.</p>
 <p><strong>Por quê?</strong></p>
 <ul>
 <li>O qubit 0 estava em superposição (era 0 e 1 ao mesmo tempo)</li>
 <li>O qubit 1 começou em 0</li>
 <li>Quando aplicamos CNOT, criamos <strong>emaranhamento</strong>: ou ambos são 0, ou ambos são 1</li>
-</ul>
-<p><strong>Importante:</strong> Não existe probabilidade de obter 01 ou 10! Isso é a “magia” do emaranhamento quântico.</p>
-</section>
-<section id="o-estado-de-bell" class="level3">
-<h3 class="anchored" data-anchor-id="o-estado-de-bell">🎯 O Estado de Bell</h3>
-<p>Matematicamente, criamos o famoso <strong>estado de Bell</strong>:</p>
-<p><span class="math display">\[|\Phi^+\rangle = \frac{|00\rangle + |11\rangle}{\sqrt{2}}\]</span></p>
-<p>Este é um dos estados mais importantes da computação quântica!</p>
-<p><strong>Significado:</strong></p>
-<ul>
-<li>É uma correlação que <strong>não existe na física clássica</strong></li>
-<li>Base para teletransporte quântico, criptografia quântica e outros protocolos</li>
-<li>Demonstra o poder único dos computadores quânticos</li>
+<li><strong>Não existe nenhuma chance de medir 01 ou 10!</strong> Isso ilustra a correlação não-local do emaranhamento quântico.</li>
 </ul>
 <hr>
 </section>
@@ -848,162 +781,56 @@ qc.draw('mpl')</code></pre>
 <h2 class="anchored" data-anchor-id="visualização-avançada-a-esfera-de-bloch">3️⃣ Visualização Avançada: A Esfera de Bloch</h2>
 <section id="o-conceito-navegando-na-esfera" class="level3">
 <h3 class="anchored" data-anchor-id="o-conceito-navegando-na-esfera">🌍 O Conceito: Navegando na Esfera</h3>
-<p>A <strong>Esfera de Bloch</strong> é uma representação geométrica 3D do estado de um qubit.</p>
-<p>Imagine o planeta Terra:</p>
+<p>A <strong>Esfera de Bloch</strong> é uma representação geométrica 3D do estado de um qubit:</p>
 <ul>
-<li><strong>Pólo Norte ⬆️</strong>: Estado |0⟩</li>
-<li><strong>Pólo Sul ⬇️</strong>: Estado |1⟩</li>
-<li><strong>Equador 🌍</strong>: Estados de <strong>superposição</strong> (50% de chance de 0 ou 1)</li>
-</ul>
-<p>O vetor de estado é uma <strong>seta</strong> do centro da esfera até a superfície:</p>
+<li><strong>Pólo Norte ⬆️</strong>: Estado <span class="math inline">\(|0
+angle\)</span> (eixo <span class="math inline">\(+Z\)</span>)</li>
+<li><strong>Pólo Sul ⬇️</strong>: Estado <span class="math inline">\(|1
+angle\)</span> (eixo <span class="math inline">\(-Z\)</span>)</li>
+<li><strong>Equador 🌍</strong>: Estados de <strong>superposição</strong> (50% de chance de 0 ou 1)
 <ul>
-<li>Apontando para cima → qubit é |0⟩</li>
-<li>Apontando para baixo → qubit é |1⟩</li>
-<li>Apontando para o equador → qubit em superposição</li>
-</ul>
-</section>
-<section id="matemática-da-esfera" class="level3">
-<h3 class="anchored" data-anchor-id="matemática-da-esfera">📐 Matemática da Esfera</h3>
-<p>O estado geral de um qubit pode ser escrito como: <span class="math display">\[|\psi\rangle = \cos\left(\frac{\theta}{2}\right)|0\rangle + e^{i\phi}\sin\left(\frac{\theta}{2}\right)|1\rangle\]</span></p>
-<p>Onde:</p>
-<ul>
-<li><strong>θ (theta)</strong>: Ângulo polar - controla probabilidade de 0 vs 1 (latitude)</li>
-<li><strong>φ (phi)</strong>: Ângulo azimutal - controla a fase quântica (longitude)</li>
-</ul>
-<p><strong>Importante:</strong> A fase φ não afeta a probabilidade de medição, mas é crucial para <strong>interferência quântica</strong> em algoritmos!</p>
-</section>
-<section id="exemplos-práticos" class="level3">
-<h3 class="anchored" data-anchor-id="exemplos-práticos">💡 Exemplos Práticos</h3>
-<p>Vamos visualizar três estados fundamentais na Esfera de Bloch:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 1. Estado Inicial (|0&gt;) ---</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Um circuito vazio começa sempre em zero</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>qc_zero <span class="op">=</span> QuantumCircuit(<span class="dv">1</span>)</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Extraímos o estado matemático (vetor)</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>estado_zero <span class="op">=</span> Statevector(qc_zero)</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Gerando imagem do Estado Zero (Pólo Norte)..."</span>)</span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Nota: plot_bloch_multivector retorna uma figura matplotlib</span></span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>fig1 <span class="op">=</span> plot_bloch_multivector(estado_zero, title<span class="op">=</span><span class="st">"Estado Inicial |0&gt;"</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>Gerando imagem do Estado Zero (Pólo Norte)...
-</code></pre>
-<section id="exemplo-1-estado-inicial-0-pólo-norte" class="level4">
-<h4 class="anchored" data-anchor-id="exemplo-1-estado-inicial-0-pólo-norte">Exemplo 1: Estado Inicial |0⟩ (Pólo Norte)</h4>
-<p>Um circuito vazio sempre começa com todos os qubits em |0⟩:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 2. Estado de Superposição (Apicando Hadamard) ---</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>qc_super <span class="op">=</span> QuantumCircuit(<span class="dv">1</span>)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>qc_super.h(<span class="dv">0</span>) <span class="co"># Aplica H</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># qc_super.z(0) # Aplica Z para mostrar diferença de fase</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>estado_super <span class="op">=</span> Statevector(qc_super)</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Gerando imagem da Superposição (Equador)..."</span>)</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>fig2 <span class="op">=</span> plot_bloch_multivector(estado_super, title<span class="op">=</span><span class="st">"Após Hadamard |+&gt;"</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>Gerando imagem da Superposição (Equador)...
-</code></pre>
-</section>
-<section id="exemplo-2-superposição-equador" class="level4">
-<h4 class="anchored" data-anchor-id="exemplo-2-superposição-equador">Exemplo 2: Superposição |+⟩ (Equador)</h4>
-<p>Aplicando a porta Hadamard, movemos o estado do pólo norte para o equador:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 3. Estado Invertido (Aplicando X) ---</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>qc_inv <span class="op">=</span> QuantumCircuit(<span class="dv">1</span>)</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>qc_inv.x(<span class="dv">0</span>) <span class="co"># Aplica X</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>estado_inv <span class="op">=</span> Statevector(qc_inv)</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Gerando imagem do Estado Invertido (Pólo Sul)..."</span>)</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>fig3 <span class="op">=</span> plot_bloch_multivector(estado_inv, title<span class="op">=</span><span class="st">"Após Porta X |1&gt;"</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>Gerando imagem do Estado Invertido (Pólo Sul)...
-</code></pre>
-</section>
-<section id="exemplo-3-estado-1-pólo-sul" class="level4">
-<h4 class="anchored" data-anchor-id="exemplo-3-estado-1-pólo-sul">Exemplo 3: Estado |1⟩ (Pólo Sul)</h4>
-<p>Aplicando a porta X (NOT quântico), invertemos completamente o estado:</p>
-</section>
-</section>
-<section id="interpretando-as-visualizações" class="level3">
-<h3 class="anchored" data-anchor-id="interpretando-as-visualizações">📊 Interpretando as Visualizações</h3>
-<p>O que você verá nas figuras acima:</p>
-<ol type="1">
-<li><strong>Figura 1 (Estado Inicial):</strong>
-<ul>
-<li>A seta vermelha aponta para o <strong>Pólo Norte (Eixo Z+)</strong></li>
-<li>Isso é o estado |0⟩</li>
-<li>100% de probabilidade de medir 0</li>
+<li><span class="math inline">\(+X\)</span>: Estado <span class="math inline">\(|+
+angle = \frac{|0
+angle + |1
+angle}{\sqrt{2}}\)</span></li>
+<li><span class="math inline">\(-X\)</span>: Estado <span class="math inline">\(|-
+angle = \frac{|0
+angle - |1
+angle}{\sqrt{2}}\)</span></li>
+<li><span class="math inline">\(+Y\)</span>: Estado <span class="math inline">\(|i+
+angle = \frac{|0
+angle + i|1
+angle}{\sqrt{2}}\)</span></li>
+<li><span class="math inline">\(-Y\)</span>: Estado <span class="math inline">\(|i-
+angle = \frac{|0
+angle - i|1
+angle}{\sqrt{2}}\)</span></li>
 </ul></li>
-<li><strong>Figura 2 (Após Hadamard):</strong>
-<ul>
-<li>A seta desce para o <strong>Equador (Eixo X+)</strong></li>
-<li>Estado |+⟩ = superposição com fase positiva</li>
-<li>50% de chance de medir 0, 50% de medir 1</li>
-<li>A direção específica (X+) indica a <strong>fase</strong> da superposição</li>
-</ul></li>
-<li><strong>Figura 3 (Após Porta X):</strong>
-<ul>
-<li>A seta aponta para o <strong>Pólo Sul (Eixo Z-)</strong></li>
-<li>Isso é o estado |1⟩</li>
-<li>100% de probabilidade de medir 1</li>
-</ul></li>
-</ol>
+</ul>
+</section>
+<section id="calculando-vetores-de-bloch-com-cirq" class="level3">
+<h3 class="anchored" data-anchor-id="calculando-vetores-de-bloch-com-cirq">💡 Calculando Vetores de Bloch com Cirq</h3>
+<p>Vamos calcular matematicamente as coordenadas <span class="math inline">\((x, y, z)\)</span> dos estados fundamentais com a função nativa do Cirq <code>cirq.bloch_vector_from_state_vector_and_density_matrix</code>:</p>
+<div id="qpyodide-insertion-location-7"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
 <section id="entendendo-a-fase-quântica" class="level3">
 <h3 class="anchored" data-anchor-id="entendendo-a-fase-quântica">🎯 Entendendo a Fase Quântica</h3>
-<p><strong>Experimento:</strong> Tente adicionar uma porta Z logo após a porta H na Exemplo 2:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>qc_super.h(<span class="dv">0</span>)  <span class="co"># Hadamard</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>qc_super.z(<span class="dv">0</span>)  <span class="co"># Porta Z - rotação de fase</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-<p>A porta Z <strong>gira o qubit ao redor do eixo vertical</strong> (eixo Z).</p>
-<p><strong>O que acontece:</strong></p>
-<ul>
-<li><strong>Visualmente:</strong> A seta continua no equador (mesma probabilidade 50/50)</li>
-<li><strong>Mas:</strong> Agora aponta para <strong>Eixo X-</strong> (fase negativa)</li>
-<li><strong>Significado:</strong> A probabilidade não muda, mas a <strong>fase</strong> muda!</li>
-</ul>
-<p><strong>Por que isso importa:</strong></p>
-<ul>
-<li>Em algoritmos quânticos, qubits interferem uns com os outros</li>
-<li>A direção da seta (fase) determina se a interferência será <strong>construtiva</strong> ou <strong>destrutiva</strong></li>
-<li>Isso é fundamental para algoritmos como Grover e Shor!</li>
-</ul>
+<p>Quando aplicamos uma porta <span class="math inline">\(Z\)</span> logo após a porta <span class="math inline">\(H\)</span>: - <strong>Probabilidades de medição:</strong> continuam <span class="math inline">\(50\%\)</span> para <span class="math inline">\(0\)</span> e <span class="math inline">\(50\%\)</span> para <span class="math inline">\(1\)</span> (<span class="math inline">\(z = 0\)</span>). - <strong>Coordenada <span class="math inline">\(x\)</span>:</strong> inverte de <span class="math inline">\(+1{,}00\)</span> para <span class="math inline">\(-1{,}00\)</span>! - Essa diferença de sinal (fase relativa) é invisível em uma medição computacional direta isolada, mas produz interferência construtiva ou destrutiva quando os qubits interagem nos algoritmos de Deutsch-Jozsa, Grover e Shor.</p>
 <hr>
 </section>
 </section>
-<section id="resumo-do-que-aprendemos" class="level2">
-<h2 class="anchored" data-anchor-id="resumo-do-que-aprendemos">🎓 Resumo do que Aprendemos</h2>
-<p>Parabéns! Você já dominou os fundamentos:</p>
-<section id="conceitos-matemáticos" class="level3">
-<h3 class="anchored" data-anchor-id="conceitos-matemáticos">✅ Conceitos Matemáticos</h3>
+<section id="resumo-da-programação-no-cirq" class="level2">
+<h2 class="anchored" data-anchor-id="resumo-da-programação-no-cirq">🎓 Resumo da Programação no Cirq</h2>
+<p>Parabéns! Você já dominou os fundamentos de circuitos quânticos em tempo real:</p>
+<section id="principais-construtos-do-cirq" class="level3">
+<h3 class="anchored" data-anchor-id="principais-construtos-do-cirq">✅ Principais Construtos do Cirq</h3>
 <ul>
-<li>Vetores de estado representam qubits</li>
-<li>Matrizes representam portas quânticas</li>
-<li>Superposição e emaranhamento como operações lineares</li>
-</ul>
-</section>
-<section id="programação-no-qiskit" class="level3">
-<h3 class="anchored" data-anchor-id="programação-no-qiskit">✅ Programação no Qiskit</h3>
-<ul>
-<li>Criar circuitos quânticos (<code>QuantumCircuit</code>)</li>
-<li>Aplicar portas (H, X, CNOT)</li>
-<li>Medir qubits</li>
-<li>Executar simulações</li>
-</ul>
-</section>
-<section id="visualização" class="level3">
-<h3 class="anchored" data-anchor-id="visualização">✅ Visualização</h3>
-<ul>
-<li>Entender a Esfera de Bloch</li>
-<li>Interpretar o vetor de estado geometricamente</li>
-<li>Distinguir probabilidade vs fase quântica</li>
-</ul>
-</section>
-<section id="próximos-passos" class="level3">
-<h3 class="anchored" data-anchor-id="próximos-passos">🚀 Próximos Passos</h3>
-<p>Agora você está pronto para explorar:</p>
-<ul>
-<li>Algoritmos quânticos (Deutsch-Jozsa, Grover, Shor)</li>
-<li>Protocolos de comunicação quântica (Teletransporte, Superdense Coding)</li>
-<li>Correção de erros quânticos</li>
-<li>Computação quântica em hardware real (IBM Quantum)</li>
+<li><strong>Qubits</strong>: <code>cirq.LineQubit(i)</code> ou <code>cirq.LineQubit.range(n)</code></li>
+<li><strong>Circuitos</strong>: <code>cirq.Circuit(...)</code> agregando operações em momentos discretos</li>
+<li><strong>Portas Quânticas</strong>: <code>cirq.H</code>, <code>cirq.X</code>, <code>cirq.Y</code>, <code>cirq.Z</code>, <code>cirq.CNOT(controle, alvo)</code></li>
+<li><strong>Medições</strong>: <code>cirq.measure(q0, q1, key='resultado')</code></li>
+<li><strong>Simulador</strong>: <code>cirq.Simulator()</code> com <code>.simulate()</code> para cálculo exato da função de onda e <code>.run()</code> para amostragem estatística (<em>shots</em>)</li>
 </ul>
 
 
@@ -1465,26 +1292,26 @@ qc.draw('mpl')</code></pre>
     }
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Código fonte</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Aula 04 — Primeiros Circuitos, Estados de Bell e Emaranhamento"</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Fundamentos de Computação Quântica — Curso de Extensão"</span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Prof. Me. Maxwell Anderson Ielpo do Amaral"</span></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="an">institute:</span><span class="co"> "Instituto Federal de Educação, Ciência e Tecnologia da Paraíba (IFPB) — Campus João Pessoa"</span></span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2026-09-29"</span></span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="an">lang:</span><span class="co"> pt-BR</span></span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📽️ Material da Aula</span></span>
-<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>📄 <span class="co">[</span><span class="ot">Baixar Apostila Completa em PDF</span><span class="co">](../apostila.pdf)</span>{target="_blank"}</span>
-<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>🧪 <span class="co">[</span><span class="ot">Galeria de Simuladores Interativos</span><span class="co">](/assets/simuladores/)</span>{target="_blank"}</span>
-<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>🚀 <span class="co">[</span><span class="ot">Executar no Google Colab</span><span class="co">](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/01-intro.ipynb)</span>{target="_blank"}</span>
-<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>{{&lt; include _content.qmd &gt;}}</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Aula 04 — Primeiros Circuitos, Estados de Bell e Emaranhamento"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Fundamentos de Computação Quântica — Curso de Extensão"</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Prof. Me. Maxwell Anderson Ielpo do Amaral"</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="an">institute:</span><span class="co"> "Instituto Federal de Educação, Ciência e Tecnologia da Paraíba (IFPB) — Campus João Pessoa"</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2026-09-29"</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="an">lang:</span><span class="co"> pt-BR</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📽️ Material da Aula</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>📄 <span class="co">[</span><span class="ot">Baixar Apostila Completa em PDF</span><span class="co">](../apostila.pdf)</span>{target="_blank"}</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>🧪 <span class="co">[</span><span class="ot">Galeria de Simuladores Interativos</span><span class="co">](/assets/simuladores/)</span>{target="_blank"}</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>🚀 <span class="co">[</span><span class="ot">Executar no Google Colab</span><span class="co">](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/01-intro.ipynb)</span>{target="_blank"}</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>{{&lt; include _content.qmd &gt;}}</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <script type="module">
@@ -1640,31 +1467,40 @@ class InteractiveCell extends BaseCell {
         runCodeButton.disabled = true;
         runCodeButton.type = 'button';
         runCodeButton.id = `qpyodide-button-run-${this.id}`;
-        runCodeButton.textContent = '🟡 Loading Pyodide...';
-        runCodeButton.title = `Run code (Shift + Enter)`;
+        runCodeButton.innerHTML = '<i class="fa-solid fa-play qpyodide-icon-run-code"></i> <span>Run Code</span>';
+        runCodeButton.title = `Executar célula (Shift + Enter)`;
 
         // Append buttons to the leftButtonsDiv
         leftButtonsDiv.appendChild(runCodeButton);
 
-        // Create Reset button
+        // Create Start Over (Reset) button
         var resetButton = document.createElement('button');
         resetButton.className = 'btn btn-light btn-xs qpyodide-button qpyodide-button-reset';
         resetButton.type = 'button';
         resetButton.id = `qpyodide-button-reset-${this.id}`;
-        resetButton.title = 'Start over';
-        resetButton.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i>';
+        resetButton.title = 'Start over (Restaurar código original)';
+        resetButton.innerHTML = '<i class="fa-solid fa-rotate-left"></i>';
 
-        // Create Copy button
+        // Create Copy Code button
         var copyButton = document.createElement('button');
         copyButton.className = 'btn btn-light btn-xs qpyodide-button qpyodide-button-copy';
         copyButton.type = 'button';
         copyButton.id = `qpyodide-button-copy-${this.id}`;
-        copyButton.title = 'Copy code';
+        copyButton.title = 'Copy code (Copiar código)';
         copyButton.innerHTML = '<i class="fa-regular fa-copy"></i>';
+
+        // Create Fullscreen button (Tela cheia - ESC para sair)
+        var fullscreenButton = document.createElement('button');
+        fullscreenButton.className = 'btn btn-light btn-xs qpyodide-button qpyodide-button-fullscreen';
+        fullscreenButton.type = 'button';
+        fullscreenButton.id = `qpyodide-button-fullscreen-${this.id}`;
+        fullscreenButton.title = 'Tela cheia (ESC para sair)';
+        fullscreenButton.innerHTML = '<i class="fa-solid fa-expand"></i>';
 
         // Append buttons to the rightButtonsDiv
         rightButtonsDiv.appendChild(resetButton);
         rightButtonsDiv.appendChild(copyButton);
+        rightButtonsDiv.appendChild(fullscreenButton);
 
         // Create console area div
         var consoleAreaDiv = document.createElement('div');
@@ -1716,6 +1552,7 @@ class InteractiveCell extends BaseCell {
         this.runButton = document.getElementById(`qpyodide-button-run-${this.id}`);
         this.resetButton = document.getElementById(`qpyodide-button-reset-${this.id}`);
         this.copyButton = document.getElementById(`qpyodide-button-copy-${this.id}`);
+        this.fullscreenButton = document.getElementById(`qpyodide-button-fullscreen-${this.id}`);
         this.editorDiv = document.getElementById(`qpyodide-editor-${this.id}`);
         this.outputCodeDiv = document.getElementById(`qpyodide-output-code-area-${this.id}`);
         this.outputGraphDiv = document.getElementById(`qpyodide-output-graph-area-${this.id}`);
@@ -1853,7 +1690,7 @@ class InteractiveCell extends BaseCell {
             );
         };
         
-        // Add a click event listener to the reset button
+        // Add a click event listener to the copy button
         thiz.copyButton.onclick = function () {
             // Retrieve current code data
             const data = thiz.editor.getValue();
@@ -1862,10 +1699,61 @@ class InteractiveCell extends BaseCell {
             navigator.clipboard.writeText(data || "");
         };
         
-        // Add a click event listener to the copy button
+        // Add a click event listener to the reset button
         thiz.resetButton.onclick = function () {
             thiz.editor.setValue(thiz.editor.__qpyodideinitialCode);
         };
+
+        // Add a click event listener to the fullscreen button
+        if (thiz.fullscreenButton) {
+            thiz.fullscreenButton.onclick = function () {
+                thiz.toggleFullscreen();
+            };
+        }
+    }
+
+    /**
+     * Alternar modo de tela cheia para o bloco de código
+     */
+    toggleFullscreen() {
+        const area = document.getElementById(`qpyodide-interactive-area-${this.id}`);
+        if (!area) return;
+        const isFullscreen = area.classList.toggle('qpyodide-cell-fullscreen');
+        if (isFullscreen) {
+            if (this.fullscreenButton) {
+                this.fullscreenButton.innerHTML = '<i class="fa-solid fa-compress"></i>';
+                this.fullscreenButton.title = 'Sair da tela cheia (ESC)';
+            }
+            if (this.editorDiv) {
+                this.editorDiv.style.height = 'calc(100vh - 180px)';
+            }
+            if (this.editor) {
+                setTimeout(() => { this.editor.layout(); }, 50);
+            }
+            this._escHandler = (e) => {
+                if (e.key === 'Escape' || e.key === 'Esc') {
+                    if (area.classList.contains('qpyodide-cell-fullscreen')) {
+                        this.toggleFullscreen();
+                    }
+                }
+            };
+            window.addEventListener('keydown', this._escHandler);
+        } else {
+            if (this.fullscreenButton) {
+                this.fullscreenButton.innerHTML = '<i class="fa-solid fa-expand"></i>';
+                this.fullscreenButton.title = 'Tela cheia (ESC para sair)';
+            }
+            if (this.editorDiv) {
+                this.editorDiv.style.height = '';
+            }
+            if (this.editor) {
+                setTimeout(() => { this.editor.layout(); }, 50);
+            }
+            if (this._escHandler) {
+                window.removeEventListener('keydown', this._escHandler);
+                this._escHandler = null;
+            }
+        }
     }
 
     disableInteractiveCells() {
@@ -1931,20 +1819,56 @@ class InteractiveCell extends BaseCell {
         this.outputCodeDiv.innerHTML = "";
         this.outputGraphDiv.innerHTML = "";        
 
-        // Design an output object for messages
-        const pre = document.createElement("pre");
         if (/\S/.test(result)) {
-            // Display results as HTML elements to retain output styling
-            const div = document.createElement("div");
-            div.innerHTML = result;
-            pre.appendChild(div);
-        } else {
-            // If nothing is present, hide the element.
-            pre.style.visibility = "hidden";
+            // Check if output contains LaTeX math blocks: $$ ... $$
+            const mathRegex = /\$\$([\s\S]*?)\$\$/g;
+            if (mathRegex.test(result)) {
+                mathRegex.lastIndex = 0;
+                let lastIndex = 0;
+                let match;
+                while ((match = mathRegex.exec(result)) !== null) {
+                    if (match.index > lastIndex) {
+                        const textPart = result.slice(lastIndex, match.index).trim();
+                        if (textPart) {
+                            const pre = document.createElement("pre");
+                            pre.innerHTML = textPart;
+                            this.outputCodeDiv.appendChild(pre);
+                        }
+                    }
+                    let mathContent = match[1].trim();
+                    mathContent = mathContent.replace(/\\ket\{([^}]+)\}/g, '\\left| $1 \\right\\rangle');
+                    mathContent = mathContent.replace(/\\bra\{([^}]+)\}/g, '\\left\\langle $1 \\right|');
+                    const mathDiv = document.createElement("div");
+                    mathDiv.className = "qpyodide-output-math";
+                    mathDiv.innerHTML = `$$${mathContent}$$`;
+                    this.outputCodeDiv.appendChild(mathDiv);
+                    lastIndex = match.index + match[0].length;
+                }
+                if (lastIndex < result.length) {
+                    const textPart = result.slice(lastIndex).trim();
+                    if (textPart) {
+                        const pre = document.createElement("pre");
+                        pre.innerHTML = textPart;
+                        this.outputCodeDiv.appendChild(pre);
+                    }
+                }
+                // Trigger MathJax rendering for formatted output
+                if (window.MathJax && window.MathJax.typeset) {
+                    try {
+                        window.MathJax.typeset([this.outputCodeDiv]);
+                    } catch (e) {
+                        console.warn("MathJax typeset error:", e);
+                    }
+                }
+            } else {
+                // Design standard output object for non-math messages
+                const pre = document.createElement("pre");
+                const div = document.createElement("div");
+                div.innerHTML = result;
+                pre.appendChild(div);
+                this.outputCodeDiv.appendChild(pre);
+            }
         }
-
-        // Add output under interactive div
-        this.outputCodeDiv.appendChild(pre);
 
         // Place the graphics onto the page
         if (graphFigure) {

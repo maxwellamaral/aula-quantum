@@ -111,56 +111,218 @@ code {
 
 /* Pyodide Monaco Editor & Output Dark Theme Overrides */
 .qpyodide-editor {
-  border: 1px solid #2d3748 !important;
-  border-radius: 6px;
+  border: 1px solid rgba(0, 206, 209, 0.3) !important;
+  border-radius: 8px 8px 0 0;
   overflow: hidden;
 }
 
 .qpyodide-editor-toolbar {
-  background-color: #1a202c !important;
-  border-bottom: 1px solid #2d3748 !important;
+  background-color: #0b1528 !important;
+  border: 1px solid rgba(0, 206, 209, 0.3) !important;
+  border-bottom: none !important;
+  border-radius: 8px 8px 0 0;
   color: #e2e8f0 !important;
-  padding: 0.4rem 0.6rem;
+  padding: 0.4rem 0.75rem;
 }
 
 .qpyodide-button {
-  background-color: #2d3748 !important;
-  color: #f7fafc !important;
-  border: 1px solid #4a5568 !important;
+  background-color: #1e293b !important;
+  color: #f1f5f9 !important;
+  border: 1px solid #334155 !important;
   font-weight: 500;
-  border-radius: 4px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.2s ease;
 }
 
 .qpyodide-button:hover {
-  background-color: #4a5568 !important;
+  background-color: #334155 !important;
+  color: #38bdf8 !important;
+  border-color: #0284c7 !important;
+}
+
+/* ==========================================================================
+   Pyodide Interactive Cells — Estilo Idêntico ao Visual Jupyter / Monaco Dark
+   ========================================================================== */
+
+.qpyodide-interactive-area {
+  margin: 1.75rem 0 !important;
+}
+
+.qpyodide-editor-toolbar {
+  width: 100% !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  background: transparent !important;
+  padding: 0 0 8px 0 !important;
+  border: none !important;
+  box-sizing: border-box !important;
+}
+
+.qpyodide-editor-toolbar-left-buttons {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.qpyodide-editor-toolbar-right-buttons {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+/* Botão principal "Run Code" */
+.qpyodide-button-run {
+  background: #38a169 !important;
   color: #ffffff !important;
-  border-color: #718096 !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 7px 18px !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  box-shadow: 0 2px 10px rgba(56, 161, 105, 0.3) !important;
+  cursor: pointer !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  line-height: 1.2 !important;
+}
+
+.qpyodide-button-run:hover:not(:disabled) {
+  background: #48bb78 !important;
+  box-shadow: 0 4px 16px rgba(72, 187, 120, 0.5) !important;
+  color: #ffffff !important;
+  transform: translateY(-1px) !important;
+}
+
+.qpyodide-button-run:disabled {
+  background: #24332a !important;
+  color: #8fa397 !important;
+  cursor: not-allowed !important;
+  opacity: 0.75 !important;
+  box-shadow: none !important;
+}
+
+.qpyodide-icon-run-code {
+  color: #ffffff !important;
+  font-size: 0.88rem !important;
+}
+
+/* Botões da direita: Start Over, Copy Code, Fullscreen */
+.qpyodide-button-reset,
+.qpyodide-button-copy,
+.qpyodide-button-fullscreen {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #94a3b8 !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 8px !important;
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  font-size: 0.95rem !important;
+  cursor: pointer !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.qpyodide-button-reset:hover,
+.qpyodide-button-copy:hover,
+.qpyodide-button-fullscreen:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: #38bdf8 !important;
+  border-color: rgba(56, 189, 248, 0.45) !important;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.25) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Caixa do editor e console */
+div.qpyodide-console-area {
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background-color: #0c1017 !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  margin: 0.5rem 0 1.25rem 0 !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6) !important;
+}
+
+.qpyodide-editor {
+  border: none !important;
+  background-color: #0c1017 !important;
+  padding: 6px 0 !important;
 }
 
 .qpyodide-output-code-area pre {
-  background-color: #0d1117 !important;
-  border: 1px solid #2d3748 !important;
-  border-radius: 6px;
-  color: #e6edf3 !important;
+  background-color: #060a12 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-radius: 0 0 10px 10px !important;
+  color: #e2e8f0 !important;
+  padding: 0.85rem 1.15rem !important;
+  font-family: 'Fira Code', Consolas, Monaco, monospace !important;
+  font-size: 0.92rem !important;
+  line-height: 1.55 !important;
+  margin: 0 !important;
 }
 
 .qpyodide-output-code-stdout {
-  color: #e6edf3 !important;
+  color: #a7f3d0 !important;
 }
 
 .qpyodide-output-code-stderr {
-  color: #ff7b72 !important;
+  color: #f87171 !important;
 }
 
-.qpyodide-button-reset,
-.qpyodide-button-copy {
-  color: #cbd5e0 !important;
+/* Saída de Fórmulas Matemáticas Renderizadas com MathJax */
+.qpyodide-output-math {
+  background-color: #060a12 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: #f1f5f9 !important;
+  padding: 0.75rem 1.25rem !important;
+  font-size: 1.2rem !important;
+  overflow-x: auto !important;
 }
 
-div.qpyodide-console-area {
-  border: 1px solid #2d3748 !important;
-  background-color: #0d1117 !important;
-  border-radius: 6px;
+.qpyodide-output-math mjx-container {
+  margin: 0.25rem 0 !important;
+  color: #f1f5f9 !important;
+}
+
+/* Modo Tela Cheia (ESC para sair) */
+.qpyodide-interactive-area.qpyodide-cell-fullscreen {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 999999 !important;
+  background: #080c14 !important;
+  padding: 24px 32px !important;
+  box-sizing: border-box !important;
+  overflow-y: auto !important;
+  border-radius: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  box-shadow: 0 0 80px rgba(0, 0, 0, 0.95) !important;
+}
+
+.qpyodide-interactive-area.qpyodide-cell-fullscreen div.qpyodide-console-area {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  margin: 0 !important;
+}
+
+.qpyodide-interactive-area.qpyodide-cell-fullscreen .qpyodide-editor {
+  flex: 1 !important;
 }
 
 /* Glassmorphism & Neon Cyan styles for Aulas & Materiais */

@@ -150,31 +150,40 @@ class InteractiveCell extends BaseCell {
         runCodeButton.disabled = true;
         runCodeButton.type = 'button';
         runCodeButton.id = `qpyodide-button-run-${this.id}`;
-        runCodeButton.textContent = '🟡 Loading Pyodide...';
-        runCodeButton.title = `Run code (Shift + Enter)`;
+        runCodeButton.innerHTML = '<i class="fa-solid fa-play qpyodide-icon-run-code"></i> <span>Run Code</span>';
+        runCodeButton.title = `Executar célula (Shift + Enter)`;
 
         // Append buttons to the leftButtonsDiv
         leftButtonsDiv.appendChild(runCodeButton);
 
-        // Create Reset button
+        // Create Start Over (Reset) button
         var resetButton = document.createElement('button');
         resetButton.className = 'btn btn-light btn-xs qpyodide-button qpyodide-button-reset';
         resetButton.type = 'button';
         resetButton.id = `qpyodide-button-reset-${this.id}`;
-        resetButton.title = 'Start over';
-        resetButton.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i>';
+        resetButton.title = 'Start over (Restaurar código original)';
+        resetButton.innerHTML = '<i class="fa-solid fa-rotate-left"></i>';
 
-        // Create Copy button
+        // Create Copy Code button
         var copyButton = document.createElement('button');
         copyButton.className = 'btn btn-light btn-xs qpyodide-button qpyodide-button-copy';
         copyButton.type = 'button';
         copyButton.id = `qpyodide-button-copy-${this.id}`;
-        copyButton.title = 'Copy code';
+        copyButton.title = 'Copy code (Copiar código)';
         copyButton.innerHTML = '<i class="fa-regular fa-copy"></i>';
+
+        // Create Fullscreen button (Tela cheia - ESC para sair)
+        var fullscreenButton = document.createElement('button');
+        fullscreenButton.className = 'btn btn-light btn-xs qpyodide-button qpyodide-button-fullscreen';
+        fullscreenButton.type = 'button';
+        fullscreenButton.id = `qpyodide-button-fullscreen-${this.id}`;
+        fullscreenButton.title = 'Tela cheia (ESC para sair)';
+        fullscreenButton.innerHTML = '<i class="fa-solid fa-expand"></i>';
 
         // Append buttons to the rightButtonsDiv
         rightButtonsDiv.appendChild(resetButton);
         rightButtonsDiv.appendChild(copyButton);
+        rightButtonsDiv.appendChild(fullscreenButton);
 
         // Create console area div
         var consoleAreaDiv = document.createElement('div');
@@ -226,6 +235,7 @@ class InteractiveCell extends BaseCell {
         this.runButton = document.getElementById(`qpyodide-button-run-${this.id}`);
         this.resetButton = document.getElementById(`qpyodide-button-reset-${this.id}`);
         this.copyButton = document.getElementById(`qpyodide-button-copy-${this.id}`);
+        this.fullscreenButton = document.getElementById(`qpyodide-button-fullscreen-${this.id}`);
         this.editorDiv = document.getElementById(`qpyodide-editor-${this.id}`);
         this.outputCodeDiv = document.getElementById(`qpyodide-output-code-area-${this.id}`);
         this.outputGraphDiv = document.getElementById(`qpyodide-output-graph-area-${this.id}`);
@@ -363,7 +373,7 @@ class InteractiveCell extends BaseCell {
             );
         };
         
-        // Add a click event listener to the reset button
+        // Add a click event listener to the copy button
         thiz.copyButton.onclick = function () {
             // Retrieve current code data
             const data = thiz.editor.getValue();
@@ -372,10 +382,61 @@ class InteractiveCell extends BaseCell {
             navigator.clipboard.writeText(data || "");
         };
         
-        // Add a click event listener to the copy button
+        // Add a click event listener to the reset button
         thiz.resetButton.onclick = function () {
             thiz.editor.setValue(thiz.editor.__qpyodideinitialCode);
         };
+
+        // Add a click event listener to the fullscreen button
+        if (thiz.fullscreenButton) {
+            thiz.fullscreenButton.onclick = function () {
+                thiz.toggleFullscreen();
+            };
+        }
+    }
+
+    /**
+     * Alternar modo de tela cheia para o bloco de código
+     */
+    toggleFullscreen() {
+        const area = document.getElementById(`qpyodide-interactive-area-${this.id}`);
+        if (!area) return;
+        const isFullscreen = area.classList.toggle('qpyodide-cell-fullscreen');
+        if (isFullscreen) {
+            if (this.fullscreenButton) {
+                this.fullscreenButton.innerHTML = '<i class="fa-solid fa-compress"></i>';
+                this.fullscreenButton.title = 'Sair da tela cheia (ESC)';
+            }
+            if (this.editorDiv) {
+                this.editorDiv.style.height = 'calc(100vh - 180px)';
+            }
+            if (this.editor) {
+                setTimeout(() => { this.editor.layout(); }, 50);
+            }
+            this._escHandler = (e) => {
+                if (e.key === 'Escape' || e.key === 'Esc') {
+                    if (area.classList.contains('qpyodide-cell-fullscreen')) {
+                        this.toggleFullscreen();
+                    }
+                }
+            };
+            window.addEventListener('keydown', this._escHandler);
+        } else {
+            if (this.fullscreenButton) {
+                this.fullscreenButton.innerHTML = '<i class="fa-solid fa-expand"></i>';
+                this.fullscreenButton.title = 'Tela cheia (ESC para sair)';
+            }
+            if (this.editorDiv) {
+                this.editorDiv.style.height = '';
+            }
+            if (this.editor) {
+                setTimeout(() => { this.editor.layout(); }, 50);
+            }
+            if (this._escHandler) {
+                window.removeEventListener('keydown', this._escHandler);
+                this._escHandler = null;
+            }
+        }
     }
 
     disableInteractiveCells() {
@@ -441,20 +502,56 @@ class InteractiveCell extends BaseCell {
         this.outputCodeDiv.innerHTML = "";
         this.outputGraphDiv.innerHTML = "";        
 
-        // Design an output object for messages
-        const pre = document.createElement("pre");
         if (/\S/.test(result)) {
-            // Display results as HTML elements to retain output styling
-            const div = document.createElement("div");
-            div.innerHTML = result;
-            pre.appendChild(div);
-        } else {
-            // If nothing is present, hide the element.
-            pre.style.visibility = "hidden";
+            // Check if output contains LaTeX math blocks: $$ ... $$
+            const mathRegex = /\$\$([\s\S]*?)\$\$/g;
+            if (mathRegex.test(result)) {
+                mathRegex.lastIndex = 0;
+                let lastIndex = 0;
+                let match;
+                while ((match = mathRegex.exec(result)) !== null) {
+                    if (match.index > lastIndex) {
+                        const textPart = result.slice(lastIndex, match.index).trim();
+                        if (textPart) {
+                            const pre = document.createElement("pre");
+                            pre.innerHTML = textPart;
+                            this.outputCodeDiv.appendChild(pre);
+                        }
+                    }
+                    let mathContent = match[1].trim();
+                    mathContent = mathContent.replace(/\\ket\{([^}]+)\}/g, '\\left| $1 \\right\\rangle');
+                    mathContent = mathContent.replace(/\\bra\{([^}]+)\}/g, '\\left\\langle $1 \\right|');
+                    const mathDiv = document.createElement("div");
+                    mathDiv.className = "qpyodide-output-math";
+                    mathDiv.innerHTML = `$$${mathContent}$$`;
+                    this.outputCodeDiv.appendChild(mathDiv);
+                    lastIndex = match.index + match[0].length;
+                }
+                if (lastIndex < result.length) {
+                    const textPart = result.slice(lastIndex).trim();
+                    if (textPart) {
+                        const pre = document.createElement("pre");
+                        pre.innerHTML = textPart;
+                        this.outputCodeDiv.appendChild(pre);
+                    }
+                }
+                // Trigger MathJax rendering for formatted output
+                if (window.MathJax && window.MathJax.typeset) {
+                    try {
+                        window.MathJax.typeset([this.outputCodeDiv]);
+                    } catch (e) {
+                        console.warn("MathJax typeset error:", e);
+                    }
+                }
+            } else {
+                // Design standard output object for non-math messages
+                const pre = document.createElement("pre");
+                const div = document.createElement("div");
+                div.innerHTML = result;
+                pre.appendChild(div);
+                this.outputCodeDiv.appendChild(pre);
+            }
         }
-
-        // Add output under interactive div
-        this.outputCodeDiv.appendChild(pre);
 
         // Place the graphics onto the page
         if (graphFigure) {

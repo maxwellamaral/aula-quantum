@@ -57,6 +57,41 @@ globalThis.qpyodideInstance = await import(
     import matplotlib
     matplotlib.use("module://matplotlib_pyodide.html5_canvas_backend")
     from matplotlib import pyplot as plt
+
+    import builtins
+    import sys
+    import types
+
+    class _Markdown:
+        def __init__(self, data=""):
+            self.data = str(data)
+        def __repr__(self):
+            return self.data
+        def _repr_markdown_(self):
+            return self.data
+
+    def _display(*args, **kwargs):
+        for arg in args:
+            if hasattr(arg, 'data'):
+                print(arg.data)
+            elif hasattr(arg, '_repr_latex_'):
+                print(arg._repr_latex_())
+            elif hasattr(arg, '_repr_markdown_'):
+                print(arg._repr_markdown_())
+            else:
+                print(arg)
+
+    builtins.display = _display
+    builtins.Markdown = _Markdown
+
+    # Shim IPython.display if imported by any lesson
+    ipython = types.ModuleType("IPython")
+    ipython_display = types.ModuleType("IPython.display")
+    ipython_display.display = _display
+    ipython_display.Markdown = _Markdown
+    ipython.display = ipython_display
+    sys.modules["IPython"] = ipython
+    sys.modules["IPython.display"] = ipython_display
     `);
 
     // Unlock interactive buttons
@@ -67,7 +102,7 @@ globalThis.qpyodideInstance = await import(
 
     // Set document status to viable
     qpyodideUpdateStatusHeader(
-      "🟢 Ready!"
+      "🟢 Pronto!"
     );
 
     // Assign Pyodide into the global environment

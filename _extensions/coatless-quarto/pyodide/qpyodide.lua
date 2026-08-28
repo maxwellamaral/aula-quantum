@@ -407,23 +407,24 @@ function enablePyodideCodeCell(el)
   -- Check for the new engine syntax that allows for the cell to be 
   -- evaluated in VS Code or RStudio editor views, c.f.
   -- https://github.com/quarto-dev/quarto-cli/discussions/4761#discussioncomment-5338631
-  -- Quarto >=1.7 entrega "engine class" como string única "{python} {pyodide-python}"
   local hasPyodideClass = false
   for _, c in ipairs(el.attr.classes) do
-    if c:find("pyodide%%-python") then hasPyodideClass = true end
+    if c:find("pyodide") then 
+      hasPyodideClass = true 
+    end
   end
   if not hasPyodideClass then
     return el
   end
 
-  -- We detected a webR cell
+  -- We detected a pyodide cell
   missingPyodideCell = false
 
   -- Local code cell storage
   local cellOptions = {}
   local cellCode = ''
 
-  -- Convert webr-specific option commands into attributes
+  -- Convert pyodide-specific option commands into attributes
   cellCode, cellOptions = extractCodeBlockOptions(el)
 
   -- Modify the counter variable each time this is run to create
@@ -440,24 +441,15 @@ function enablePyodideCodeCell(el)
   -- Store the CodeDiv in the global table
   table.insert(qPyodideCapturedCodeBlocks, codeBlockData)
 
-  -- Return an insertion point inside the document
-  return pandoc.RawInline('html', qPyodideJSCellInsertionCode(qPyodideCounter))
+  -- Return an insertion point inside the document as a RawBlock
+  return pandoc.RawBlock('html', qPyodideJSCellInsertionCode(qPyodideCounter))
 end
 
 local function stitchDocument(doc)
-  -- Quarto >=1.7: o estado local não persiste entre os passes do filtro.
-  -- Detecta células pyodide varrendo o documento final.
-  for _, blk in ipairs(doc.blocks) do
-    if blk.t == "CodeBlock" and blk.attr and blk.attr.classes then
-      for _, c in ipairs(blk.attr.classes) do
-        if c:find("pyodide%-python") or c:find("{pyodide-python}") then
-          missingPyodideCell = false
-          break
-        end
-      end
-      if not missingPyodideCell then break end
-    end
+  if qPyodideCounter > 0 then
+    missingPyodideCell = false
   end
+
   if missingPyodideCell then 
     return doc
   end

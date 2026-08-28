@@ -2,6 +2,22 @@
 """Conversor integral notebook -> _content.qmd (sem resumo: todo o conteudo entra)."""
 import json, re, sys, pathlib, urllib.parse
 
+def ensure_blank_before_lists(text):
+    lines = text.split('\n')
+    new_lines = []
+    list_item_re = re.compile(r'^\s*([-*+]|\d+\.)\s')
+    in_code_block = False
+    for i, line in enumerate(lines):
+        if line.strip().startswith('```'):
+            in_code_block = not in_code_block
+        if not in_code_block and list_item_re.match(line):
+            if i > 0 and lines[i-1].strip() != '':
+                prev = lines[i-1].strip()
+                if not list_item_re.match(lines[i-1]) and not prev.startswith(('#', '>', '|', '```', ':::')):
+                    new_lines.append('')
+        new_lines.append(line)
+    return '\n'.join(new_lines)
+
 def cell_to_qmd(cell, idx):
     src = ''.join(cell.get('source', []))
     if not src.strip():
@@ -17,6 +33,7 @@ def cell_to_qmd(cell, idx):
             base = pathlib.Path(p).name
             return f'![{alt}](/notebooks/img/{base})'
         src = re.sub(r'!\[([^\]]*)\]\(([^)]+)\)', imgfix, src)
+        src = ensure_blank_before_lists(src)
         return src + '\n\n'
     if ct == 'code':
         outputs = []

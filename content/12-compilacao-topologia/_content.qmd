@@ -15,12 +15,7 @@ Portanto, o software quântico não é apenas uma camada abstrata independente d
 
 - [1] https://arxiv.org/abs/2403.02240
 
-
 ## Prática com o Transpiler do Qiskit
-
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/07-quantum-fourier-transform.ipynb) ou rode `uv run jupyter lab` localmente.
 
 ```python
 # Compare o circuito lógico com o circuito transpilado para a topologia real do dispositivo
@@ -32,6 +27,5 @@ from qiskit.providers.fake_provider import GenericBackendV2
 # qc_transpilado = transpile(qc_logico, backend=backend, optimization_level=3)
 # print(f"Portas antes: {qc_logico.size()} | depois: {qc_transpilado.size()}")
 ```
-:::
 
 Observe como o transpiler insere portas SWAP para respeitar o grafo de acoplamento físico, aumentando a profundidade do circuito.

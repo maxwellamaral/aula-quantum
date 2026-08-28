@@ -9,6 +9,7 @@ Bem-vindo ao mundo da **IA Quântica (Quantum Machine Learning - QML)**!
 Se você já tem experiência com programação e IA clássica, este notebook vai mostrar como aplicar conceitos familiares (como redes neurais e classificadores) em computadores quânticos. Vamos usar a biblioteca **Qiskit Machine Learning** da IBM, que tem uma sintaxe muito similar ao scikit-learn que você já conhece.
 
 **O que você vai aprender:**
+
 - ✅ Como funciona um Classificador Variacional Quântico (VQC)
 - ✅ A diferença entre Feature Map e Ansatz
 - ✅ Como visualizar circuitos quânticos e fronteiras de decisão
@@ -16,6 +17,7 @@ Se você já tem experiência com programação e IA clássica, este notebook va
 - ✅ Comparações práticas com classificadores tradicionais
 
 **Pré-requisitos:**
+
 - Conhecimento básico de Python
 - Familiaridade com conceitos de ML (classificação, acurácia, etc.)
 - Ter completado os notebooks anteriores sobre portas quânticas (opcional, mas recomendado)
@@ -67,20 +69,16 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 
 # Qiskit Imports
+
+# Imports do Qiskit (execução no Google Colab / ambiente local)
+try:
+    from qiskit.circuit.library import ZZFeatureMap, RealAmplitudes
+    from qiskit_algorithms.optimizers import COBYLA
+    from qiskit_machine_learning.algorithms import VQC
+    from qiskit_aer import AerSimulator
+except ImportError:
+    pass
 ```
-
-::: {.callout-note collapse="true"}
-## 🔒 Imports do Qiskit (requerem execução local)
-Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
-
-```python
-from qiskit.circuit.library import ZZFeatureMap, RealAmplitudes
-from qiskit_algorithms.optimizers import COBYLA
-from qiskit_machine_learning.algorithms import VQC
-from qiskit_aer import AerSimulator
-```
-:::
-
 
 #### ⚠️ Nota sobre Versões do Qiskit
 
@@ -97,7 +95,6 @@ from qiskit.circuit.library import zz_feature_map, real_amplitudes
 Para este notebook educacional, continuaremos usando a sintaxe atual por ser mais amplamente compatível e documentada. A lógica e conceitos permanecem os mesmos!
 
 ```{python} {pyodide-python}
-
 
 # --- 1. PREPARAÇÃO DOS DADOS (O mundo clássico) ---
 # Vamos criar um dataset sintético simples (2 classes, 2 features para caber em 2 qubits)
@@ -273,6 +270,7 @@ A interação **ZZ** usa o **produto** das features, não a soma. Isso cria **te
 - Implementar um kernel quântico de alta expressividade
 
 **Comparação:**
+
 - **Feature Map Linear:** φ(x) = [x₁, x₂] → 2D
 - **Kernel Polinomial (clássico):** φ(x) = [x₁, x₂, x₁², x₂², x₁·x₂] → 5D
 - **ZZFeatureMap (quântico):** φ(x) = |ψ(x)⟩ → 2ⁿ dimensional (exponencial!)
@@ -345,22 +343,13 @@ O **ZZFeatureMap** é um ótimo ponto de partida: equilibra expressividade e efi
 
 **Resumo:** O Feature Map é a "rampa de acesso" ao mundo quântico, e o ZZFeatureMap faz isso de forma eficiente usando emaranhamento ZZ para capturar interações não-lineares entre suas features!
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/20-quantum-machine-learning.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
-
 # --- 2. O FEATURE MAP (Tradutor Dados -> Quantum) ---
 # ZZFeatureMap é famoso por criar emaranhamento entre os dados,
 # ajudando a resolver problemas não-lineares.
 num_qubits = 2
 feature_map = ZZFeatureMap(feature_dimension=num_qubits, reps=1)
-
 ```
-:::
-
 
 ```
 C:\Users\Max\AppData\Local\Temp\ipykernel_20596\1784461025.py:5: DeprecationWarning: The class ``qiskit.circuit.library.data_preparation._zz_feature_map.ZZFeatureMap`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. Use the zz_feature_map function as a replacement. Note that this will no longer return a BlueprintCircuit, but just a plain QuantumCircuit.
@@ -437,6 +426,7 @@ O **Ansatz** é literalmente a "rede neural quântica" - um template de circuito
 **Etimologia:** Do alemão *Ansatz* = "abordagem inicial" ou "proposta"
 
 Em física e matemática, um *ansatz* é uma suposição educada sobre a forma da solução de um problema. No QML:
+
 - Você **propõe** uma estrutura de circuito (RY rotations + CX gates)
 - O otimizador **ajusta** os parâmetros θ para encontrar a melhor solução
 - É uma "tentativa estruturada" de encontrar o circuito ideal
@@ -476,6 +466,7 @@ q[1]: ─RY(θ₁)─X───RY(θ₃)─X───
 #### 🔬 Exemplo Detalhado: RealAmplitudes(num_qubits=2, reps=1)
 
 **Estrutura:**
+
 1. **Primeira camada de rotação:**
    - `RY(θ₀)` no qubit 0
    - `RY(θ₁)` no qubit 1
@@ -490,6 +481,7 @@ q[1]: ─RY(θ₁)─X───RY(θ₃)─X───
 **Total:** 4 parâmetros treináveis (θ₀, θ₁, θ₂, θ₃)
 
 **Durante o treinamento:**
+
 - O otimizador testa diferentes combinações de ângulos
 - Por exemplo: θ = [0.5, 1.2, 0.8, 2.1]
 - Avalia o erro de classificação
@@ -513,6 +505,7 @@ A porta **RY** foi escolhida porque:
 4. **Expressividade:** Mesmo sendo simples, é surpreendentemente poderoso para ML
 
 **Comparação com outras rotações:**
+
 - **RZ(θ):** Adiciona apenas fase (não muda probabilidades diretamente)
 - **RX(θ):** Similar ao RY, mas em eixo diferente
 - **RY(θ):** Ideal - muda amplitudes diretamente sem fase extra
@@ -527,12 +520,14 @@ num_params = num_qubits × (reps + 1)
 ```
 
 **Exemplos:**
+
 - `RealAmplitudes(2 qubits, reps=1)`: 2 × (1+1) = **4 parâmetros**
 - `RealAmplitudes(2 qubits, reps=2)`: 2 × (2+1) = **6 parâmetros**
 - `RealAmplitudes(2 qubits, reps=3)`: 2 × (3+1) = **8 parâmetros**
 - `RealAmplitudes(4 qubits, reps=2)`: 4 × (2+1) = **12 parâmetros**
 
 **Trade-off:**
+
 - ✅ Mais parâmetros = maior expressividade = pode aprender padrões complexos
 - ⚠️ Mais parâmetros = mais lento para otimizar = risco de overfitting
 
@@ -565,6 +560,7 @@ Estado final preparado para medição:
 ```
 
 **Medição final:**
+
 - Se medir mais |0⟩: Predição = Classe 0
 - Se medir mais |1⟩: Predição = Classe 1
 
@@ -585,6 +581,7 @@ Estado final preparado para medição:
 ```
 
 **Otimizador COBYLA:**
+
 - Constrained Optimization BY Linear Approximations
 - Não usa gradientes (bom para simuladores ruidosos)
 - Testa pequenas variações em θ e escolhe a melhor direção
@@ -605,15 +602,18 @@ Estado final preparado para medição:
 #### ⚠️ Limitações e Considerações
 
 **Barren Plateaus:**
+
 - Em circuitos muito profundos (reps alto), gradientes podem "desaparecer"
 - Otimização fica presa em platôs planos onde todos θ parecem igualmente ruins
 - **Solução:** Use reps moderado (1-3), ou otimizadores especializados
 
 **Overfitting:**
+
 - Muitos parâmetros podem memorizar dados de treino
 - **Solução:** Regularização, validação cruzada, ou reps menor
 
 **Inicialização:**
+
 - θ inicial aleatório pode levar a mínimos locais ruins
 - **Solução:** Tentar múltiplas inicializações ou usar inicialização informada
 
@@ -658,12 +658,14 @@ Dados → Feature Map → Ansatz → Medição → Predição
 **Expressividade** = capacidade do Ansatz de representar diferentes funções
 
 **Fatores que aumentam expressividade:**
+
 1. Mais qubits (espaço maior)
 2. Mais repetições (circuito mais profundo)
 3. Mais tipos de portas (RX, RY, RZ combinados)
 4. Padrões de emaranhamento mais complexos
 
 **Regra de Ouro:**
+
 - Para problemas simples: `reps=1-2` é suficiente
 - Para problemas complexos: `reps=3-5` pode ajudar
 - Além disso: diminishing returns + mais ruído
@@ -724,21 +726,12 @@ Isso dá controle total sobre a arquitetura!
 
 **Resumo em uma frase:** O Ansatz é o circuito parametrizado que "aprende" a classificar dados ajustando ângulos de rotação θ, exatamente como uma rede neural clássica ajusta pesos W!
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/20-quantum-machine-learning.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
-
 # --- 3. O ANSATZ (O Modelo Treinável) ---
 # RealAmplitudes é um circuito simples com rotações RY e emaranhamento.
 # É a nossa "Rede Neural".
 ansatz = RealAmplitudes(num_qubits=num_qubits, reps=1)
-
 ```
-:::
-
 
 ```
 C:\Users\Max\AppData\Local\Temp\ipykernel_20596\2137702756.py:4: DeprecationWarning: The class ``qiskit.circuit.library.n_local.real_amplitudes.RealAmplitudes`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. Use the function qiskit.circuit.library.real_amplitudes instead.
@@ -778,13 +771,7 @@ assim como os pesos W em uma rede neural clássica.
 
 ```
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/20-quantum-machine-learning.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
-
 # --- 4. O MODELO VQC (Variational Quantum Classifier) ---
 # Aqui juntamos tudo.
 # Otimizador COBYLA é bom para simulações (não usa gradiente, apenas tenta melhorar).
@@ -799,10 +786,7 @@ print("--- Iniciando Treinamento do Modelo Quântico ---")
 # O momento mágico: O otimizador clássico vai ajustar os parâmetros do Ansatz
 # baseando-se nas medições quânticas.
 vqc.fit(X_train, y_train)
-
 ```
-:::
-
 
 ```
 No gradient function provided, creating a gradient function. If your Sampler requires transpilation, please provide a pass manager.
@@ -815,7 +799,6 @@ No gradient function provided, creating a gradient function. If your Sampler req
 ```
 
 ```{python} {pyodide-python}
-
 
 # --- 5. AVALIAÇÃO ---
 score_train = vqc.score(X_train, y_train)
@@ -843,17 +826,13 @@ Acurácia no Teste:  0.47
 4. **Ansatz Inadequado:** O circuito pode não ter expressividade suficiente
 
 **Possíveis Soluções:**
+
 - Aumentar `maxiter` para 300-500
 - Usar diferentes otimizadores (SPSA, ADAM)
 - Aumentar `reps` no Feature Map e Ansatz
 - Rodar múltiplas vezes com diferentes inicializações
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/20-quantum-machine-learning.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 # 🔧 MELHORANDO O VQC - Vamos tentar otimizar melhor
 print("="*60)
 print("TENTATIVA DE OTIMIZAÇÃO MELHORADA")
@@ -899,8 +878,6 @@ else:
     print("   - Otimizador diferente (SPSA, ADAM)")
     print("   - Múltiplas tentativas com diferentes seeds")
 ```
-:::
-
 
 ```
 C:\Users\Max\AppData\Local\Temp\ipykernel_20596\2842022012.py:8: DeprecationWarning: The class ``qiskit.circuit.library.data_preparation._zz_feature_map.ZZFeatureMap`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. Use the zz_feature_map function as a replacement. Note that this will no longer return a BlueprintCircuit, but just a plain QuantumCircuit.
@@ -941,12 +918,7 @@ Ansatz reps                    1               3
 
 Agora vamos visualizar graficamente a diferença entre o modelo original (que não convergiu bem) e o modelo otimizado:
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/20-quantum-machine-learning.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 # --- VISUALIZAÇÃO COMPARATIVA: VQC Original vs Otimizado ---
 # Vamos ver visualmente a diferença entre os dois modelos
 
@@ -999,8 +971,6 @@ print(f"VQC Otimizado: {score_test_improved:.2%} - Fronteira mais suave, menos e
 print(f"Melhoria:      {(score_test_improved - score_test):.2%}")
 print(f"{'='*60}")
 ```
-:::
-
 
 ```
 Calculando fronteiras de decisão...
@@ -1044,12 +1014,14 @@ O importante agora é entender **o que aconteceu internamente**, independente da
 Nas visualizações acima, você viu dois circuitos importantes:
 
 **Feature Map (ZZFeatureMap):**
+
 - Portas `H` (Hadamard): Criam superposição inicial
 - Portas `P` ou `RZ`: Rotações baseadas nos valores dos dados x[0] e x[1]
 - Interações `ZZ`: Criam correlações não-lineares entre features
 - **Papel:** Traduzir dados clássicos → estados quânticos no espaço de Hilbert
 
 **Ansatz (RealAmplitudes):**
+
 - Portas `RY(θ)`: Rotações com ângulos θ treináveis
 - Portas `CX`: Emaranhamento entre qubits
 - **Papel:** Transformar estados quânticos para aprender padrões (como camadas de uma rede neural)
@@ -1059,6 +1031,7 @@ Nas visualizações acima, você viu dois circuitos importantes:
 O `ZZFeatureMap` projeta seus dados 2D em um espaço de dimensão **2^n = 4** (para 2 qubits). 
 
 **Analogia do Anel:**
+
 - Imagine dados formando um anel: classe A no centro, classe B ao redor
 - Uma linha reta (classificador linear) **não consegue** separar isso no plano 2D
 - Mas se projetarmos em 3D (ou 4D!), podemos passar um plano cortando e separar perfeitamente
@@ -1078,12 +1051,7 @@ O `ZZFeatureMap` projeta seus dados 2D em um espaço de dimensão **2^n = 4** (p
 
 Agora vamos comparar o **VQC otimizado** (que alcançou 80% de acurácia) com um classificador clássico SVM. Esta é uma comparação justa para entender quando cada abordagem é vantajosa:
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/20-quantum-machine-learning.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 # Importar classificador clássico para comparação
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score, classification_report
@@ -1123,8 +1091,6 @@ plot_decision_boundary_single(svm_classical, X_test, y_test, ax,
                               "SVM Clássico (kernel RBF)", svm_test_score)
 plt.show()
 ```
-:::
-
 
 ```
 Treinando SVM Clássico (kernel RBF)...
@@ -1155,12 +1121,7 @@ Calculando fronteira de decisão do SVM...
 
 Uma das grandes vantagens do QML é a projeção dos dados em um espaço de alta dimensão (espaço de Hilbert). Vamos tentar visualizar isso de forma simplificada:
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/20-quantum-machine-learning.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 # Visualização conceitual do mapeamento para espaço de Hilbert
 from mpl_toolkits.mplot3d import Axes3D
 
@@ -1214,8 +1175,6 @@ print("   • O Feature Map quântico projeta os dados em um espaço de 2^n dime
 print("   • Neste espaço maior, a separação entre classes fica mais fácil")
 print("   • É como 'desenrolar' um problema complexo em um espaço maior!")
 ```
-:::
-
 
 ```
 
@@ -1231,12 +1190,7 @@ print("   • É como 'desenrolar' um problema complexo em um espaço maior!")
 
 Vamos analisar mais a fundo o desempenho do classificador quântico:
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/20-quantum-machine-learning.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 # Fazer predições
@@ -1268,8 +1222,6 @@ print("="*60)
 print("\nDados de Teste:")
 print(classification_report(y_test, y_pred_test, target_names=['Classe 0', 'Classe 1']))
 ```
-:::
-
 
 ```
 
@@ -1296,6 +1248,7 @@ weighted avg       0.48      0.47      0.47        60
 **Resposta Curta:** Por enquanto, QML é principalmente para pesquisa e casos específicos.
 
 **Resposta Detalhada:**
+
 - **Vantagem Potencial:** Problemas com dados de alta dimensão onde o kernel quântico pode encontrar padrões que kernels clássicos não conseguem
 - **Limitação Atual:** Computadores quânticos ainda têm poucos qubits e muito ruído (NISQ era)
 - **Casos de Uso Atuais:**
@@ -1314,6 +1267,7 @@ weighted avg       0.48      0.47      0.47        60
 #### 🔄 O que é o "Ansatz" exatamente?
 
 **Analogia Clássica:**
+
 - Em uma rede neural: são os pesos W e vieses b que são ajustados
 - Em QML: são os ângulos θ das portas de rotação que são ajustados
 
@@ -1324,6 +1278,7 @@ O **Ansatz** é o "template" do circuito quântico que contém esses parâmetros
 #### ⚡ Por que o treinamento é tão lento?
 
 **Resposta:** Cada iteração do otimizador precisa:
+
 1. Configurar o circuito quântico com novos parâmetros
 2. Rodar o circuito (simulação ou hardware real)
 3. Medir os resultados múltiplas vezes (shots)
@@ -1337,6 +1292,7 @@ No hardware quântico real, há também o tempo de fila e acesso ao computador.
 #### 🎯 Quantos qubits eu preciso?
 
 **Regra Geral:**
+
 - Número de qubits ≥ número de features de entrada
 - Mais qubits = espaço de Hilbert maior = mais expressividade
 - **MAS:** Mais qubits = mais ruído (no hardware atual)
@@ -1363,12 +1319,14 @@ Para começar: use o mesmo número de qubits que features (como fizemos: 2 featu
 **Resposta Honesta:** Ainda não de forma definitiva para problemas práticos.
 
 **Situação Atual (Era NISQ - Noisy Intermediate-Scale Quantum):**
+
 - ✅ Demonstrações teóricas e experimentais promissoras
 - ✅ Alguns problemas específicos mostram potencial
 - ❌ Hardware quântico ainda muito limitado (ruído, poucos qubits)
 - ❌ Algoritmos clássicos ainda são mais práticos para maioria dos casos
 
 **Expectativa:** À medida que computadores quânticos melhoram (mais qubits, menos ruído), QML se tornará mais competitivo, especialmente para:
+
 - Simulações de sistemas quânticos
 - Otimização combinatória
 - Certos tipos de reconhecimento de padrões
@@ -1378,6 +1336,7 @@ Para começar: use o mesmo número de qubits que features (como fizemos: 2 featu
 #### 📚 Como posso aprender mais?
 
 **Recursos Recomendados:**
+
 1. **Qiskit Textbook:** [learn.qiskit.org](https://learn.qiskit.org)
 2. **PennyLane:** Outra biblioteca de QML muito boa
 3. **Papers:** "Quantum Machine Learning" (Schuld & Petruccione)
@@ -1387,12 +1346,7 @@ Para começar: use o mesmo número de qubits que features (como fizemos: 2 featu
 
 Agora vamos ver o verdadeiro poder do QML! Vamos criar um dataset onde dados estão organizados em círculos concêntricos - um problema que é difícil para classificadores lineares:
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/20-quantum-machine-learning.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 from sklearn.datasets import make_circles
 from sklearn.linear_model import LogisticRegression
 
@@ -1465,8 +1419,6 @@ print(f"Regressão Logística (Linear): {lr_score:.4f}")
 print(f"VQC Quântico (Não-Linear):    {vqc_score:.4f}")
 print(f"{'='*60}")
 ```
-:::
-
 
 ```
 C:\Users\Max\AppData\Local\Temp\ipykernel_20596\3627597481.py:46: DeprecationWarning: The class ``qiskit.circuit.library.data_preparation._zz_feature_map.ZZFeatureMap`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. Use the zz_feature_map function as a replacement. Note that this will no longer return a BlueprintCircuit, but just a plain QuantumCircuit.
@@ -1505,12 +1457,7 @@ VQC Quântico (Não-Linear):    0.8500
 
 ```
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/20-quantum-machine-learning.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 # Visualizar as fronteiras de decisão
 fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
@@ -1559,8 +1506,6 @@ print("   • O classificador linear cria apenas uma linha reta (limitado!)")
 print("   • O VQC consegue criar uma fronteira curva e não-linear")
 print("   • Isso acontece porque o Feature Map projeta os dados em um espaço de alta dimensão")
 ```
-:::
-
 
 ```
 Calculando fronteira de decisão do VQC...
@@ -1609,18 +1554,21 @@ Neste notebook, exploramos os fundamentos do **Quantum Machine Learning (QML)** 
 Quer se aprofundar? Aqui estão sugestões de experimentos:
 
 **Nível Iniciante:**
+
 1. Mude o número de `reps` no Feature Map e Ansatz - veja como afeta a acurácia
 2. Teste diferentes otimizadores: `SPSA`, `ADAM`, `L_BFGS_B`
 3. Experimente outros Feature Maps: `PauliFeatureMap`, `StatePreparation`
 4. Altere o `maxiter` do otimizador
 
 **Nível Intermediário:**
+
 1. Use mais qubits (3 ou 4) e mais features
 2. Implemente um callback para visualizar o progresso do treinamento
 3. Compare com outros kernels do SVM: `poly`, `sigmoid`
 4. Teste em datasets reais (Iris, Wine, etc.)
 
 **Nível Avançado:**
+
 1. Implemente um **Quantum Kernel** customizado
 2. Use um simulador com ruído (`FakeBackend`)
 3. Execute em hardware quântico real da IBM

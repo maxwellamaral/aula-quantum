@@ -14,6 +14,7 @@ format:
 ## 📽️ Material da Aula
 - 📄 [Baixar Apostila Completa em PDF](../apostila.pdf){target="_blank"}
 - 🧪 [Galeria de Simuladores Interativos](/assets/simuladores/){target="_blank"}
+- 🚀 [Executar no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/00a-math.ipynb){target="_blank"}
 :::
 
 {{< include _content.qmd >}}

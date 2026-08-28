@@ -65,6 +65,7 @@ Para criar um modelo teórico limpo, usou-se o conceito de **corpo negro**: um o
 ::: {.callout-caution}
 ### ⚠️ Cuidado conceitual: Corpo Negro vs. Matéria Escura
 Não confunda **corpo negro** com **matéria escura**:
+
 - O **corpo negro** é matéria comum que interage fortemente com a luz: **absorve 100% da radiação incidente e a reemite termicamente** ao ser aquecido (o Sol, um filamento de lâmpada ou um forno incandescente são excelentes aproximações).
 - A **matéria escura** (conceito cosmológico moderno) **não interage com a força eletromagnética**: ela não absorve, não reflete e não emite luz ou radiação alguma, sendo detectada exclusivamente por seus efeitos gravitacionais.
 :::
@@ -122,6 +123,7 @@ E = n h f, \qquad n \in \{0, 1, 2, 3, \dots\}
 $$
 
 onde:
+
 - $E$ é a energia;
 - $h \approx 6{,}626 \times 10^{-34}\ \text{J}\cdot\text{s}$ é a constante fundamental de Planck;
 - $f$ é a frequência da radiação;
@@ -144,6 +146,7 @@ Sem níveis discretos de energia, os computadores quânticos modernos não poder
 1. **Definição dos bits quânticos ($|0\rangle$ e $|1\rangle$):** Um qubit em hardware real (como nos chips supercondutores da IBM/Google) utiliza **dois níveis discretos de energia** ($E_0$ e $E_1$) do circuito quântico.
 2. **Controle por pulsos ressonantes:** Para alternar um qubit entre $|0\rangle$ e $|1\rangle$, o processador envia pulsos de micro-ondas precisamente calibrados com a frequência da fórmula de Planck:
    $$f_{\text{pulso}} = \frac{E_1 - E_0}{h}$$
+
 3. **Refrigeração criogênica a $15\ \text{mK}$:** Os processadores quânticos operam a temperaturas próximas do zero absoluto para evitar que o "calor ambiente" (radiação térmica de corpo negro) forneça energia indesejada e excite os qubits por engano (gerando erros e perda de coerência).
 :::
 
@@ -193,6 +196,7 @@ A conservação de energia em cada colisão fóton-elétron é descrita por:
 $$E_{\text{fóton}} = hf$$
 $$K_{\max} = hf - \Phi$$
 onde:
+
 - $K_{\max} = \frac{1}{2}m v_{\max}^2$ é a energia cinética máxima do elétron emitido;
 - $\Phi$ é a **função trabalho** do metal (a energia mínima necessária para remover o elétron da rede cristalina). Se $hf < \Phi$, $K_{\max} < 0$, o que significa que o elétron não tem energia suficiente para se desvincular do metal.
 :::
@@ -204,6 +208,7 @@ onde:
 Em 1913, **Niels Bohr** aplicou as ideias de quantização ao átomo. Pela física clássica, um elétron girando em torno do núcleo deveria irradiar energia continuamente até colapsar no núcleo em frações de segundo.
 
 Bohr postulou que os elétrons só podem habitar **órbitas estáveis pré-definidas**. Quando um elétron muda de nível de energia:
+
 - Ele não passa por altitudes intermediárias;
 - Ele realiza um **salto quântico**, absorvendo ou emitindo exatamente um fóton com a diferença de energia correspondente:
 
@@ -282,6 +287,7 @@ psi = [alpha, beta]
 ### 2. O que é a "Amplitude"? (A força da oscilação)
 
 Existe uma relação direta e literal com a **amplitude da onda física**:
+
 - **Na onda mecânica (som ou água):** a amplitude é a altura da crista ou a profundidade do vale (a intensidade/volume da oscilação).
 - **Na função de onda quântica:** a amplitude $\alpha$ (ou $\beta$) é a intensidade com que aquela alternativa oscila no espaço quântico.
 
@@ -292,6 +298,7 @@ $$\text{Probabilidade de obter 0} = |\alpha|^2 \qquad\qquad \text{Probabilidade 
 ### 3. O que é a "Fase"? (O momento do ciclo)
 
 A **fase** ($\theta$) indica **em qual ponto do ciclo a onda se encontra** naquele instante:
+
 - **Fase $0^\circ$ ($+1$):** a onda está no topo máximo da **crista** (positiva);
 - **Fase $180^\circ$ ou $\pi$ ($-1$):** a onda está no fundo máximo do **vale** (negativa);
 - **Fase $90^\circ$ ($+i$) ou $270^\circ$ ($-i$):** a onda está no ponto neutro de cruzamento (números imaginários).
@@ -400,6 +407,7 @@ $$
 $$
 
 Ao ler o qubit (medição):
+
 - Obtemos o bit clássico `0` com probabilidade $|\alpha|^2$;
 - Obtemos o bit clássico `1` com probabilidade $|\beta|^2$.
 

@@ -16,19 +16,12 @@ Este notebook demonstra os conceitos fundamentais de programação quântica usa
 
 Primeiro, vamos importar as bibliotecas que usaremos:
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/01-intro.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 from qiskit import QuantumCircuit, transpile
 from qiskit_aer import AerSimulator
 from qiskit.visualization import plot_histogram, plot_bloch_multivector, plot_state_qsphere
 from qiskit.quantum_info import Statevector
 ```
-:::
-
 
 <hr/>
 
@@ -43,12 +36,7 @@ Vamos criar nosso primeiro circuito quântico com **2 qubits** e **2 bits cláss
 
 ### Passo 1: Criar o circuito base
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/01-intro.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 # 1. CONSTRUÇÃO DO CIRCUITO
 # Criamos um circuito com 2 Qubits e 2 Bits Clássicos (para guardar o resultado)
 qc = QuantumCircuit(2, 2)
@@ -64,8 +52,6 @@ qc.draw('mpl')
 
 # É uma boa prática para quem está aprendendo sempre desenhar o circuito após cada modificação.
 ```
-:::
-
 
 ```
 Estado inicial: |00⟩
@@ -74,17 +60,10 @@ Statevector([1.+0.j, 0.+0.j, 0.+0.j, 0.+0.j],
 
 ```
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/01-intro.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 # Esfera de Bloch - Estado inicial
 plot_bloch_multivector(estado_inicial)
 ```
-:::
-
 
 ### Passo 2: Aplicar a Porta Hadamard (H)
 
@@ -95,12 +74,7 @@ $$H|0\rangle = \frac{|0\rangle + |1\rangle}{\sqrt{2}} = |+\rangle$$
 
 Isso significa 50% de probabilidade de medir 0 e 50% de medir 1.
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/01-intro.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 # Aplicamos a porta Hadamard (H) no qubit 0
 # Matematicamente: Leva |0> para uma superposição (50% 0, 50% 1)
 qc.h(0)
@@ -111,8 +85,6 @@ print("Estado após H: 1/√2(|00⟩ + |10⟩)")
 print(estado_apos_h)
 qc.draw('mpl')
 ```
-:::
-
 
 ```
 Estado após H: 1/√2(|00⟩ + |10⟩)
@@ -122,23 +94,17 @@ Statevector([0.70710678+0.j, 0.70710678+0.j, 0.        +0.j,
 
 ```
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/01-intro.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 # Esfera de Bloch - Após Hadamard
 plot_bloch_multivector(estado_apos_h)
 
 # Veja que somente aplicamos a porta H no qubit 0, o qubit 1 permanece em |0⟩.
 ```
-:::
-
 
 ### Passo 3: Criar Emaranhamento com CNOT
 
 A porta CNOT (Controlled-NOT) é uma porta de **dois qubits**:
+
 - **Qubit 0** (controle): Se estiver em |1⟩, inverte o qubit alvo
 - **Qubit 1** (alvo): É invertido se o controle for |1⟩
 
@@ -149,12 +115,7 @@ $$|\Phi^+\rangle = \frac{|00\rangle + |11\rangle}{\sqrt{2}}$$
 
 Isso significa: ou **ambos são 0**, ou **ambos são 1** - nunca 01 ou 10!
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/01-intro.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 # Aplicamos a porta CNOT (Control-NOT)
 # O Qubit 0 é o controle, o Qubit 1 é o alvo.
 # Se o Qubit 0 for 1, ele inverte o Qubit 1.
@@ -167,8 +128,6 @@ print("Estado após CNOT: 1/√2(|00⟩ + |11⟩) - Estado de Bell |Φ+⟩")
 print(estado_apos_cnot)
 qc.draw('mpl')
 ```
-:::
-
 
 ```
 Estado após CNOT: 1/√2(|00⟩ + |11⟩) - Estado de Bell |Φ+⟩
@@ -178,18 +137,11 @@ Statevector([0.70710678+0.j, 0.        +0.j, 0.        +0.j,
 
 ```
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/01-intro.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 # Q-Sphere - Melhor para visualizar o estado emaranhado completo
 print("\n🌐 Q-Sphere - Mostra todas as amplitudes do estado emaranhado:")
 plot_state_qsphere(estado_apos_cnot)
 ```
-:::
-
 
 ```
 
@@ -200,6 +152,7 @@ plot_state_qsphere(estado_apos_cnot)
 ### Passo 4: Medir os Qubits
 
 A medição **colapsa** o estado quântico para um resultado clássico:
+
 - Qubit 0 → armazena no bit clássico 0
 - Qubit 1 → armazena no bit clássico 1
 
@@ -229,13 +182,7 @@ Agora vamos **executar** o circuito usando um simulador quântico. Rodaremos 100
 2. **Execução**: Roda 1000 vezes (shots)
 3. **Análise**: Coleta os resultados estatísticos
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/01-intro.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
-
 # 2. EXECUÇÃO (SIMULAÇÃO)
 simulador = AerSimulator()
 
@@ -252,8 +199,6 @@ contagens = resultado.get_counts()
 print("\n--- Resultados da Medição (1000 execuções) ---")
 print(contagens)
 ```
-:::
-
 
 ```
 
@@ -267,6 +212,7 @@ print(contagens)
 Observe os resultados acima - você verá apenas **00** e **11**, aproximadamente 50% cada.
 
 **Por quê?**
+
 - O qubit 0 estava em superposição (era 0 e 1 ao mesmo tempo)
 - O qubit 1 começou em 0
 - Quando aplicamos CNOT, criamos **emaranhamento**: ou ambos são 0, ou ambos são 1
@@ -282,6 +228,7 @@ $$|\Phi^+\rangle = \frac{|00\rangle + |11\rangle}{\sqrt{2}}$$
 Este é um dos estados mais importantes da computação quântica! 
 
 **Significado:**
+
 - É uma correlação que **não existe na física clássica**
 - Base para teletransporte quântico, criptografia quântica e outros protocolos
 - Demonstra o poder único dos computadores quânticos
@@ -301,6 +248,7 @@ Imagine o planeta Terra:
 - **Equador 🌍**: Estados de **superposição** (50% de chance de 0 ou 1)
 
 O vetor de estado é uma **seta** do centro da esfera até a superfície:
+
 - Apontando para cima → qubit é |0⟩
 - Apontando para baixo → qubit é |1⟩
 - Apontando para o equador → qubit em superposição
@@ -311,6 +259,7 @@ O estado geral de um qubit pode ser escrito como:
 $$|\psi\rangle = \cos\left(\frac{\theta}{2}\right)|0\rangle + e^{i\phi}\sin\left(\frac{\theta}{2}\right)|1\rangle$$
 
 Onde:
+
 - **θ (theta)**: Ângulo polar - controla probabilidade de 0 vs 1 (latitude)
 - **φ (phi)**: Ângulo azimutal - controla a fase quântica (longitude)
 
@@ -320,12 +269,7 @@ Onde:
 
 Vamos visualizar três estados fundamentais na Esfera de Bloch:
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/01-intro.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 %matplotlib inline
 
 # --- 1. Estado Inicial (|0>) ---
@@ -339,10 +283,7 @@ print("Gerando imagem do Estado Zero (Pólo Norte)...")
 
 # Nota: plot_bloch_multivector retorna uma figura matplotlib
 fig1 = plot_bloch_multivector(estado_zero, title="Estado Inicial |0>")
-
 ```
-:::
-
 
 ```
 Gerando imagem do Estado Zero (Pólo Norte)...
@@ -353,12 +294,7 @@ Gerando imagem do Estado Zero (Pólo Norte)...
 
 Um circuito vazio sempre começa com todos os qubits em |0⟩:
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/01-intro.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 # --- 2. Estado de Superposição (Apicando Hadamard) ---
 qc_super = QuantumCircuit(1)
 qc_super.h(0) # Aplica H
@@ -368,8 +304,6 @@ estado_super = Statevector(qc_super)
 print("Gerando imagem da Superposição (Equador)...")
 fig2 = plot_bloch_multivector(estado_super, title="Após Hadamard |+>")
 ```
-:::
-
 
 ```
 Gerando imagem da Superposição (Equador)...
@@ -380,13 +314,7 @@ Gerando imagem da Superposição (Equador)...
 
 Aplicando a porta Hadamard, movemos o estado do pólo norte para o equador:
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/01-intro.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
-
 # --- 3. Estado Invertido (Aplicando X) ---
 qc_inv = QuantumCircuit(1)
 qc_inv.x(0) # Aplica X
@@ -394,10 +322,7 @@ estado_inv = Statevector(qc_inv)
 
 print("Gerando imagem do Estado Invertido (Pólo Sul)...")
 fig3 = plot_bloch_multivector(estado_inv, title="Após Porta X |1>")
-
 ```
-:::
-
 
 ```
 Gerando imagem do Estado Invertido (Pólo Sul)...
@@ -440,11 +365,13 @@ qc_super.z(0)  # Porta Z - rotação de fase
 A porta Z **gira o qubit ao redor do eixo vertical** (eixo Z).
 
 **O que acontece:**
+
 - **Visualmente:** A seta continua no equador (mesma probabilidade 50/50)
 - **Mas:** Agora aponta para **Eixo X-** (fase negativa)
 - **Significado:** A probabilidade não muda, mas a **fase** muda!
 
 **Por que isso importa:**
+
 - Em algoritmos quânticos, qubits interferem uns com os outros
 - A direção da seta (fase) determina se a interferência será **construtiva** ou **destrutiva**
 - Isso é fundamental para algoritmos como Grover e Shor!
@@ -474,6 +401,7 @@ Parabéns! Você já dominou os fundamentos:
 ### 🚀 Próximos Passos
 
 Agora você está pronto para explorar:
+
 - Algoritmos quânticos (Deutsch-Jozsa, Grover, Shor)
 - Protocolos de comunicação quântica (Teletransporte, Superdense Coding)
 - Correção de erros quânticos

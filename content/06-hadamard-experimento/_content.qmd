@@ -6,51 +6,28 @@ Você pode replicar esse experimento físico agora mesmo no Qiskit. É a prova d
 
 Matematicamente, aplicar dois Hadamards é igual a não fazer nada (Identidade), pois as superposições se cancelam e voltam ao estado original.
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/04-Hadamard-experiment.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Statevector
 from qiskit.visualization import plot_bloch_multivector, plot_state_qsphere
 ```
-:::
-
-
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/04-Hadamard-experiment.ipynb) ou rode `uv run jupyter lab` localmente.
 
 ```python
-
-
 qc = QuantumCircuit(1)
 
 # Passo 1: O fóton encontra o primeiro espelho
 # Estado: Superposição (50/50)
-qc.h(0) 
-
+qc.h(0)
 ```
-:::
-
 
 ### Visualização após o primeiro Hadamard (Espelho Semitransparente 1)
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/04-Hadamard-experiment.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 # Esfera de Bloch após o primeiro H
 vetor_apos_h1 = Statevector(qc)
 display(plot_bloch_multivector(vetor_apos_h1))
 print(f"Estado após primeiro H: {vetor_apos_h1}")
 ```
-:::
-
 
 ```
 Estado após primeiro H: Statevector([0.70710678+0.j, 0.70710678+0.j],
@@ -58,20 +35,12 @@ Estado após primeiro H: Statevector([0.70710678+0.j, 0.70710678+0.j],
 
 ```
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/04-Hadamard-experiment.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 # Q-Sphere após o primeiro H
 display(plot_state_qsphere(vetor_apos_h1))
 ```
-:::
-
 
 ```{python} {pyodide-python}
-
 
 # Passo 2: O fóton viaja pelos caminhos e encontra o SEGUNDO espelho
 # A interferência acontece aqui.
@@ -81,19 +50,12 @@ qc.h(0)
 
 ### Visualização após o segundo Hadamard (Espelho Semitransparente 2 - Interferência)
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/04-Hadamard-experiment.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 # Esfera de Bloch após o segundo H
 vetor_apos_h2 = Statevector(qc)
 display(plot_bloch_multivector(vetor_apos_h2))
 print(f"Estado após segundo H: {vetor_apos_h2}")
 ```
-:::
-
 
 ```
 Estado após segundo H: Statevector([1.+0.j, 0.+0.j],
@@ -101,33 +63,18 @@ Estado após segundo H: Statevector([1.+0.j, 0.+0.j],
 
 ```
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/04-Hadamard-experiment.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 # Q-Sphere após o segundo H
 display(plot_state_qsphere(vetor_apos_h2))
 ```
-:::
-
 
 ### Visualização do Circuito Completo
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/04-Hadamard-experiment.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
-
 # Verificação
 vetor = Statevector(qc)
 print(vetor)
 ```
-:::
-
 
 ```
 Statevector([1.+0.j, 0.+0.j],
@@ -290,5 +237,4 @@ print(vetor)
 A confirmação experimental de que isso acontece com partículas individuais e que o emaranhamento é real (violando a intuição clássica) foi tão importante que o **Prêmio Nobel de Física de 2022** foi dado a Alain Aspect, John Clauser e Anton Zeilinger.
 
 Eles provaram, sem sombra de dúvidas, que a natureza se comporta dessa maneira estranha. Não é uma falha de medição; é a arquitetura fundamental do universo.
-
 

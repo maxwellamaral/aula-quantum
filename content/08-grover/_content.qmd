@@ -22,8 +22,10 @@ O processo tem dois passos repetidos (chamados de **Operador de Grover**):
 1. **O Oráculo (Marcação):**
 Identifica o item correto e inverte a fase dele (multiplica por -1). Se a resposta é `11`, o oráculo transforma $|11\rangle$ em $-|11\rangle$.
 *Visualmente:* A barra da probabilidade aponta para baixo no gráfico.
+
 2. **O Difusor (Inversão sobre a Média):**
 Esta é a parte genial. Ele espelha todas as amplitudes em relação à média geral.
+
 * Como a amplitude da resposta certa ficou negativa (bem abaixo da média) e as erradas ficaram positivas (pouco acima da média), quando espelhamos, a resposta certa "salta" para cima, ficando gigante, e as erradas diminuem.
 
 <hr/>
@@ -45,27 +47,17 @@ Aqui está o código completo comentado:
 
 ```{python} {pyodide-python}
 import matplotlib.pyplot as plt
+
+# Imports do Qiskit (execução no Google Colab / ambiente local)
+try:
+    from qiskit import QuantumCircuit, transpile
+    from qiskit_aer import AerSimulator
+    from qiskit.visualization import plot_histogram
+except ImportError:
+    pass
 ```
 
-::: {.callout-note collapse="true"}
-## 🔒 Imports do Qiskit (requerem execução local)
-Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
-
 ```python
-from qiskit import QuantumCircuit, transpile
-from qiskit_aer import AerSimulator
-from qiskit.visualization import plot_histogram
-```
-:::
-
-
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/06-grover.ipynb) ou rode `uv run jupyter lab` localmente.
-
-```python
-
-
 def oraculo_para_11():
     """
     Marca o estado |11> invertendo sua fase.
@@ -104,18 +96,9 @@ def difusor_grover(n_qubits):
     qc.h(range(n_qubits))
     
     return qc
-
 ```
-:::
-
-
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/06-grover.ipynb) ou rode `uv run jupyter lab` localmente.
 
 ```python
-
-
 # --- MONTAGEM DO ALGORITMO ---
 
 # 1. Inicialização
@@ -142,23 +125,14 @@ qc.measure([0, 1], [0, 1])
 # --- EXECUÇÃO ---
 print("--- Circuito de Grover (Procurando '11') ---")
 qc.draw('mpl')
-
 ```
-:::
-
 
 ```
 --- Circuito de Grover (Procurando '11') ---
 
 ```
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/06-grover.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
-
 simulador = AerSimulator()
 job = simulador.run(transpile(qc, simulador), shots=1024)
 resultado = job.result().get_counts()
@@ -167,8 +141,6 @@ print("\n--- Resultado da Busca ---")
 print(f"Contagens: {resultado}")
 # Deve ser 100% (ou muito próximo) em '11'
 ```
-:::
-
 
 ```
 
@@ -197,12 +169,7 @@ Contagens: {'11': 1024}
 
 Tente modificar a função `oraculo_para_11` para encontrar o estado **`00`** em vez de `11`.
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/06-grover.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 def oraculo_para_00():
     """
     Marca o estado |00> invertendo sua fase.
@@ -215,15 +182,8 @@ def oraculo_para_00():
     qc.x([0, 1])  # Reverter os bits de volta
     return qc
 ```
-:::
-
-
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/06-grover.ipynb) ou rode `uv run jupyter lab` localmente.
 
 ```python
-
 qc = QuantumCircuit(2, 2)
 qc.h([0, 1])
 qc.barrier()
@@ -239,10 +199,7 @@ resultado = job.result().get_counts()
 print("\n--- Resultado da Busca por '00' ---")
 print(f"Contagens: {resultado}")
 # Deve ser 100% (ou muito próximo) em '00'
-
 ```
-:::
-
 
 ```
 
@@ -263,38 +220,28 @@ Agora que você viu o algoritmo funcionando e testou o desafio, vamos explorar c
 def visualize_state(qc):
     state = Statevector.from_instruction(qc)
     return plot_bloch_multivector(state)
+
+# Imports do Qiskit (execução no Google Colab / ambiente local)
+try:
+    from qiskit.visualization import plot_bloch_multivector
+    from qiskit.quantum_info import Statevector
+except ImportError:
+    pass
 ```
-
-::: {.callout-note collapse="true"}
-## 🔒 Imports do Qiskit (requerem execução local)
-Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
-
-```python
-from qiskit.visualization import plot_bloch_multivector
-from qiskit.quantum_info import Statevector
-```
-:::
-
 
 ####  Passo 1: Preparação do Estado Inicial
 
 Iniciamos com todos os estados igualmente prováveis, representados por amplitudes iguais. O objetivo do Algoritmo de Grover é aumentar a amplitude do estado desejado (a resposta correta) enquanto diminui as amplitudes dos outros estados.
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/06-grover.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 qc = QuantumCircuit(2, 2)
 qc.h([0, 1])
 qc.barrier()
 qc.draw('mpl')
 ```
-:::
-
 
 O estado agora é de superposição uniforme: 
+
 - 25% para |00⟩
 - 25% para |01⟩
 - 25% para |10⟩
@@ -324,18 +271,11 @@ $$
 
 Perceba que CZ é executado para "filtrar" somente o estado desejado, indicado para |11⟩. Em outros estados (00, 01, 10), o oráculo não faz nenhuma alteração.
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/06-grover.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 oraculo = QuantumCircuit(2)
 oraculo.cz(0, 1)
 oraculo.draw('mpl')
 ```
-:::
-
 
 > **Observação adicional:**
 > - Se estivermos procurando o estado `00`, o oráculo precisará ser ajustado para inverter a fase desse estado específico. Isso pode ser feito aplicando portas X (NOT) antes e depois da aplicação do CZ, efetivamente "invertendo" os bits para que o CZ atue sobre o estado `00` como se fosse `11`.
@@ -455,12 +395,7 @@ Portanto, o vetor intermediário seria: $(-\frac{1}{4}, -\frac{1}{4}, -\frac{1}{
 
 Porém, a implementação física do difusor com as portas H-X-CZ-X-H realiza essa operação junto com uma normalização que leva ao resultado final: $(0, 0, 0, 1)$.
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/06-grover.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 difusor = QuantumCircuit(2)
 difusor.h([0, 1])
 difusor.x([0, 1])
@@ -469,8 +404,6 @@ difusor.x([0, 1])
 difusor.h([0, 1])
 difusor.draw('mpl')
 ```
-:::
-
 
 ```{python} {pyodide-python}
 
@@ -495,12 +428,7 @@ qc.draw('mpl')
 
 Aqui o circuito é executado no simulador quântico, coletando os resultados das medições para verificar se o algoritmo funcionou conforme esperado.
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/06-grover.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 # --- EXECUÇÃO ---
 simulador = AerSimulator()
 job = simulador.run(transpile(qc, simulador), shots=1024)   
@@ -509,10 +437,7 @@ resultado = job.result().get_counts()
 print("\n--- Resultado da Busca ---")
 print(f"Contagens: {resultado}")
 # Deve ser 100% (ou muito próximo) em '11'
-
 ```
-:::
-
 
 ```
 

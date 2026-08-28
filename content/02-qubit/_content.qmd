@@ -14,18 +14,17 @@ Bem-vindo! Este notebook foi criado para ajudá-lo a entender os **conceitos mat
 ## 💡 Para quem é este notebook?
 
 Se você conhece:
+
 - ✅ Álgebra linear básica (vetores e matrizes)
 - ✅ Números complexos (pelo menos saber que existem 😊)
 - ✅ Python básico
 
 Então você está pronto para começar! Não se preocupe se alguns conceitos parecerem estranhos no início - isso é normal em computação quântica.
 
-<hr/>
-
 **Dica**: Execute cada célula na ordem para acompanhar os exemplos interativos!
 
 > Observação
-> As células com borda verde executam **direto no seu navegador** (Pyodide/WASM). > As células Qiskit requerem execução local: abra um terminal e rode `uv sync` na raiz deste repositório, depois `uv run jupyter lab`.
+> As células com borda verde executam **direto no seu navegador** (Pyodide/WASM) ou podem ser executadas no **Google Colab** (link no topo da página).
 
 ```{python} {pyodide-python}
 # Importando as bibliotecas necessárias
@@ -36,24 +35,21 @@ import sympy as sp                      # Para matemática simbólica (fórmulas
 from sympy import Matrix, symbols       # Para criar matrizes e símbolos matemáticos
 from IPython.display import Markdown    # Para exibir fórmulas formatadas
 from matplotlib import pyplot as plt    # Para criar gráficos
+
+# Imports do Qiskit (execução no Google Colab / ambiente local)
+try:
+    from qiskit.quantum_info import Statevector  # Para trabalhar com estados quânticos
+    from qiskit.visualization import plot_bloch_multivector, plot_state_qsphere  # Visualizações quânticas
+except ImportError:
+    Statevector = None
 ```
-
-::: {.callout-note collapse="true"}
-## 🔒 Imports do Qiskit (requerem execução local)
-Estes módulos não estão disponíveis no navegador. Execute localmente com `uv run jupyter lab`:
-
-```python
-from qiskit.quantum_info import Statevector  # Para trabalhar com estados quânticos
-from qiskit.visualization import plot_bloch_multivector, plot_state_qsphere  # Visualizações quânticas
-```
-:::
-
 
 ## 🔬 Estados Quânticos Básicos
 
 Na computação clássica, trabalhamos com **bits** que podem ser 0 ou 1.
 
 Na computação quântica, trabalhamos com **qubits** que podem estar em:
+
 - **Estado |0⟩** (lê-se "ket zero") - equivalente ao bit clássico 0
 - **Estado |1⟩** (lê-se "ket um") - equivalente ao bit clássico 1
 - **Superposição de |0⟩ e |1⟩** - aqui está a mágica! O qubit pode estar em "ambos" estados simultaneamente
@@ -79,6 +75,7 @@ Assim:
     - ➡️ Interpretação: 0% de probabilidade de medir 0, 100% de probabilidade de medir 1
 
 **Regra geral**: Para qualquer qubit $|\psi⟩ = \begin{bmatrix} \alpha \\ \beta \end{bmatrix}$:
+
 - O valor **$\alpha$** (primeira linha) representa a amplitude do estado |0⟩
 - O valor **$\beta$** (segunda linha) representa a amplitude do estado |1⟩
 - As probabilidades são: P(0) = |$\alpha$|² e P(1) = |$\beta$|²
@@ -158,6 +155,7 @@ Aqui está onde a mágica acontece! Um qubit pode estar em uma **combinação** 
 $$|ψ⟩ = 𝛼|0⟩ + 𝛽|1⟩$$
 
 Onde:
+
 - **|ψ⟩** (lê-se "ket psi") é o estado do qubit
 - **𝛼** (alpha) e **𝛽** (beta) são **números complexos** chamados de **amplitudes**
 - **Regra de ouro**: $|𝛼|² + |𝛽|²= 1$ (aqui também essas probabilidades precisam somar 100%!)
@@ -289,10 +287,12 @@ Vamos explorar cada uma delas!
 ### 🚪 Porta X (NOT Quântico)
 
 É a versão quântica do NOT clássico. Funciona assim:
+
 - Se o qubit está em |0⟩ → vira |1⟩
 - Se o qubit está em |1⟩ → vira |0⟩
 
 Se fossemos usar vetores, seria:
+
 - Se o qubit está em $\begin{bmatrix} 1 \\ 0 \end{bmatrix}$ → vira $\begin{bmatrix} 0 \\ 1 \end{bmatrix}$
 - Se o qubit está em $\begin{bmatrix} 0 \\ 1 \end{bmatrix}$ → vira $\begin{bmatrix} 1 \\ 0 \end{bmatrix}$
 
@@ -924,7 +924,6 @@ Esperamos -|01>, obtivemos:
 Ao final, calculamos o quadrado desses números (0.707² ≈ 0.5). Isso diz ao computador: "Jogue uma moeda. Tem 50% de chance de dar Cara (0) e 50% de dar Coroa (1)". É aqui que a computação quântica deixa de ser determinística (como a clássica) e passa a ser probabilística.
 
 ```{python} {pyodide-python}
-
 
 # A Medição (O Colapso)
 # Na teoria: A probabilidade de medir 0 ou 1 é o quadrado da amplitude (módulo ao quadrado).

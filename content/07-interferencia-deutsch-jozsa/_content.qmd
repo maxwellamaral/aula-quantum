@@ -30,6 +30,7 @@ Antes de continuar, certifique-se de que você entende:
 ### 🎓 Nível de Dificuldade
 
 **Intermediário a Avançado** - Este notebook assume familiaridade com:
+
 - Notação de Dirac ($|0\rangle, |1\rangle, |+\rangle, |-\rangle$)
 - Portas quânticas básicas (H, X, CNOT)
 - Conceito de fase em estados quânticos
@@ -38,6 +39,7 @@ Antes de continuar, certifique-se de que você entende:
 ### 💡 Por Que Este Conteúdo é Importante?
 
 **Phase Kickback** é o "ingrediente secreto" que faz algoritmos como:
+
 - 🔍 **Grover** (busca quântica) - quadraticamente mais rápido
 - 🔢 **Shor** (fatoração) - exponencialmente mais rápido (quebra RSA!)
 - ⚗️ **QPE** (estimação de fase) - base da química quântica
@@ -151,26 +153,14 @@ Resultado: O controle, que era $|+\rangle$, vira $|-\rangle$. O alvo não muda.
 
 Segue o código completo para demonstrar o Phase Kickback usando Qiskit. Logo após, faremos uma análise detalhada de cada etapa.
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/05-interference.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 from qiskit import QuantumCircuit, transpile
 from qiskit_aer import AerSimulator
 from qiskit.quantum_info import Statevector
 from qiskit.visualization import plot_bloch_multivector, plot_state_qsphere
 ```
-:::
-
-
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/05-interference.ipynb) ou rode `uv run jupyter lab` localmente.
 
 ```python
-
 # Criar circuito com 2 qubits
 qc = QuantumCircuit(2, 1)  # 2 Qubits, 1 Bit clássico
 qc.draw("mpl")
@@ -204,8 +194,6 @@ simulador = AerSimulator()
 job = simulador.run(transpile(qc, simulador), shots=1000)
 print("Resultado do Controle:", job.result().get_counts())
 ```
-:::
-
 
 ```
 Resultado do Controle: {'1': 1000}
@@ -222,22 +210,13 @@ qc.draw('mpl')
 
 Vamos provar que o qubit de controle muda sem que nenhuma porta toque nele diretamente.
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/05-interference.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
-
 # Criar circuito com 2 qubits
 qc = QuantumCircuit(2, 1) # 2 Qubits, 1 Bit clássico
 
 # Desenhar o circuito
 qc.draw('mpl')
-
 ```
-:::
-
 
 Matematicamente, os estados dos qubits, quando criados, são:
 
@@ -249,7 +228,6 @@ Estes estados iniciais representam $|00\rangle$ do registrador quântico.
 ### O Estado Inicial
 
 ```{python} {pyodide-python}
-
 
 # 1. PREPARAÇÃO
 # Colocar o Qubit 0 (Controle) em Superposição |+>
@@ -342,20 +320,12 @@ Percebeu como é simples? Provavelmente a notação matemática é assustadora, 
 
 ### Visualização: Estado Inicial Preparado
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/05-interference.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 # Visualizar o estado após preparação
 estado_inicial = Statevector(qc)
 print(f"Estado inicial: {estado_inicial}")
 display(plot_bloch_multivector(estado_inicial))
-
 ```
-:::
-
 
 ```
 Estado inicial: Statevector([ 0.5+0.j,  0.5+0.j, -0.5+0.j, -0.5+0.j],
@@ -394,6 +364,7 @@ A **Esfera de Bloch** é uma representação geométrica tridimensional do estad
 **Por que dois qubits = duas esferas?**
 
 Cada qubit individual pode ser visualizado em sua própria esfera de Bloch. Quando temos 2 qubits:
+
 - **Qubit 0 (esquerda):** Mostra o estado do qubit de controle
 - **Qubit 1 (direita):** Mostra o estado do qubit alvo
 
@@ -411,6 +382,7 @@ Cada qubit individual pode ser visualizado em sua própria esfera de Bloch. Quan
 **O que observar nas visualizações:**
 
 Quando aplicarmos o CNOT (Phase Kickback), veremos:
+
 - **Qubit 0:** O vetor vai **girar** do eixo X+ para o eixo X- (de $|+\rangle$ para $|-\rangle$)
 - **Qubit 1:** O vetor **permanece no mesmo lugar** (continua em $|-\rangle$)
 
@@ -418,18 +390,10 @@ Essa rotação do qubit de controle **sem que nenhuma porta aja diretamente sobr
 
 ## Q-Sphere
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/05-interference.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
-
 print("\nQ-Sphere mostrando ambos os qubits:")
 display(plot_state_qsphere(estado_inicial))
 ```
-:::
-
 
 ```
 
@@ -470,6 +434,7 @@ Expandindo matematicamente:
 $$|+\rangle \otimes |-\rangle = \frac{1}{2}(|00\rangle - |01\rangle + |10\rangle - |11\rangle)$$
 
 Na Q-Sphere, veremos **4 círculos** de tamanhos iguais:
+
 - **|00⟩**: Amplitude $\frac{1}{2}$, fase positiva (+) → círculo rosa
 - **|01⟩**: Amplitude $\frac{1}{2}$, fase negativa (-) → círculo verde/ciano
 - **|10⟩**: Amplitude $\frac{1}{2}$, fase positiva (+) → círculo rosa
@@ -491,6 +456,7 @@ As **cores alternadas** mostram o padrão de fase: positivo para |00⟩ e |10⟩
 **O que observar nas visualizações:**
 
 Quando aplicarmos o CNOT (Phase Kickback), na Q-Sphere veremos:
+
 - Os **tamanhos dos círculos permanecerão os mesmos** (probabilidades não mudam)
 - As **cores mudarão** em alguns estados (as fases serão alteradas)
 - Especificamente, veremos uma reorganização do padrão de cores mostrando que a fase do sistema mudou
@@ -535,7 +501,6 @@ fig = plot_qsphere_interactive(estado_inicial)
 
 ```{python} {pyodide-python}
 
-
 # 2. O KICKBACK
 # Aplicamos CNOT. O alvo (q1) está em |->.
 # Isso deve fazer o q0 virar |-> "por tabela".
@@ -565,12 +530,7 @@ $$= \frac{1}{\sqrt{2}}(|0\rangle - |1\rangle) \otimes |-\rangle = |-\rangle \oti
 
 **Conclusão:** O qubit de controle mudou de $|+\rangle$ para $|-\rangle$ sem que nenhuma porta tenha agido diretamente sobre ele!
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/05-interference.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 # Visualizar após o CNOT (Phase Kickback aconteceu)
 estado_apos_kickback = Statevector(qc)
 print(f"Estado após CNOT: {estado_apos_kickback}")
@@ -579,8 +539,6 @@ display(plot_bloch_multivector(estado_apos_kickback))
 print("\nQ-Sphere:")
 display(plot_state_qsphere(estado_apos_kickback))
 ```
-:::
-
 
 ```
 Estado após CNOT: Statevector([ 0.5+0.j, -0.5+0.j, -0.5+0.j,  0.5+0.j],
@@ -600,7 +558,6 @@ Q-Sphere:
 
 ```{python} {pyodide-python}
 
-
 # 3. VERIFICAÇÃO
 # Como saber se q0 virou |->?
 # Se aplicarmos H novamente:
@@ -619,25 +576,19 @@ $$H|+\rangle = H \cdot H|0\rangle = |0\rangle$$
 $$H|-\rangle = H \cdot H|1\rangle = |1\rangle$$
 
 Portanto:
+
 - Se medirmos **0**, o estado antes era $|+\rangle$
 - Se medirmos **1**, o estado antes era $|-\rangle$
 
 Como o Phase Kickback transformou $|+\rangle \to |-\rangle$, esperamos medir **1** em 100% das vezes!
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/05-interference.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 estado_verificacao = Statevector(qc)
 print(f"Estado após verificação (H no q0): {estado_verificacao}")
 display(plot_bloch_multivector(estado_verificacao))
 print("\nQ-Sphere:")
 display(plot_state_qsphere(estado_verificacao))
 ```
-:::
-
 
 ```
 Estado após verificação (H no q0): Statevector([ 2.29934717e-17+0.j,  7.07106781e-01+0.j, -2.29934717e-17+0.j,
@@ -652,13 +603,7 @@ Q-Sphere:
 
 ```
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/05-interference.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
-
 # Medimos APENAS o qubit de controle (q0)
 qc.measure(0, 0)
 
@@ -667,8 +612,6 @@ simulador = AerSimulator()
 job = simulador.run(transpile(qc, simulador), shots=1000)
 print("Resultado do Controle:", job.result().get_counts())
 ```
-:::
-
 
 ```
 Resultado do Controle: {'1': 1000}
@@ -712,7 +655,6 @@ Vamos ver na prática se isso é verdade?
 Para os curiosos, resolvi criar à parte o problema da caixa preta para ser utilizado em um computador clássico. Segue o código:
 
 ```{python} {pyodide-python}
-
 
 import random
 
@@ -823,27 +765,14 @@ Este código é a prova prática da ineficiência do computador clássico que o 
 
 Agora vamos implementar o **Algoritmo de Deutsch-Jozsa** - a versão quântica que resolve o mesmo problema com **apenas 1 consulta ao oráculo**!
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/05-interference.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 from qiskit import QuantumCircuit, transpile
 from qiskit_aer import AerSimulator
 from qiskit.quantum_info import Statevector
 from qiskit.visualization import plot_bloch_multivector, plot_state_qsphere, plot_histogram
 ```
-:::
-
-
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/05-interference.ipynb) ou rode `uv run jupyter lab` localmente.
 
 ```python
-
-
 # ============================================
 # DEFINIÇÃO DOS ORÁCULOS
 # ============================================
@@ -880,18 +809,9 @@ def oraculo_constante(n_qubits):
     # Para constante 1, descomente a linha abaixo:
     # qc.x(n_qubits)
     return qc
-
 ```
-:::
-
-
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/05-interference.ipynb) ou rode `uv run jupyter lab` localmente.
 
 ```python
-
-
 # 🎮 EXPERIMENTO INTERATIVO: Teste Ambos os Tipos de Função
 
 import random
@@ -987,10 +907,7 @@ print(f"   Com {n} bits de entrada, o computador quântico resolve o problema")
 print(f"   com apenas 1 consulta, enquanto o clássico precisaria de até")
 print(f"   {(2**(n-1)) + 1} consultas no pior caso!")
 print(f"   Isso é uma vantagem de {(2**(n-1)) + 1}x! 🚀")
-
 ```
-:::
-
 
 ```
 
@@ -1059,6 +976,7 @@ Circuito quântico do Algoritmo de Deutsch-Jozsa:
 ### 🎯 Estratégia Pedagógica
 
 Vamos construir o algoritmo **passo a passo**, executando e visualizando cada etapa. Isso ajuda a entender:
+
 1. Como a superposição permite testar todas as entradas simultaneamente
 2. Como o phase kickback codifica a informação nas fases
 3. Como a interferência extrai a resposta final
@@ -1071,13 +989,7 @@ Vamos começar!
 
 Primeiro, importamos as bibliotecas necessárias:
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/05-interference.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
-
 # ============================================
 # DEFINIÇÃO DOS ORÁCULOS
 # ============================================
@@ -1114,18 +1026,9 @@ def oraculo_constante(n_qubits):
     # Para constante 1, descomente a linha abaixo:
     # qc.x(n_qubits)
     return qc
-
 ```
-:::
-
-
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/05-interference.ipynb) ou rode `uv run jupyter lab` localmente.
 
 ```python
-
-
 # ============================================
 # CONSTRUÇÃO DO ALGORITMO PASSO A PASSO
 # ============================================
@@ -1156,10 +1059,7 @@ qc.h(n)
 qc.barrier()
 
 print("   ✅ Preparação concluída!")
-
 ```
-:::
-
 
 ```
 ======================================================================
@@ -1175,19 +1075,12 @@ Testando com 3 qubits de entrada
 
 ```
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/05-interference.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 # Visualizar estado inicial
 estado_inicial_dj = Statevector(qc)
 print("Estado inicial - Superposição uniforme de todos os 8 estados:")
 display(plot_state_qsphere(estado_inicial_dj))
 ```
-:::
-
 
 ```
 Estado inicial - Superposição uniforme de todos os 8 estados:
@@ -1211,7 +1104,6 @@ $$= \frac{1}{2\sqrt{2}} (|000\rangle + |001\rangle + |010\rangle + ... + |111\ra
 Cada um dos 8 estados possíveis tem amplitude $\frac{1}{2\sqrt{2}}$, criando uma **superposição uniforme**.
 
 ```{python} {pyodide-python}
-
 
 # ─────────────────────────────────────────────
 # PASSO 2: Aplicação do Oráculo
@@ -1240,19 +1132,12 @@ print("   ✅ Oráculo aplicado! Informação codificada nas fases.")
 
 ```
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/05-interference.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 # Visualizar estado após oráculo
 estado_apos_oraculo_dj = Statevector(qc)
 print("Estado após oráculo - Note as mudanças de fase:")
 display(plot_state_qsphere(estado_apos_oraculo_dj))
 ```
-:::
-
 
 ```
 Estado após oráculo - Note as mudanças de fase:
@@ -1270,6 +1155,7 @@ Para cada estado base $|x\rangle = |x_2x_1x_0\rangle$, o oráculo calcula:
 $$f(x) = x_0 \oplus x_1 \oplus x_2$$
 
 Esta é uma função **balanceada** porque:
+
 - $f(000) = 0$, $f(001) = 1$, $f(010) = 1$, $f(011) = 0$
 - $f(100) = 1$, $f(101) = 0$, $f(110) = 0$, $f(111) = 1$
 
@@ -1282,7 +1168,6 @@ $$|\psi_2\rangle = \frac{1}{2\sqrt{2}} \sum_{x=0}^{7} (-1)^{f(x)} |x\rangle \oti
 Os estados agora têm **fases diferentes** baseadas em $f(x)$!
 
 ```{python} {pyodide-python}
-
 
 # ─────────────────────────────────────────────
 # PASSO 3: Interferência Final
@@ -1306,19 +1191,12 @@ print("   ✅ Interferência concluída! Pronto para medir.")
 
 ```
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/05-interference.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
 # Visualizar estado antes da medição
 estado_antes_medicao = Statevector(qc)
 print("Estado antes da medição - Após interferência:")
 display(plot_state_qsphere(estado_antes_medicao))
 ```
-:::
-
 
 ```
 Estado antes da medição - Após interferência:
@@ -1351,7 +1229,6 @@ Pode-se mostrar que esta amplitude é **não-zero** para funções balanceadas.
 
 ```{python} {pyodide-python}
 
-
 # ─────────────────────────────────────────────
 # PASSO 4: Medição
 # ─────────────────────────────────────────────
@@ -1375,13 +1252,7 @@ print("="*70)
 
 ```
 
-::: {.callout-warning collapse="true"}
-## ⚛️ Célula Qiskit — execute no Colab ou localmente
-Esta célula usa Qiskit (não disponível no navegador). [▶ Abrir notebook no Google Colab](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/05-interference.ipynb) ou rode `uv run jupyter lab` localmente.
-
 ```python
-
-
 # ─────────────────────────────────────────────
 # PASSO 5: Execução e Interpretação
 # ─────────────────────────────────────────────
@@ -1412,10 +1283,7 @@ print("="*70)
     
 # Visualizar histograma
 plot_histogram(resultado)
-
 ```
-:::
-
 
 ```
 
@@ -1446,6 +1314,7 @@ plot_histogram(resultado)
 Após executar o algoritmo, você viu um histograma com os resultados das medições. A interpretação é simples:
 
 **Regra de Decisão:**
+
 - ✅ **Se medir `000`:** A função é **CONSTANTE** (sempre 0 ou sempre 1)
 - ✅ **Se medir qualquer outra coisa** (ex: `111`, `101`, etc.): A função é **BALANCEADA**
 
@@ -1456,16 +1325,19 @@ No nosso caso, usamos `oraculo_balanceado(3)`, então **nunca** devemos medir `0
 A "mágica" está em três ingredientes trabalhando juntos:
 
 **1. Phase Kickback**
+
 - O qubit auxiliar em $|-\rangle$ causa kickback quando o oráculo aplica X
 - Estados onde $f(x) = 1$ ganham fase negativa: $(-1)^{f(x)}$
 - A informação sobre a função fica "codificada" nas fases!
 
 **2. Superposição Inicial**
+
 - Todos os $2^n$ estados possíveis são processados **simultaneamente**
 - Uma única aplicação do oráculo "consulta" todas as entradas de uma vez
 - Paralelismo quântico em ação!
 
 **3. Interferência Final**
+
 - Os Hadamards finais convertem diferenças de FASE em diferenças de AMPLITUDE
 - Para funções constantes: todas as fases são iguais → interferência construtiva em $|000\rangle$
 - Para funções balanceadas: metade tem fase +, metade tem fase − → interferência **destrutiva** em $|000\rangle$
@@ -1523,12 +1395,14 @@ oraculo = oraculo_constante(n)  # Em vez de oraculo_balanceado(n)
 ```
 
 Você deverá ver:
+
 - Resultado: `{'000': 1000}` (100% das vezes)
 - Confirmando que a função é constante!
 
 ### 🧪 Desafio Adicional
 
 Tente aumentar `n` para 10 ou 15 bits e compare mentalmente:
+
 - **Clássico:** Precisaria de até 513 ou 16,385 consultas
 - **Quântico:** Sempre 1 consulta! 🚀
 
@@ -1623,6 +1497,7 @@ Agora que você domina estes conceitos, está pronto para:
 Você acabou de implementar um algoritmo que demonstra **supremacia quântica** em termos de complexidade de consulta! O Deutsch-Jozsa prova que computadores quânticos podem resolver certos problemas fundamentalmente mais rápido que computadores clássicos.
 
 A jornada de aprendizado em computação quântica é como subir uma escada:
+
 - ✅ **Superposição** - você aprendeu em [01-intro.ipynb](01-intro.ipynb)
 - ✅ **Emaranhamento** - você aprendeu em [02-teletransport.ipynb](02-teletransport.ipynb)  
 - ✅ **Interferência** - você aprendeu em [04-Hadamard-experiment.ipynb](04-Hadamard-experiment.ipynb)

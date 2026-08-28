@@ -17,7 +17,6 @@ Isso implica que a pergunta adequada não é se computadores quânticos são sim
 
 - [1] https://arxiv.org/abs/2403.02240
 
-
 ## Tópicos para pesquisa orientada
 
 1. Criptografia pós-quântica (NIST PQC): impacto de Shor sobre RSA/ECC e migração de algoritmos.

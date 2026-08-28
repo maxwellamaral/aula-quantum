@@ -1,5 +1,6 @@
 /.quarto/
 .venv/
+.venv_old/
 .agents/
 .pytest_cache/
 _site/
@@ -13,3 +14,4 @@ content/apostila_files/
 *.aux
 *.log
 *.toc
+/.luarc.json

@@ -22,9 +22,9 @@ Bem-vindo ao notebook mais avançado desta série! Aqui vamos mergulhar nos meca
 
 Antes de continuar, certifique-se de que você entende:
 
-- ✅ **Superposição** - de [01-intro.ipynb](01-intro.ipynb)
-- ✅ **Emaranhamento** - de [02-teletransport.ipynb](02-teletransport.ipynb)
-- ✅ **Porta Hadamard** - de [04-Hadamard-experiment.ipynb](04-Hadamard-experiment.ipynb)
+- ✅ **Superposição** - de [01-intro.ipynb](/notebooks/01-intro.ipynb)
+- ✅ **Emaranhamento** - de [02-teletransport.ipynb](/notebooks/02-teletransport.ipynb)
+- ✅ **Porta Hadamard** - de [04-Hadamard-experiment.ipynb](/notebooks/04-Hadamard-experiment.ipynb)
 - ✅ **Interferência básica** - H × H = I
 
 ### 🎓 Nível de Dificuldade
@@ -77,7 +77,7 @@ Vamos mergulhar no mecanismo que faz os algoritmos quânticos funcionarem.
 
 Até agora, a intuição foi: "O qubit de controle manda no qubit alvo".
 
-Lembra da porta CNOT em [01-intro.ipynb](01-intro.ipynb)?
+Lembra da porta CNOT em [01-intro.ipynb](/notebooks/01-intro.ipynb)?
 
 No **Phase Kickback** (Coice de Fase), descobrimos que a relação é uma via de mão dupla. O qubit alvo pode alterar o estado do qubit de controle.
 
@@ -151,48 +151,45 @@ Resultado: O controle, que era $|+\rangle$, vira $|-\rangle$. O alvo não muda.
 
 #### Código completo do Phase Kickback
 
-Segue o código completo para demonstrar o Phase Kickback usando Qiskit. Logo após, faremos uma análise detalhada de cada etapa.
+Segue o código completo para demonstrar o Phase Kickback usando Cirq. Logo após, faremos uma análise detalhada de cada etapa.
 
-```python
-from qiskit import QuantumCircuit, transpile
-from qiskit_aer import AerSimulator
-from qiskit.quantum_info import Statevector
-from qiskit.visualization import plot_bloch_multivector, plot_state_qsphere
-```
+```{python} {pyodide-python}
+# Instalação do motor quântico Cirq e bibliotecas necessárias
+import micropip
+await micropip.install("cirq-core==1.6.1")
 
-```python
-# Criar circuito com 2 qubits
-qc = QuantumCircuit(2, 1)  # 2 Qubits, 1 Bit clássico
-qc.draw("mpl")
+import cirq
+import numpy as np
+from IPython.display import display, Markdown
 
-# 1. PREPARAÇÃO
-# Colocar o Qubit 0 (Controle) em Superposição |+>
-qc.h(0)
+print(f"✅ Cirq v{cirq.__version__} pronto para execução interativa!")
 
-# Colocar o Qubit 1 (Alvo) no estado |- >
-# Para isso: aplicamos X (vira 1) e depois H (vira menos)
-qc.x(1)
-qc.h(1)
+# Demonstração do Phase Kickback em Cirq
+q_controle = cirq.LineQubit(0)
+q_alvo = cirq.LineQubit(1)
 
-# 2. O KICKBACK
-# Aplicamos CNOT. O alvo (q1) está em |->.
-# Isso deve fazer o q0 virar |-> "por tabela".
-qc.cx(0, 1)
+qc = cirq.Circuit(
+    # 1. PREPARAÇÃO: Controle em |+⟩ e Alvo em |-⟩
+    cirq.H(q_controle),
+    cirq.X(q_alvo),
+    cirq.H(q_alvo),
+    
+    # 2. O KICKBACK: CNOT faz a fase (-1) chutar de volta para o controle!
+    cirq.CNOT(q_controle, q_alvo),
+    
+    # 3. VERIFICAÇÃO: Hadamard converte |-⟩ em |1⟩ com certeza absoluta
+    cirq.H(q_controle),
+    cirq.measure(q_controle, key="controle")
+)
 
-# 3. VERIFICAÇÃO
-# Como saber se q0 virou |->?
-# Se aplicarmos H novamente:
-# H em |+> volta para 0
-# H em |-> volta para 1
-qc.h(0)
+print("Circuito de Phase Kickback:")
+print(qc)
 
-# Medimos APENAS o qubit de controle (q0)
-qc.measure(0, 0)
-
-# Executar
-simulador = AerSimulator()
-job = simulador.run(transpile(qc, simulador), shots=1000)
-print("Resultado do Controle:", job.result().get_counts())
+sim = cirq.Simulator()
+resultado = sim.run(qc, repetitions=1000)
+contagens = resultado.histogram(key="controle")
+print("\nResultado da Medição do Controle (1000 repetições):", dict(contagens))
+print("O controle mediu 1 em 100% das vezes, provando o Phase Kickback!")
 ```
 
 ```
@@ -200,23 +197,13 @@ Resultado do Controle: {'1': 1000}
 
 ```
 
-```{python} {pyodide-python}
 
-# Visualizar o circuito completo
-qc.draw('mpl')
-```
 
 #### Demonstração detalhada de Phase Kickback
 
 Vamos provar que o qubit de controle muda sem que nenhuma porta toque nele diretamente.
 
-```python
-# Criar circuito com 2 qubits
-qc = QuantumCircuit(2, 1) # 2 Qubits, 1 Bit clássico
 
-# Desenhar o circuito
-qc.draw('mpl')
-```
 
 Matematicamente, os estados dos qubits, quando criados, são:
 
@@ -304,7 +291,7 @@ Lembre-se que se expandirmos em termos da base computacional $\{|00\rangle, |01\
 
 $$|00\rangle = \begin{pmatrix} 1 \\ 0 \\ 0 \\ 0 \end{pmatrix}, \quad |01\rangle = \begin{pmatrix} 0 \\ 1 \\ 0 \\ 0 \end{pmatrix}, \quad |10\rangle = \begin{pmatrix} 0 \\ 0 \\ 1 \\ 0 \end{pmatrix}, \quad |11\rangle = \begin{pmatrix} 0 \\ 0 \\ 0 \\ 1 \end{pmatrix}$$
 
-Lembra disso acima? Se não, volte para a seção de produto tensorial em [00-math.ipynb](00-math.ipynb).
+Lembra disso acima? Se não, volte para a seção de produto tensorial em [00-math.ipynb](/notebooks/00-math.ipynb).
 
 Portanto, o vetor $\frac{1}{2}\begin{pmatrix} 1 \\ -1 \\ 1 \\ -1 \end{pmatrix}$ pode ser escrito como:
 
@@ -320,7 +307,7 @@ Percebeu como é simples? Provavelmente a notação matemática é assustadora, 
 
 ### Visualização: Estado Inicial Preparado
 
-```python
+```{python} {pyodide-python}
 # Visualizar o estado após preparação
 estado_inicial = Statevector(qc)
 print(f"Estado inicial: {estado_inicial}")
@@ -390,7 +377,7 @@ Essa rotação do qubit de controle **sem que nenhuma porta aja diretamente sobr
 
 ## Q-Sphere
 
-```python
+```{python} {pyodide-python}
 print("\nQ-Sphere mostrando ambos os qubits:")
 display(plot_state_qsphere(estado_inicial))
 ```
@@ -530,7 +517,7 @@ $$= \frac{1}{\sqrt{2}}(|0\rangle - |1\rangle) \otimes |-\rangle = |-\rangle \oti
 
 **Conclusão:** O qubit de controle mudou de $|+\rangle$ para $|-\rangle$ sem que nenhuma porta tenha agido diretamente sobre ele!
 
-```python
+```{python} {pyodide-python}
 # Visualizar após o CNOT (Phase Kickback aconteceu)
 estado_apos_kickback = Statevector(qc)
 print(f"Estado após CNOT: {estado_apos_kickback}")
@@ -582,7 +569,7 @@ Portanto:
 
 Como o Phase Kickback transformou $|+\rangle \to |-\rangle$, esperamos medir **1** em 100% das vezes!
 
-```python
+```{python} {pyodide-python}
 estado_verificacao = Statevector(qc)
 print(f"Estado após verificação (H no q0): {estado_verificacao}")
 display(plot_bloch_multivector(estado_verificacao))
@@ -603,7 +590,7 @@ Q-Sphere:
 
 ```
 
-```python
+```{python} {pyodide-python}
 # Medimos APENAS o qubit de controle (q0)
 qc.measure(0, 0)
 
@@ -765,53 +752,28 @@ Este código é a prova prática da ineficiência do computador clássico que o 
 
 Agora vamos implementar o **Algoritmo de Deutsch-Jozsa** - a versão quântica que resolve o mesmo problema com **apenas 1 consulta ao oráculo**!
 
-```python
-from qiskit import QuantumCircuit, transpile
-from qiskit_aer import AerSimulator
-from qiskit.quantum_info import Statevector
-from qiskit.visualization import plot_bloch_multivector, plot_state_qsphere, plot_histogram
-```
-
-```python
+```{python} {pyodide-python}
 # ============================================
-# DEFINIÇÃO DOS ORÁCULOS
+# DEFINIÇÃO DOS ORÁCULOS NO CIRQ
 # ============================================
 
-def oraculo_balanceado(n_qubits):
+def criar_oraculo_balanceado(qubits_in, qubit_target):
     """
-    Cria um circuito que representa uma função BALANCEADA.
-    
-    Esta função retorna 0 para metade das entradas e 1 para a outra metade.
-    Implementação: CNOTs de todos os qubits de entrada para o qubit de saída.
-    
-    Equivalente quântico de: tabela_oculta = [0]*metade + [1]*metade (embaralhado)
+    Retorna as operações para uma função BALANCEADA.
+    Implementação: CNOTs dos qubits de entrada para o qubit alvo.
     """
-    qc = QuantumCircuit(n_qubits + 1)
-    for qubit in range(n_qubits):
-        qc.cx(qubit, n_qubits) # CNOT de todos inputs para o alvo
-    return qc
+    return [cirq.CNOT(q, qubit_target) for q in qubits_in]
 
-def oraculo_constante(n_qubits):
+def criar_oraculo_constante(qubits_in, qubit_target, valor=0):
     """
-    Cria um circuito que representa uma função CONSTANTE.
-    
-    Esta função retorna sempre 0 ou sempre 1 (independente da entrada).
-    
-    Implementação:
-    - Retorna sempre 0: não faz nada (circuito identidade)
-    - Retorna sempre 1: aplica X no qubit de saída
-    
-    Equivalente quântico de: tabela_oculta = [0] * total_inputs
-                          ou: tabela_oculta = [1] * total_inputs
+    Retorna as operações para uma função CONSTANTE (sempre 0 ou sempre 1).
     """
-    qc = QuantumCircuit(n_qubits + 1)
-    # Não adicionamos portas, então a saída é constante 0
-    # Para constante 1, descomente a linha abaixo:
-    # qc.x(n_qubits)
-    return qc
+    if valor == 1:
+        return [cirq.X(qubit_target)]
+    return []  # Identidade para constante 0
 ```
 
-```python
+```{python} {pyodide-python}
 # 🎮 EXPERIMENTO INTERATIVO: Teste Ambos os Tipos de Função
 
 import random
@@ -989,7 +951,7 @@ Vamos começar!
 
 Primeiro, importamos as bibliotecas necessárias:
 
-```python
+```{python} {pyodide-python}
 # ============================================
 # DEFINIÇÃO DOS ORÁCULOS
 # ============================================
@@ -1028,7 +990,7 @@ def oraculo_constante(n_qubits):
     return qc
 ```
 
-```python
+```{python} {pyodide-python}
 # ============================================
 # CONSTRUÇÃO DO ALGORITMO PASSO A PASSO
 # ============================================
@@ -1075,7 +1037,7 @@ Testando com 3 qubits de entrada
 
 ```
 
-```python
+```{python} {pyodide-python}
 # Visualizar estado inicial
 estado_inicial_dj = Statevector(qc)
 print("Estado inicial - Superposição uniforme de todos os 8 estados:")
@@ -1132,7 +1094,7 @@ print("   ✅ Oráculo aplicado! Informação codificada nas fases.")
 
 ```
 
-```python
+```{python} {pyodide-python}
 # Visualizar estado após oráculo
 estado_apos_oraculo_dj = Statevector(qc)
 print("Estado após oráculo - Note as mudanças de fase:")
@@ -1191,7 +1153,7 @@ print("   ✅ Interferência concluída! Pronto para medir.")
 
 ```
 
-```python
+```{python} {pyodide-python}
 # Visualizar estado antes da medição
 estado_antes_medicao = Statevector(qc)
 print("Estado antes da medição - Após interferência:")
@@ -1252,7 +1214,7 @@ print("="*70)
 
 ```
 
-```python
+```{python} {pyodide-python}
 # ─────────────────────────────────────────────
 # PASSO 5: Execução e Interpretação
 # ─────────────────────────────────────────────
@@ -1389,7 +1351,7 @@ Isso é fundamentalmente diferente de como computadores clássicos funcionam - e
 
 Experimente modificar o código acima para usar `oraculo_constante(3)` em vez de `oraculo_balanceado(3)`:
 
-```python
+```{python} {pyodide-python}
 # Na célula onde definimos o oráculo, mude esta linha:
 oraculo = oraculo_constante(n)  # Em vez de oraculo_balanceado(n)
 ```
@@ -1498,9 +1460,9 @@ Você acabou de implementar um algoritmo que demonstra **supremacia quântica** 
 
 A jornada de aprendizado em computação quântica é como subir uma escada:
 
-- ✅ **Superposição** - você aprendeu em [01-intro.ipynb](01-intro.ipynb)
-- ✅ **Emaranhamento** - você aprendeu em [02-teletransport.ipynb](02-teletransport.ipynb)  
-- ✅ **Interferência** - você aprendeu em [04-Hadamard-experiment.ipynb](04-Hadamard-experiment.ipynb)
+- ✅ **Superposição** - você aprendeu em [01-intro.ipynb](/notebooks/01-intro.ipynb)
+- ✅ **Emaranhamento** - você aprendeu em [02-teletransport.ipynb](/notebooks/02-teletransport.ipynb)  
+- ✅ **Interferência** - você aprendeu em [04-Hadamard-experiment.ipynb](/notebooks/04-Hadamard-experiment.ipynb)
 - ✅ **Phase Kickback** - você dominou neste notebook!
 - 🚀 **Algoritmos Avançados** - você está pronto!
 
@@ -1512,7 +1474,6 @@ A jornada de aprendizado em computação quântica é como subir uma escada:
 
 - **Deutsch-Jozsa Algorithm:** Deutsch, D., & Jozsa, R. (1992). "Rapid solution of problems by quantum computation." *Proceedings of the Royal Society of London A*, 439(1907), 553-558.
 - **Nielsen & Chuang:** Chapter 1.4 (Deutsch-Jozsa), Chapter 6 (Quantum Algorithms)
-- **Qiskit Textbook:** [Deutsch-Jozsa Algorithm](https://qiskit.org/textbook/ch-algorithms/deutsch-jozsa.html)
+- **Cirq Textbook:** [Deutsch-Jozsa Algorithm](https://cirq.org/textbook/ch-algorithms/deutsch-jozsa.html)
 
 <hr/>
-

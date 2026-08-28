@@ -73,7 +73,15 @@ def plot_qsphere_interactive(statevector, auto_open=False, output_file='qsphere_
     - Labels de estados aparecem apenas para probabilidades > 15%
     - O sistema de coordenadas cartesianas facilita a orientação espacial
     """
-    amplitudes = statevector.data
+    if hasattr(statevector, 'data'):
+        amplitudes = np.asarray(statevector.data)
+    elif hasattr(statevector, 'state_vector'):
+        amplitudes = np.asarray(statevector.state_vector())
+    elif hasattr(statevector, 'final_state_vector'):
+        amplitudes = np.asarray(statevector.final_state_vector)
+    else:
+        amplitudes = np.asarray(statevector)
+
     n_states = len(amplitudes)
     n_qubits = int(np.log2(n_states))
     

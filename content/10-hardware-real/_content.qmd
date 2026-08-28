@@ -13,13 +13,60 @@ Todos os algoritmos estudados até aqui possuem implementação OpenQASM pronta 
 
 **Roteiro:** importe o arquivo no Composer, execute no simulador (`ibmq_qasm_simulator`) e depois em um backend real (ex.: `ibm_brisbane`). Compare os histogramas — em hardware real a taxa de sucesso fica abaixo de 100% por causa de **ruído quântico**, **decoerência** e imperfeições dos qubits físicos.
 
-## Dispositivos NISQ
+## Dispositivos NISQ e Modelagem de Ruído em Cirq
 
-# Dispositivos NISQ dependem de integração quântico-clássica
-
-Dispositivos quânticos de escala intermediária e ruidosa não funcionam como substitutos independentes dos computadores clássicos. A decoerência, o ruído e a necessidade de repetir medições fazem com que algoritmos NISQ dependam de controle, otimização e pós-processamento clássicos.[[Quantum Computing - Vision and Challenges]]
+Dispositivos quânticos de escala intermediária e ruidosa (**NISQ - Noisy Intermediate-Scale Quantum**) não funcionam como substitutos independentes dos computadores clássicos. A decoerência, o ruído e a necessidade de repetir medições fazem com que algoritmos NISQ dependam de controle, otimização e pós-processamento clássicos.
 
 A arquitetura mais realista para o estágio atual é híbrida: o computador clássico coordena o experimento, enquanto o dispositivo quântico executa subrotinas específicas.
+
+### 🧪 Prática Interativa: Simulando Ruído e Decoerência com Cirq
+
+No motor **Cirq**, podemos modelar com precisão os principais canais físicos de ruído de um processador quântico real:
+- **Despolarização (`cirq.depolarize`)**: simula erros aleatórios de bit-flip e phase-flip nas portas lógicas.
+- **Amortecimento de Amplitude (`cirq.amplitude_damp`)**: simula o relaxamento de energia ($T_1$), onde o qubit excitado $|1\rangle$ decai espontaneamente para $|0\rangle$.
+- **Amortecimento de Fase (`cirq.phase_damp`)**: simula a perda de coerência quântica pura ($T_2$).
+
+Execute o código abaixo para observar como o ruído degrada o estado de Bell:
+
+```{python} {pyodide-python}
+# Instalação do Cirq no navegador
+import micropip
+await micropip.install("cirq-core==1.6.1")
+
+import cirq
+import numpy as np
+
+# Criando um par de Bell ideal
+q0, q1 = cirq.LineQubit.range(2)
+circuito_ideal = cirq.Circuit(
+    cirq.H(q0),
+    cirq.CNOT(q0, q1),
+    cirq.measure(q0, q1, key="m")
+)
+
+# Criando o mesmo circuito sujeito a ruído de despolarização (p = 10%)
+p_ruido = 0.10
+circuito_ruidoso = cirq.Circuit(
+    cirq.H(q0),
+    cirq.depolarize(p=p_ruido)(q0),
+    cirq.CNOT(q0, q1),
+    cirq.depolarize(p=p_ruido)(q1),
+    cirq.measure(q0, q1, key="m")
+)
+
+sim = cirq.Simulator()
+res_ideal = sim.run(circuito_ideal, repetitions=1000).histogram(key="m")
+res_ruidoso = sim.run(circuito_ruidoso, repetitions=1000).histogram(key="m")
+
+print("=" * 65)
+print("COMPARAÇÃO: CIRCUITO IDEAL vs HARDWARE RUIDOSO (NISQ)")
+print("=" * 65)
+print(f"Ideal    -> |00⟩: {res_ideal.get(0, 0)/10:.1f}%, |11⟩: {res_ideal.get(3, 0)/10:.1f}%, Erros (|01⟩/|10⟩): 0.0%")
+erros_ruidoso = (res_ruidoso.get(1, 0) + res_ruidoso.get(2, 0)) / 10
+print(f"Ruidoso  -> |00⟩: {res_ruidoso.get(0, 0)/10:.1f}%, |11⟩: {res_ruidoso.get(3, 0)/10:.1f}%, Erros (|01⟩/|10⟩): {erros_ruidoso:.1f}%")
+print("=" * 65)
+print("Observe como o ruído físico introduz estados espúrios que não deveriam existir teoricamete!")
+```
 
 ## Relações
 
@@ -29,4 +76,5 @@ A arquitetura mais realista para o estágio atual é híbrida: o computador clá
 ## Fonte
 
 - [1] https://arxiv.org/abs/2403.02240
+
 

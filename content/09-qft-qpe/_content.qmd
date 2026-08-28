@@ -31,80 +31,72 @@ A QFT codifica o **valor** do número na **frequência de rotação** das fases.
 
 ### O Experimento Visual
 
-Vamos usar o Qiskit para ver isso acontecer. Vamos pegar o número 6 (`110`), aplicar a QFT e ver como as Esferas de Bloch mudam.
+Vamos usar o Cirq para ver isso acontecer. Vamos pegar o número 6 (`110`), aplicar a QFT e ver como as Esferas de Bloch mudam.
 
-Para facilitar, usaremos a biblioteca pronta de QFT do Qiskit (`qiskit.circuit.library`), assim focamos no efeito e não na montagem manual das portas agora.
+Para facilitar, usaremos a biblioteca pronta de QFT do Cirq (`cirq.circuit.library`), assim focamos no efeito e não na montagem manual das portas agora.
 
 ```{python} {pyodide-python}
+# Instalação do motor quântico Cirq e bibliotecas necessárias
+import micropip
+await micropip.install("cirq-core==1.6.1")
+
+import cirq
 import numpy as np
 import matplotlib.pyplot as plt
+from IPython.display import display, Markdown
 
-# Imports do Qiskit (execução no Google Colab / ambiente local)
-try:
-    from qiskit import QuantumCircuit, transpile
-    from qiskit.circuit.library import QFT
-    from qiskit.quantum_info import Statevector
-    from qiskit.visualization import plot_bloch_multivector
-except ImportError:
-    pass
+print(f"✅ Cirq v{cirq.__version__} pronto para execução interativa!")
+
+def qft_cirq(qubits):
+    """
+    Implementação elegante da Transformada Quântica de Fourier (QFT) em Cirq.
+    Para cada qubit i, aplica H e rotações controladas de fase com os qubits seguintes.
+    """
+    circuito = cirq.Circuit()
+    n = len(qubits)
+    for i in range(n):
+        circuito.append(cirq.H(qubits[i]))
+        for j in range(i + 1, n):
+            # Rotação de fase controlada R_k com expoente 1 / 2^(j - i)
+            expoente = 1.0 / (2 ** (j - i))
+            circuito.append(cirq.CZPowGate(exponent=expoente)(qubits[j], qubits[i]))
+    # Inversão da ordem dos qubits (SWAP)
+    for i in range(n // 2):
+        circuito.append(cirq.SWAP(qubits[i], qubits[n - 1 - i]))
+    return circuito
 ```
 
-```python
+```{python} {pyodide-python}
 # 1. PREPARAÇÃO: Codificar o número 6 (Binário 110)
-# Em Qiskit (Little Endian): q0 é o menos significativo.
-# 6 = 0 * (2^0) + 1 * (2^1) + 1 * (2^2) -> q0=0, q1=1, q2=1
-num_qubits = 3
-qc = QuantumCircuit(num_qubits)
+# Criamos 3 qubits: q0 (bit mais significativo), q1, q2 (menos significativo)
+# Para codificar 6 = 110 em binário:
+qubits = cirq.LineQubit.range(3)
+qc = cirq.Circuit()
 
-# Codificando o '6' (Portas X onde o bit é 1)
-# qc.x(0) # q0 = 0 (não fazemos nada)
-qc.x(1) # q1 = 1
-qc.x(2) # q2 = 1
+# Aplicamos X em q0 e q1 (bits 1) e deixamos q2 em 0:
+qc.append([cirq.X(qubits[0]), cirq.X(qubits[1])])
 
-# Vamos salvar o estado visual ANTES da QFT
-estado_antes = Statevector(qc)
-print("--- Estado Antes (Binário 110) ---")
-# Vai mostrar setas para baixo (1) e para cima (0)
+sim = cirq.Simulator()
+estado_antes = sim.simulate(qc).final_state_vector
+print("--- Estado Antes (Base Computacional |110⟩) ---")
+print("Vetor de amplitudes:", np.round(estado_antes, 4))
+print("Circuito de preparação do 6:")
+print(qc)
+
+# 2. APLICAÇÃO DA QFT
+circuito_qft = qc + qft_cirq(qubits)
+print("\n--- Circuito Completo com QFT ---")
+print(circuito_qft)
+
+estado_depois = sim.simulate(circuito_qft).final_state_vector
+print("\n--- Estado Depois da QFT (Base de Fourier) ---")
+print("Vetor de amplitudes:", np.round(estado_depois, 4))
 ```
 
 ```
---- Estado Antes (Binário 110) ---
-
 ```
 
-```python
-# 2. A MÁGICA: Aplicar a QFT
-# A biblioteca cria o circuito complexo de Hadamards e Rotações para nós
-qc_qft = QFT(num_qubits, do_swaps=False).to_gate()
-qc.append(qc_qft, range(num_qubits))
 
-# Vamos salvar o estado visual DEPOIS da QFT
-estado_depois = Statevector(qc)
-
-# Desenha o circuito completo
-qc.draw('mpl')
-```
-
-```
-C:\Users\Max\AppData\Local\Temp\ipykernel_18328\3244769350.py:3: DeprecationWarning: The class ``qiskit.circuit.library.basis_change.qft.QFT`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. ('Use qiskit.circuit.library.QFTGate or qiskit.synthesis.qft.synth_qft_full instead, for access to all previous arguments.',)
-  qc_qft = QFT(num_qubits, do_swaps=False).to_gate()
-
-```
-
-```python
-from IPython.display import display
-
-# 3. VISUALIZAÇÃO
-print("\n--- Gerando Esferas de Bloch... ---")
-
-# Plot 1: Binário Puro
-fig1 = plot_bloch_multivector(estado_antes, title="Antes: Número 6 (Base Computacional)")
-display(fig1)
-
-# Plot 2: Fourier
-fig2 = plot_bloch_multivector(estado_depois, title="Depois: Número 6 (Base de Fourier)")
-display(fig2)
-```
 
 ```
 
@@ -263,111 +255,81 @@ O resultado esperado em binário fracionário:
 Em binário:  (O terceiro bit é 1).
 
 ```{python} {pyodide-python}
+# Instalação do motor quântico Cirq e bibliotecas necessárias
+import micropip
+await micropip.install("cirq-core==1.6.1")
+
+import cirq
 import numpy as np
+import matplotlib.pyplot as plt
 
-# Imports do Qiskit (execução no Google Colab / ambiente local)
-try:
-    from qiskit import QuantumCircuit, transpile
-    from qiskit_aer import AerSimulator
-    from qiskit.circuit.library import QFT, PhaseGate
-    from qiskit.visualization import plot_histogram
-except ImportError:
-    pass
-```
+print(f"✅ Cirq v{cirq.__version__} pronto para execução interativa!")
 
-```python
-# --- 1. CONFIGURAÇÃO ---
-# Precisamos de qubits para "contar" a fase (precisão) e 1 (q3) para sofrer a ação
-num_qubits_contagem = 3 
-num_qubits_total = num_qubits_contagem + 1 # +1 para o alvo
-
-qc = QuantumCircuit(num_qubits_total, num_qubits_contagem)
-qc.draw('mpl')
-```
-
-```{python} {pyodide-python}
-
-# --- 2. PREPARAÇÃO ---
-# Colocar os qubits de contagem em superposição (para receberem o kickback)
-for qubit in range(num_qubits_contagem):
-    qc.h(qubit)
-
-# Colocar o qubit alvo (o último) no estado |1>
-# (O Kickback só funciona se o alvo for |1>, lembre-se do eigenstate)
-qc.x(num_qubits_contagem)
-qc.draw('mpl')
+def qft_cirq(qubits):
+    """
+    Implementação elegante da Transformada Quântica de Fourier (QFT) em Cirq.
+    Para cada qubit i, aplica H e rotações controladas de fase com os qubits seguintes.
+    """
+    circuito = cirq.Circuit()
+    n = len(qubits)
+    for i in range(n):
+        circuito.append(cirq.H(qubits[i]))
+        for j in range(i + 1, n):
+            # Rotação de fase controlada R_k com expoente 1 / 2^(j - i)
+            expoente = 1.0 / (2 ** (j - i))
+            circuito.append(cirq.CZPowGate(exponent=expoente)(qubits[j], qubits[i]))
+    # Inversão da ordem dos qubits (SWAP)
+    for i in range(n // 2):
+        circuito.append(cirq.SWAP(qubits[i], qubits[n - 1 - i]))
+    return circuito
 ```
 
 ```{python} {pyodide-python}
+# --- CONSTRUÇÃO DO CIRCUITO QPE ---
+num_qubits_contagem = 3
+qubits_contagem = [cirq.LineQubit(i) for i in range(num_qubits_contagem)]
+qubit_alvo = cirq.LineQubit(num_qubits_contagem)
 
-# --- 3. APLICAÇÃO DA PORTA "MISTERIOSA" (U) ---
-# Vamos definir nossa fase secreta: 1/8 de volta
-# Fase = 2 * pi * (1/8)
-fase_secreta = 2 * np.pi * (1/8)
+qc_qpe = cirq.Circuit()
 
-# Aplicamos a porta controlada repetidamente (Kickback em cascata)
-# Qubit 0 aplica U^1
-# Qubit 1 aplica U^2
-# Qubit 2 aplica U^4
-repeticoes = 1
-for counting_qubit in range(num_qubits_contagem):
-    # PhaseGate Controlada (CP)
-    # qc.cp(angulo, controle, alvo). Esta porta foi vista anteriormente.
-    qc.cp(fase_secreta * repeticoes, counting_qubit, num_qubits_contagem)
-    repeticoes = repeticoes * 2
+# 1. PREPARAÇÃO: Superposição uniforme nos qubits de contagem e |1⟩ no alvo
+qc_qpe.append(cirq.H.on_each(*qubits_contagem))
+qc_qpe.append(cirq.X(qubit_alvo))
 
-qc.barrier()
-qc.draw('mpl')
-```
+# 2. OPERAÇÕES CONTROLADAS U^(2^k) COM FASE SECRETA = 1/8 (0.125 de volta)
+fase_secreta = 1.0 / 8.0  # Theta = 1/8
 
-```{python} {pyodide-python}
+for k, q_controle in enumerate(qubits_contagem):
+    expoente = 2.0 * (fase_secreta * (2 ** k))
+    qc_qpe.append(cirq.CZPowGate(exponent=expoente)(q_controle, qubit_alvo))
 
-# --- 4. O DECODIFICADOR (QFT INVERSA) ---
-# Até aqui, a informação do ângulo está escondida na fase dos qubits de contagem.
-# A QFT Inversa traduz isso para bits legíveis (0 ou 1).
-qc_iqft = QFT(num_qubits_contagem, inverse=True).to_gate()
-qc.append(qc_iqft, range(num_qubits_contagem))
-qc.draw('mpl')
-```
+# 3. DECODIFICADOR: QFT INVERSA
+# Cirq permite inverter qualquer circuito de forma nativa e exata com cirq.inverse()!
+qc_qpe.append(cirq.inverse(qft_cirq(qubits_contagem)))
 
-```
-C:\Users\Max\AppData\Local\Temp\ipykernel_18328\2763487660.py:4: DeprecationWarning: The class ``qiskit.circuit.library.basis_change.qft.QFT`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. ('Use qiskit.circuit.library.QFTGate or qiskit.synthesis.qft.synth_qft_full instead, for access to all previous arguments.',)
-  qc_iqft = QFT(num_qubits_contagem, inverse=True).to_gate()
+# 4. MEDIÇÃO DOS QUBITS DE CONTAGEM
+qc_qpe.append(cirq.measure(*qubits_contagem, key="fase"))
 
-```
+print("--- Circuito Completo de Estimação de Fase Quântica (QPE) ---")
+print(qc_qpe)
 
-```{python} {pyodide-python}
+# 5. SIMULAÇÃO E INTERPRETAÇÃO
+resultado_qpe = sim.run(qc_qpe, repetitions=1000)
+contagens = resultado_qpe.histogram(key="fase")
 
-# --- 5. MEDIÇÃO ---
-qc.measure(range(num_qubits_contagem), range(num_qubits_contagem))
+print("\n--- Resultado da QPE (1000 repetições) ---")
+print("Histograma de medições:", dict(contagens))
 
-```
+# O valor binário medido corresponde ao inteiro da fração binária:
+chave_mais_provavel = max(contagens, key=contagens.get)
+fase_estimada = chave_mais_provavel / (2 ** num_qubits_contagem)
+binario_lido = f"{chave_mais_provavel:0{num_qubits_contagem}b}"
 
-```python
-# --- EXECUÇÃO ---
-simulador = AerSimulator()
-job = simulador.run(transpile(qc, simulador), shots=1024)
-contagens = job.result().get_counts()
-```
-
-```{python} {pyodide-python}
-
-# --- INTERPRETAÇÃO ---
-# A saída será um binário, ex: '001'.
-# Isso deve ser lido como fração binária: 0.001
-# 0*(1/2) + 0*(1/4) + 1*(1/8) = 1/8.
-
-print("\n--- Resultado da QPE ---")
-print(f"Contagens (Binário): {contagens}")
-
-# Converter o binário mais provável para decimal
-leitura_binaria = list(contagens.keys())[0]
-decimal = int(leitura_binaria, 2)
-fase_estimada = decimal / (2**num_qubits_contagem)
-
-print(f"Binário lido: {leitura_binaria} (Decimal: {decimal})")
-print(f"Fase Estimada: {fase_estimada}")
-print(f"Fase Real Esperada: {1/8}")
+print(f"\nValor binário medido: {binario_lido} (Decimal: {chave_mais_provavel})")
+print(f"Fase Estimada: {fase_estimada:.4f}")
+print(f"Fase Real Esperada: {fase_secreta:.4f}")
+assert np.isclose(fase_estimada, fase_secreta)
+print("🎉 Sucesso Absoluto: A fase 1/8 (0.125) foi estimada com precisão exata!")
 ```
 
 ```
@@ -406,7 +368,6 @@ Você acabou de implementar o "motor" do algoritmo de Shor. O resto é apenas ar
 Você completou o ciclo "Core" da computação quântica baseada em gates (Gate-based Quantum Computing).
 
 1. Álgebra Linear ✅
-2. Circuitos e Qiskit ✅
+2. Circuitos e Cirq ✅
 3. Algoritmos Básicos (Teletransporte, Grover) ✅
 4. Algoritmos Avançados (QFT, QPE) ✅
-

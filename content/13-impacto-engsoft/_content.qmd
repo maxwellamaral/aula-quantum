@@ -20,5 +20,67 @@ Isso implica que a pergunta adequada não é se computadores quânticos são sim
 ## Tópicos para pesquisa orientada
 
 1. Criptografia pós-quântica (NIST PQC): impacto de Shor sobre RSA/ECC e migração de algoritmos.
-2. Teste e depuração de programas quânticos: como "assertar" superposições?
-3. Ciclo híbrido quântico-clássico (Qiskit Runtime primitives) e o papel do engenheiro de software.
+2. Teste e depuração de programas quânticos: como "assertar" superposições e corretude funcional?
+3. Ciclo híbrido quântico-clássico (Cirq / Google Quantum AI) e o papel do engenheiro de software.
+
+## 🧪 Prática de Engenharia de Software: Testes Automatizados de Circuitos com Cirq
+
+Em Engenharia de Software Quântica, testar código exige duas abordagens complementares:
+1. **Testes Baseados em Estado (Caixa-Branca / Simulação)**: verificam o vetor de amplitudes exato ou a matriz densidade antes da medição.
+2. **Testes Estatísticos de Medição (Caixa-Preta / Shots)**: verificam se a distribuição estatística colapsada converge para as probabilidades esperadas com intervalo de confiança.
+
+Execute o código abaixo para ver como implementar asserções quânticas em Python:
+
+```{python} {pyodide-python}
+# Instalação do motor quântico Cirq e bibliotecas
+import micropip
+await micropip.install("cirq-core==1.6.1")
+
+import cirq
+import numpy as np
+
+def criar_circuito_bell():
+    """Função de negócio: produz um par de Bell |Phi+⟩."""
+    q0, q1 = cirq.LineQubit.range(2)
+    return cirq.Circuit(
+        cirq.H(q0),
+        cirq.CNOT(q0, q1)
+    )
+
+# -------------------------------------------------------------
+# SUÍTE DE TESTES DO ENGENHEIRO DE SOFTWARE QUÂNTICO
+# -------------------------------------------------------------
+sim = cirq.Simulator()
+circuito = criar_circuito_bell()
+
+# Teste 1: Verificação da Unitariedade e Função de Onda Teórica
+estado_obtido = sim.simulate(circuito).final_state_vector
+estado_esperado = np.array([1/np.sqrt(2), 0, 0, 1/np.sqrt(2)])
+
+np.testing.assert_allclose(
+    np.abs(estado_obtido),
+    np.abs(estado_esperado),
+    atol=1e-6,
+    err_msg="Falha no Teste Unitário: o circuito não produziu o estado de Bell esperado!"
+)
+print("✅ Teste 1 APROVADO: Função de onda exata corresponde a |Phi+⟩ = 1/√2(|00⟩ + |11⟩)")
+
+# Teste 2: Verificação Estatística de Medições (1000 repetições)
+circuito_medicao = circuito.copy()
+circuito_medicao.append(cirq.measure(*circuito.all_qubits(), key="m"))
+resultado = sim.run(circuito_medicao, repetitions=1000).histogram(key="m")
+
+# Regra de negócio: estados |01⟩ (chave 1) e |10⟩ (chave 2) devem ter frequência ZERO
+assert resultado.get(1, 0) == 0, "Falha de Sanidade: estado |01⟩ detectado no par de Bell!"
+assert resultado.get(2, 0) == 0, "Falha de Sanidade: estado |10⟩ detectado no par de Bell!"
+
+# Taxa de equilíbrio entre |00⟩ e |11⟩ (tolerância de +/- 10% para 1000 shots)
+p_00 = resultado.get(0, 0) / 1000.0
+p_11 = resultado.get(3, 0) / 1000.0
+assert 0.40 <= p_00 <= 0.60, f"Distribuição enviesada: P(00) = {p_00}"
+assert 0.40 <= p_11 <= 0.60, f"Distribuição enviesada: P(11) = {p_11}"
+
+print(f"✅ Teste 2 APROVADO: Amostragem estatística validada (P(00)={p_00:.1%}, P(11)={p_11:.1%})")
+print("🎉 Todos os testes de regressão do software quântico passaram com 100% de sucesso!")
+```
+

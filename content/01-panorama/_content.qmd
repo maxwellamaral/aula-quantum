@@ -317,23 +317,22 @@ $$
 
 #### Passo 1: Construir o vetor de amplitudes em código
 Cada amplitude vale $\frac{1}{\sqrt{2}} \approx 0{,}7071$:
-```python
+```{python} {pyodide-python}
 import numpy as np
 
 # Vetor de estado [alpha, beta]
 psi = np.array([1 / np.sqrt(2), 1 / np.sqrt(2)])
 print("Vetor de amplitudes:", psi)
-# Saída: [0.70710678, 0.70710678]
 ```
 
 #### Passo 2: Calcular as probabilidades com a Regra de Born ($|\psi|^2$)
 Elevamos o módulo de cada amplitude ao quadrado para obter as probabilidades clássicas de leitura:
-```python
+```{python} {pyodide-python}
 prob_0 = np.abs(psi[0]) ** 2  # |1 / sqrt(2)|^2 = 1/2 = 0.5 (50%)
 prob_1 = np.abs(psi[1]) ** 2  # |1 / sqrt(2)|^2 = 1/2 = 0.5 (50%)
 
-print(f"Probabilidade de ler 0: {prob_0 * 100:.1f}%")  # 50.0%
-print(f"Probabilidade de ler 1: {prob_1 * 100:.1f}%")  # 50.0%
+print(f"Probabilidade de ler 0: {prob_0 * 100:.1f}%")
+print(f"Probabilidade de ler 1: {prob_1 * 100:.1f}%")
 ```
 
 #### Passo 3: Conservação probabilística (Normalização)
@@ -343,8 +342,39 @@ $$
 |\alpha|^2 + |\beta|^2 = 0{,}5 + 0{,}5 = 1{,}0
 $$
 
-```python
-assert np.isclose(prob_0 + prob_1, 1.0)  # Total 100% garantido!
+```{python} {pyodide-python}
+soma = prob_0 + prob_1
+print(f"Soma das probabilidades: {soma:.4f} (100% garantido)")
+assert np.isclose(soma, 1.0)
+```
+
+#### Passo 4: Primeiro Circuito Quântico com Cirq em Tempo Real
+Agora vamos preparar esse mesmo estado em um qubit real usando o motor **Cirq** executado diretamente no navegador via Pyodide:
+
+```{python} {pyodide-python}
+# Instalação do motor quântico Cirq no navegador
+import micropip
+await micropip.install("cirq-core==1.6.1")
+import cirq
+
+# Criando 1 qubit e aplicando a porta Hadamard (H) para gerar a superposição
+q0 = cirq.LineQubit(0)
+circuito = cirq.Circuit(
+    cirq.H(q0),
+    cirq.measure(q0, key="resultado")
+)
+
+print("Circuito gerado:")
+print(circuito)
+
+# Simulando 1000 medições (shots)
+simulador = cirq.Simulator()
+resultado = simulador.run(circuito, repetitions=1000)
+contagens = resultado.histogram(key="resultado")
+
+print("\nResultados após 1000 medições:")
+print(f"Estado 0: {contagens.get(0, 0)} vezes ({contagens.get(0, 0)/10:.1f}%)")
+print(f"Estado 1: {contagens.get(1, 0)} vezes ({contagens.get(1, 0)/10:.1f}%)")
 ```
 
 - Antes da medição, o sistema quântico evolui como uma onda contínua e determinística (Equação de Schrödinger);

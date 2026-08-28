@@ -27,21 +27,18 @@ Então você está pronto para começar! Não se preocupe se alguns conceitos pa
 > As células com borda verde executam **direto no seu navegador** (Pyodide/WASM) ou podem ser executadas no **Google Colab** (link no topo da página).
 
 ```{python} {pyodide-python}
-# Importando as bibliotecas necessárias
-# Não se preocupe se não entender todas agora - vamos usá-las ao longo do notebook
+# Importando as bibliotecas necessárias e o motor quântico Cirq
+import micropip
+await micropip.install("cirq-core==1.6.1")
 
+import cirq
 import numpy as np                      # Para operações com matrizes e vetores
 import sympy as sp                      # Para matemática simbólica (fórmulas bonitas)
 from sympy import Matrix, symbols       # Para criar matrizes e símbolos matemáticos
-from IPython.display import Markdown    # Para exibir fórmulas formatadas
+from IPython.display import display, Markdown  # Para exibir fórmulas formatadas
 from matplotlib import pyplot as plt    # Para criar gráficos
 
-# Imports do Qiskit (execução no Google Colab / ambiente local)
-try:
-    from qiskit.quantum_info import Statevector  # Para trabalhar com estados quânticos
-    from qiskit.visualization import plot_bloch_multivector, plot_state_qsphere  # Visualizações quânticas
-except ImportError:
-    Statevector = None
+print(f"✅ Cirq v{cirq.__version__} pronto para execução interativa!")
 ```
 
 ## 🔬 Estados Quânticos Básicos
@@ -242,7 +239,7 @@ No mundo quântico ⚛️, se essa moeda existisse - vamos chamar de moeda quân
 
 Entender isso (e aceitar) é crucial para compreender como os computadores quânticos funcionam e por que eles são tão poderosos para certas tarefas. Daqui para frente, sempre que falarmos de qubits em superposição, lembre-se da moeda quântica girando no ar!
 
-Em [03-mais-sobre-Hadamard.md](03-mais-sobre-Hadamard.md) existe um experimento físico feito com fótons 💡 que ilustra muito bem esse conceito de superposição e medição quântica. Recomendo fortemente a leitura para aprofundar sua compreensão, caso estejas curioso! Somente me convenci intuitivamente disso após ler aquele experimento.
+Em [03-mais-sobre-Hadamard.md](/content/06-hadamard-experimento/) existe um experimento físico feito com fótons 💡 que ilustra muito bem esse conceito de superposição e medição quântica. Recomendo fortemente a leitura para aprofundar sua compreensão, caso estejas curioso! Somente me convenci intuitivamente disso após ler aquele experimento.
 
 > 📊 O que acontece: 
 > quando aplicamos uma porta Hadamard (veremos depois) e colocamos o qubit em um estado de superposição (como o estado $|+\rangle$), ele passa a ter 50% de chance de ser medido como 0 e 50% de chance de ser medido como 1. Ao fazer a medição, ele 'colapsa' (faz parar) essa superposição em um dos estados possíveis."
@@ -559,7 +556,7 @@ Isso significa que o qubit não é nem 0 e nem 1. Ele contém "informação" de 
 
 $$|\psi\rangle = 0.707|0\rangle + 0.707|1\rangle$$
 
-Se você ainda não entendeu completamente o conceito de fase quântica, talvez fica melhor de visualizar na Esfera de Bloch, que veremos em [00b-phases.ipynb](00b-phases.ipynb)! Depois volte para cá para reforçar o entendimento.
+Se você ainda não entendeu completamente o conceito de fase quântica, talvez fica melhor de visualizar na Esfera de Bloch, que veremos em [00b-phases.ipynb](/notebooks/00b-phases.ipynb)! Depois volte para cá para reforçar o entendimento.
 
 ### Produto interno (Inner Product) ou "bra-ket"
 
@@ -957,7 +954,7 @@ Resultado da Medição (Colapso): |0>
 
 ```
 
-Por que não usar apenas NumPy sempre? Se é tão simples, por que precisamos do Qiskit ou PennyLane?
+Por que não usar apenas NumPy sempre? Se é tão simples, por que precisamos de frameworks quânticos como o Cirq?
 
 Porque as matrizes crescem exponencialmente.
 
@@ -967,5 +964,5 @@ Porque as matrizes crescem exponencialmente.
 - ...
 - 50 Qubits = Matriz $1.125.899.906.842.624 \times 1.125.899.906.842.624$
   
-O seu computador não tem memória RAM suficiente para armazenar a matriz de 50 qubits usando NumPy. Os frameworks como Qiskit usam truques matemáticos e otimizações (ou enviam para computadores reais) para lidar com essa complexidade.
+O seu computador não tem memória RAM suficiente para armazenar a matriz de 50 qubits usando NumPy puro. Frameworks como o Cirq usam truques matemáticos, representações esparsas, contração de tensores e otimizações de portas (ou enviam circuitos para processadores quânticos reais como a arquitetura Sycamore do Google) para lidar com essa complexidade.
 

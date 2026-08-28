@@ -2,31 +2,40 @@
 
 ## Experimento de Interferência com Hadamard (Interferômetro de Mach-Zehnder)
 
-Você pode replicar esse experimento físico agora mesmo no Qiskit. É a prova de que a porta Hadamard é reversível.
+Você pode replicar esse experimento físico agora mesmo no Cirq. É a prova de que a porta Hadamard é reversível.
 
 Matematicamente, aplicar dois Hadamards é igual a não fazer nada (Identidade), pois as superposições se cancelam e voltam ao estado original.
 
-```python
-from qiskit import QuantumCircuit
-from qiskit.quantum_info import Statevector
-from qiskit.visualization import plot_bloch_multivector, plot_state_qsphere
-```
+```{python} {pyodide-python}
+# Instalação do motor quântico Cirq e bibliotecas
+import micropip
+await micropip.install("cirq-core==1.6.1")
 
-```python
-qc = QuantumCircuit(1)
+import cirq
+import numpy as np
 
-# Passo 1: O fóton encontra o primeiro espelho
-# Estado: Superposição (50/50)
-qc.h(0)
+print(f"✅ Cirq v{cirq.__version__} pronto para simulação do experimento óptico!")
+
+# Passo 1: O fóton encontra o primeiro divisor de feixe (Beam Splitter 1)
+q0 = cirq.LineQubit(0)
+qc = cirq.Circuit(cirq.H(q0))
+sim = cirq.Simulator()
+
+print("Circuito após o primeiro espelho:")
+print(qc)
 ```
 
 ### Visualização após o primeiro Hadamard (Espelho Semitransparente 1)
 
-```python
-# Esfera de Bloch após o primeiro H
-vetor_apos_h1 = Statevector(qc)
-display(plot_bloch_multivector(vetor_apos_h1))
-print(f"Estado após primeiro H: {vetor_apos_h1}")
+```{python} {pyodide-python}
+# Cálculo do vetor de estado e coordenadas de Bloch após primeiro H
+vetor_apos_h1 = sim.simulate(qc).final_state_vector
+bx, by, bz = cirq.bloch_vector_from_state_vector_and_density_matrix(vetor_apos_h1, 0)
+
+print(f"Estado após primeiro H: {np.round(vetor_apos_h1, 4)}")
+print(f"Probabilidade Detector 1 (|0⟩): {np.abs(vetor_apos_h1[0])**2 * 100:.1f}%")
+print(f"Probabilidade Detector 2 (|1⟩): {np.abs(vetor_apos_h1[1])**2 * 100:.1f}%")
+print(f"Coordenadas na Esfera de Bloch: x={bx:+.2f}, y={by:+.2f}, z={bz:+.2f} (Equador +X)")
 ```
 
 ```
@@ -35,26 +44,28 @@ Estado após primeiro H: Statevector([0.70710678+0.j, 0.70710678+0.j],
 
 ```
 
-```python
-# Q-Sphere após o primeiro H
-display(plot_state_qsphere(vetor_apos_h1))
-```
+
 
 ```{python} {pyodide-python}
-
 # Passo 2: O fóton viaja pelos caminhos e encontra o SEGUNDO espelho
-# A interferência acontece aqui.
-qc.h(0)
+# A interferência quântica construtiva e destrutiva acontece aqui!
+qc.append(cirq.H(q0))
 
+print("Circuito Completo do Interferômetro (H · H = I):")
+print(qc)
 ```
 
 ### Visualização após o segundo Hadamard (Espelho Semitransparente 2 - Interferência)
 
-```python
-# Esfera de Bloch após o segundo H
-vetor_apos_h2 = Statevector(qc)
-display(plot_bloch_multivector(vetor_apos_h2))
-print(f"Estado após segundo H: {vetor_apos_h2}")
+```{python} {pyodide-python}
+# Vetor de estado e coordenadas após segundo H (Interferência comprovada)
+vetor_apos_h2 = sim.simulate(qc).final_state_vector
+bx2, by2, bz2 = cirq.bloch_vector_from_state_vector_and_density_matrix(vetor_apos_h2, 0)
+
+print(f"Estado após segundo H: {np.round(vetor_apos_h2, 4)}")
+print(f"Probabilidade Detector 1 (|0⟩): {np.abs(vetor_apos_h2[0])**2 * 100:.1f}%")
+print(f"Probabilidade Detector 2 (|1⟩): {np.abs(vetor_apos_h2[1])**2 * 100:.1f}%")
+print(f"Coordenadas na Esfera de Bloch: x={bx2:+.2f}, y={by2:+.2f}, z={bz2:+.2f} (Pólo Norte +Z puro)")
 ```
 
 ```
@@ -63,14 +74,11 @@ Estado após segundo H: Statevector([1.+0.j, 0.+0.j],
 
 ```
 
-```python
-# Q-Sphere após o segundo H
-display(plot_state_qsphere(vetor_apos_h2))
-```
+
 
 ### Visualização do Circuito Completo
 
-```python
+```{python} {pyodide-python}
 # Verificação
 vetor = Statevector(qc)
 print(vetor)
@@ -83,9 +91,18 @@ Statevector([1.+0.j, 0.+0.j],
 ```
 
 ```{python} {pyodide-python}
+# Medição de 1000 fótons únicos no laboratório simulado
+circuito_laboratorio = qc.copy()
+circuito_laboratorio.append(cirq.measure(q0, key="detector"))
 
-# Desenho do circuito quântico
-qc.draw('mpl')
+resultado_lab = sim.run(circuito_laboratorio, repetitions=1000)
+contagens = resultado_lab.histogram(key="detector")
+
+print("--- Simulação de 1000 Fótons Disparados Individualmente ---")
+print(f"Fótons detectados em D1 (Saída 0): {contagens.get(0, 0)} ({contagens.get(0, 0)/10:.1f}%)")
+print(f"Fótons detectados em D2 (Saída 1): {contagens.get(1, 0)} ({contagens.get(1, 0)/10:.1f}%)")
+print("\n✅ Comprovação Física: 100% dos fótons emergem pelo Detector 1!")
+print("As probabilidades para o Detector 2 se anulam por interferência destrutiva de fase.")
 ```
 
 <hr/>
@@ -96,7 +113,7 @@ qc.draw('mpl')
 
 **Se um fóton ultrapassa uma espelho perfeitamente semitransparente, qual o percentual de luz que transpassa o espelho e qual o percentual de luz que é refletida?**
 
-Essa pergunta é fundamental, pois ela é o elo entre o mundo físico e o código que foi escrito em [01-intro.ipynb](01-intro.ipynb) (`qc.h(0)`) e em [00-math.ipynb](00-math.ipynb).
+Essa pergunta é fundamental, pois ela é o elo entre o mundo físico e o código que foi escrito em [01-intro.ipynb](/notebooks/01-intro.ipynb) (`qc.h(0)`) e em [00-math.ipynb](/notebooks/00-math.ipynb).
 
 A resposta depende se você está falando de **um raio de luz** (mundo clássico) ou de **um único fóton** (mundo quântico).
 
@@ -127,7 +144,7 @@ Fisicamente, a **Porta Hadamard É esse espelho semitransparente**.
 
 Quando você escreve em Python:
 
-```python
+```{python} {pyodide-python}
 qc.h(0)
 
 ```
@@ -204,37 +221,32 @@ Este vídeo é relevante porque exibe a montagem óptica real do experimento dis
 
 ### 4. Como isso se traduz no código Python?
 
-Você pode replicar esse experimento físico agora mesmo no Qiskit. É a prova de que a porta Hadamard é reversível.
+Você pode replicar esse experimento físico agora mesmo no Cirq. É a prova de que a porta Hadamard é reversível.
 
 Matematicamente, aplicar dois Hadamards é igual a não fazer nada (Identidade), pois as superposições se cancelam e voltam ao estado original.
 
-```python
-from qiskit import QuantumCircuit
-from qiskit.quantum_info import Statevector
+```{python} {pyodide-python}
+# Resumo conceitual em Cirq
+q = cirq.LineQubit(0)
+circuito_resumo = cirq.Circuit(
+    cirq.H(q),  # Primeiro divisor de feixe (cria superposição)
+    cirq.H(q)   # Segundo divisor de feixe (recombina com interferência)
+)
 
-qc = QuantumCircuit(1)
-
-# Passo 1: O fóton encontra o primeiro espelho
-# Estado: Superposição (50/50)
-qc.h(0) 
-
-# Passo 2: O fóton viaja pelos caminhos e encontra o SEGUNDO espelho
-# A interferência acontece aqui.
-qc.h(0)
-
-# Verificação
-vetor = Statevector(qc)
-print(vetor)
-
+vetor_final = sim.simulate(circuito_resumo).final_state_vector
+print("Circuito:")
+print(circuito_resumo)
+print("\nVetor de Estado Final:", np.round(vetor_final, 4))
+assert np.allclose(vetor_final, [1.0, 0.0])
+print("✨ H · H = Identidade comprovada matematicamente e fisicamente!")
 ```
 
 **Resultado:** Você verá que o vetor volta a ser `[1, 0]` (Estado  puro). O computador quântico simulou a interferência destrutiva que ocorreria no laboratório.
 
-> Veja código completo em [Código 04-Hadamard-experiment.ipynb](04-Hadamard-experiment.ipynb)
+> Veja código completo em [Código 04-Hadamard-experiment.ipynb](/notebooks/04-Hadamard-experiment.ipynb)
 
 ### Curiosidade Histórica: O Prêmio Nobel de 2022
 
 A confirmação experimental de que isso acontece com partículas individuais e que o emaranhamento é real (violando a intuição clássica) foi tão importante que o **Prêmio Nobel de Física de 2022** foi dado a Alain Aspect, John Clauser e Anton Zeilinger.
 
 Eles provaram, sem sombra de dúvidas, que a natureza se comporta dessa maneira estranha. Não é uma falha de medição; é a arquitetura fundamental do universo.
-

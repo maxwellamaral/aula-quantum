@@ -37,12 +37,15 @@ onde $\phi$ é a fase do número complexo.
   $$T = \begin{bmatrix} 1 & 0 \\ 0 & e^{i\pi/4} \end{bmatrix}$$
 
 ```{python} {pyodide-python}
-# Importações para visualização da esfera de Bloch
-from sympy import Matrix, symbols       # Para criar matrizes e símbolos matemáticos
-from IPython.display import display, Markdown
+# Instalação e importação do motor quântico Cirq e bibliotecas
+import micropip
+await micropip.install("cirq-core==1.6.1")
 
+import cirq
 import numpy as np
 import sympy as sp
+from sympy import Matrix, symbols
+from IPython.display import display, Markdown
 import matplotlib.pyplot as plt
 
 # Definir as portas de fase
@@ -58,13 +61,7 @@ T = Matrix([[1, 0],
 display(Markdown(f"$$Z = {sp.latex(Z)}$$"))
 display(Markdown(f"$$S = {sp.latex(S)}$$"))
 display(Markdown(f"$$T = {sp.latex(T)}$$"))
-
-# Imports do Qiskit (execução no Google Colab / ambiente local)
-try:
-    from qiskit.visualization import plot_bloch_multivector, plot_state_qsphere
-    from qiskit.quantum_info import Statevector
-except ImportError:
-    pass
+print(f"✅ Cirq v{cirq.__version__} inicializado com sucesso!")
 ```
 
 ### Visualização na Esfera de Bloch
@@ -80,41 +77,22 @@ A esfera de Bloch é uma representação geométrica de um qubit onde:
 
 Vamos visualizar estados com diferentes fases:
 
-```python
-# Statevector do Qiskit serve para visualização. 
-# Vai ajudar a montrar a esfera de Bloch.
-# Ele aceita listas com os coeficientes dos estados |0⟩ e |1⟩, neste caso
-# aqueles alfa e beta que vimos antes.
+```{python} {pyodide-python}
+# Representação dos estados e cálculo das coordenadas de Bloch com Cirq e NumPy
+estados = {
+    "|+⟩ (Fase 0° - Eixo +X)": np.array([1/np.sqrt(2), 1/np.sqrt(2)]),
+    "|-⟩ (Fase 180° - Eixo -X)": np.array([1/np.sqrt(2), -1/np.sqrt(2)]),
+    "|i+⟩ (Fase 90° - Eixo +Y)": np.array([1/np.sqrt(2), 1j/np.sqrt(2)]),
+    "|i-⟩ (Fase 270° - Eixo -Y)": np.array([1/np.sqrt(2), -1j/np.sqrt(2)]),
+}
 
-# Aqui, alfa e beta são ambos 1/√2 para o estado |+⟩
+print("Coordenadas no espaço de Bloch (x, y, z) calculadas via Cirq:")
+for nome, vec in estados.items():
+    bx, by, bz = cirq.bloch_vector_from_state_vector_and_density_matrix(vec, 0)
+    print(f"  • Estado {nome:<28}: x = {bx:+.2f}, y = {by:+.2f}, z = {bz:+.2f}")
 
-# Estado |+⟩ = H|0⟩ (fase 0°)
-state_plus = Statevector([1/np.sqrt(2), 1/np.sqrt(2)])
-
-# Estado |-⟩ = H|1⟩ = Z|+⟩ (fase 180°)
-state_minus = Statevector([1/np.sqrt(2), -1/np.sqrt(2)])
-
-# Estado |i+⟩ = S|+⟩ (fase 90°)
-state_i_plus = Statevector([1/np.sqrt(2), 1j/np.sqrt(2)])
-
-# Estado |i-⟩ (fase 270°)
-state_i_minus = Statevector([1/np.sqrt(2), -1j/np.sqrt(2)])
-
-# Visualizar na esfera de Bloch
-print("Estado |+⟩ (Fase 0°) - Eixo +X:")
-display(plot_bloch_multivector(state_plus))
-
-print("\nEstado |-⟩ (Fase 180°) - Eixo -X:")
-display(plot_bloch_multivector(state_minus))
-
-print("\nEstado |i+⟩ (Fase 90°) - Eixo +Y:")
-display(plot_bloch_multivector(state_i_plus))
-
-print("\nEstado |i-⟩ (Fase 270°) - Eixo -Y:")
-display(plot_bloch_multivector(state_i_minus))
-
-print("\nObserve como todos os estados estão no equador da esfera de Bloch")
-print("(igual probabilidade de medir 0 ou 1), mas em direções diferentes.")
+print("\nObserve como todos os estados estão no equador da esfera de Bloch (z = 0,")
+print("com 50% de chance para 0 e 50% para 1), diferindo apenas pelo ângulo azimutal de fase.")
 ```
 
 ```
@@ -155,7 +133,7 @@ $$Z|+⟩ = Z · \frac{1}{\sqrt{2}}(|0⟩ + |1⟩) = \frac{1}{\sqrt{2}}(|0⟩ - |
 
 Na esfera de Bloch, isso corresponde a uma rotação de 180° em torno do eixo Z.
 
-```python
+```{python} {pyodide-python}
 # Demonstração: Aplicar porta Z em |+⟩
 estado_inicial = state_plus
 estado_apos_Z = Statevector([1/np.sqrt(2), -1/np.sqrt(2)])
@@ -194,7 +172,7 @@ $$S|+⟩ = S · \frac{1}{\sqrt{2}}(|0⟩ + |1⟩) = \frac{1}{\sqrt{2}}(|0⟩ + i
 
 Na esfera de Bloch, isso corresponde a uma rotação de 90° em torno do eixo Z.
 
-```python
+```{python} {pyodide-python}
 # Demonstração: Aplicar porta S em |+⟩
 estado_inicial = state_plus
 estado_apos_S = Statevector([1/np.sqrt(2), 1j/np.sqrt(2)])
@@ -233,7 +211,7 @@ O Q-Sphere é outra forma de visualizar estados quânticos, onde as **cores** re
 - **Vermelho/Laranja**: Fase negativa (180° a 270°)
 - **Tamanho das esferas**: Magnitude da amplitude
 
-```python
+```{python} {pyodide-python}
 # Visualizar os mesmos estados no Q-Sphere
 print("Estado |+⟩ - Fase 0°:")
 display(plot_state_qsphere(state_plus))
@@ -300,7 +278,7 @@ A fase quântica é fundamental para:
 - 🔗 **Emaranhamento**: Estados emaranhados têm relações de fase específicas
 - ⚡ **Phase Kickback**: Técnica usada em oráculos quânticos (veremos em notebooks avançados)
 
-```python
+```{python} {pyodide-python}
 # Experimente diferentes valores de theta (em graus)
 theta_graus = 45  # Modifique este valor: 0, 45, 90, 135, 180, 225, 270, 315...
 theta_rad = np.deg2rad(theta_graus)
@@ -409,7 +387,7 @@ display(Markdown(f"$$ RZ(\\theta) = {latex(RZ)} $$"))
 A porta **RY(θ)** é especialmente importante porque:
 
 - Não introduz números complexos (apenas senos e cossenos reais)
-- É a porta padrão no ansatz `RealAmplitudes` do Qiskit
+- É a porta padrão no ansatz variacional com portas RY em computação quântica
 - Permite mapear diretamente dados clássicos em ângulos quânticos
 
 Vamos aplicar RY com diferentes ângulos ao estado |0⟩:
@@ -464,14 +442,6 @@ print("  • RY(180°) = |1⟩ (polo sul)")
 print("  • Todos os estados estão no plano XZ (y = 0)")
 print("=" * 70)
 
-# Imports do Qiskit (execução no Google Colab / ambiente local)
-try:
-    from qiskit import QuantumCircuit
-    from qiskit.quantum_info import Statevector
-    from qiskit.visualization import plot_bloch_multivector
-    from qiskit.visualization import plot_bloch_vector
-except ImportError:
-    pass
 ```
 
 ```
@@ -523,7 +493,7 @@ A porta **RZ(θ)** modifica apenas a **fase** do qubit, sem alterar as probabili
 
 Diferente de RY, RZ **não muda a posição vertical** na Esfera de Bloch, apenas **rotaciona em torno do eixo Z**:
 
-```python
+```{python} {pyodide-python}
 # Demonstração: RZ aplicado a |+⟩
 print("=" * 70)
 print("PORTA RZ: Rotação em torno do eixo Z (afeta apenas a fase)")
@@ -635,7 +605,7 @@ A porta **RX(θ)** rotaciona em torno do eixo X. É menos comum que RY e RZ, mas
 
 Vamos ver RX em ação:
 
-```python
+```{python} {pyodide-python}
 print("=" * 70)
 print("PORTA RX: Rotação em torno do eixo X")
 print("=" * 70)
@@ -925,7 +895,7 @@ Uma das aplicações mais importantes de RY e RZ é **codificar dados clássicos
 
 Suponha que você tem um dado clássico `x = 0.5` (normalizado entre 0 e 1) e quer codificá-lo em um qubit. Você pode usar:
 
-```python
+```{python} {pyodide-python}
 theta = 2 * np.pi * x  # Mapear [0,1] → [0, 2π]
 qc.ry(theta, 0)        # Aplicar rotação RY
 ```
@@ -979,13 +949,6 @@ print("   Dados diferentes → Ângulos diferentes → Estados quânticos difere
 print("   Assim, codificamos informação clássica em superposições quânticas!")
 print("=" * 70)
 
-# Imports do Qiskit (execução no Google Colab / ambiente local)
-try:
-    from qiskit import QuantumCircuit
-    from qiskit.quantum_info import Statevector
-    from qiskit.visualization import plot_bloch_vector
-except ImportError:
-    pass
 ```
 
 ```
@@ -1096,7 +1059,7 @@ $$
 e^{iφ}|11⟩
 $$
 
-#### Usando a Porta CP com Numpy puro (sem Qiskit)
+#### Usando a Porta CP com NumPy puro
 
 ```{python} {pyodide-python}
 
@@ -1151,12 +1114,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from IPython.display import display, Markdown
 
-# Imports do Qiskit (execução no Google Colab / ambiente local)
-try:
-    from qiskit.quantum_info import Statevector
-    from qiskit.visualization import plot_bloch_multivector
-except ImportError:
-    pass
 ```
 
 Vamos criar o estado passo a passo para entender como ele aparece nas esferas de Bloch:
@@ -1170,11 +1127,11 @@ Vamos criar o estado passo a passo para entender como ele aparece nas esferas de
 
 A função `np.kron(A, B)` em NumPy significa "produto tensorial A ⊗ B", onde:
 
-- **A** = primeiro argumento → vira o **qubit mais significativo** (qubit 1 no Qiskit)
-- **B** = segundo argumento → vira o **qubit menos significativo** (qubit 0 no Qiskit)
+- **A** = primeiro argumento → vira o **qubit mais significativo** (qubit 1)
+- **B** = segundo argumento → vira o **qubit menos significativo** (qubit 0)
 
 Portanto:
-```python
+```text
 np.kron(|+⟩, |1⟩)  →  qubit1 = |+⟩  e  qubit0 = |1⟩
 ```
 
@@ -1183,7 +1140,7 @@ np.kron(|+⟩, |1⟩)  →  qubit1 = |+⟩  e  qubit0 = |1⟩
 - **Esfera da ESQUERDA** = qubit 0 (menos significativo) = |1⟩ → **polo sul** ✓
 - **Esfera da DIREITA** = qubit 1 (mais significativo) = |+⟩ → **equador +X** ✓
 
-```python
+```{python} {pyodide-python}
 # Parâmetro da porta (já definido no notebook): θ = π/2
 theta = np.pi / 2
 CP = cphase_gate(theta)
@@ -1260,7 +1217,7 @@ CRIANDO O ESTADO QUÂNTICO DE 2 QUBITS
 
 ```
 
-```python
+```{python} {pyodide-python}
 print("Antes da CP (controle |+>, alvo |1>):")
 display(plot_bloch_multivector(sv_before))
 ```
@@ -1270,7 +1227,7 @@ Antes da CP (controle |+>, alvo |1>):
 
 ```
 
-```python
+```{python} {pyodide-python}
 # Aplicar CPHASE
 state_after = CP.dot(state_before.reshape(4, 1)).flatten()
 sv_after = Statevector(state_after)
@@ -1322,36 +1279,28 @@ Amplitude |11> depois: (4.329780281177466e-17+0.7071067811865475j), fase=90.00°
 
 ```
 
-#### Usando a Porta CP com Qiskit
+#### Usando a Porta CP (Controlled-Phase) com Cirq
 
-Até agora trabalhamos com NumPy e vetores de estado diretamente. Agora vamos ver como usar a porta **CP (Controlled-Phase)** no Qiskit, que é a biblioteca padrão para criar circuitos quânticos.
+Até agora trabalhamos com NumPy e vetores de estado diretamente. Agora vamos ver como usar a porta **CP (Controlled-Phase)** no Cirq, nosso motor quântico interativo.
 
-No Qiskit, a porta CP está disponível como `qc.cp(theta, control_qubit, target_qubit)`.
+No Cirq, a porta de fase controlada é implementada de forma elegante com `cirq.CZPowGate(exponent=theta / np.pi)` ou `cirq.cphase(theta)`, que aplica a fase $e^{i\theta}$ ao estado $|11\rangle$.
 
 ```{python} {pyodide-python}
-import matplotlib.pyplot as plt
-import numpy as np
+# Criando circuito de 2 qubits com Cirq
+q1, q0 = cirq.LineQubit.range(2)
 
-# Criar um circuito com 2 qubits
-qc = QuantumCircuit(2)
-
-# Preparar o estado inicial: qubit 1 em |+⟩ e qubit 0 em |1⟩
-qc.h(1)      # Hadamard no qubit 1 para criar |+⟩
-qc.x(0)      # Porta X no qubit 0 para criar |1⟩
+# Preparar o estado inicial: q1 em |+⟩ e q0 em |1⟩
+circuito_antes = cirq.Circuit(
+    cirq.H(q1),
+    cirq.X(q0)
+)
 
 print("Circuito ANTES da porta CP:")
-display(qc.draw('mpl'))
+print(circuito_antes)
 
-# Salvar estado antes da CP
-estado_antes_qiskit = Statevector(qc)
-
-# Imports do Qiskit (execução no Google Colab / ambiente local)
-try:
-    from qiskit import QuantumCircuit
-    from qiskit.quantum_info import Statevector
-    from qiskit.visualization import plot_bloch_multivector
-except ImportError:
-    pass
+sim = cirq.Simulator()
+estado_antes_cirq = sim.simulate(circuito_antes).final_state_vector
+print("\nVetor antes da CP (Cirq):", np.round(estado_antes_cirq, 4))
 ```
 
 ```
@@ -1359,16 +1308,22 @@ Circuito ANTES da porta CP:
 
 ```
 
-```python
-# Aplicar a porta CP (Controlled-Phase) com θ = π/2
+```{python} {pyodide-python}
+# Aplicar a porta CP (Controlled-Phase) com θ = π/2 usando CZPowGate no Cirq
 theta = np.pi / 2
-qc.cp(theta, 1, 0)  # Porta CP: controle=qubit1, alvo=qubit0
+porta_cp = cirq.CZPowGate(exponent=theta / np.pi)
+
+circuito_depois = cirq.Circuit(
+    cirq.H(q1),
+    cirq.X(q0),
+    porta_cp(q1, q0)
+)
 
 print("Circuito DEPOIS da porta CP:")
-display(qc.draw('mpl'))
+print(circuito_depois)
 
-# Obter o estado final
-estado_depois_qiskit = Statevector(qc)
+estado_depois_cirq = sim.simulate(circuito_depois).final_state_vector
+print("\nVetor depois da CP (Cirq):", np.round(estado_depois_cirq, 4))
 ```
 
 ```
@@ -1380,10 +1335,10 @@ Circuito DEPOIS da porta CP:
 
 # Comparar com o resultado NumPy anterior
 print("="*70)
-print("COMPARAÇÃO: NumPy vs Qiskit")
+print("COMPARAÇÃO: NumPy vs Cirq")
 print("="*70)
 
-# Formatação mais clara da comparação NumPy vs Qiskit
+# Formatação mais clara da comparação NumPy vs Cirq
 def state_markdown(vec, label):
     lines = [f"**{label}**  "]
     for idx, amp in enumerate(np.asarray(vec).flatten()):
@@ -1392,20 +1347,20 @@ def state_markdown(vec, label):
         lines.append(f"- |{idx:02b}> : amp = {mag:.6f} , fase = {ph:7.2f}° , valor = {amp}")
     return "  \n".join(lines)
 
-display(Markdown("### 🔍 Comparação: NumPy vs Qiskit"))
+display(Markdown("### 🔍 Comparação: NumPy vs Cirq"))
 display(Markdown(state_markdown(state_before, "Antes (NumPy)")))
-display(Markdown(state_markdown(estado_antes_qiskit.data, "Antes (Qiskit)")))
-maxdiff_before = np.max(np.abs(state_before - estado_antes_qiskit.data))
+display(Markdown(state_markdown(estado_antes_cirq, "Antes (Cirq)")))
+maxdiff_before = np.max(np.abs(state_before - estado_antes_cirq))
 display(Markdown(f"**Diferença máxima (antes):** {maxdiff_before:.10e}"))
 
 display(Markdown("<hr />"))
 
 display(Markdown(state_markdown(state_after, "Depois (NumPy)")))
-display(Markdown(state_markdown(estado_depois_qiskit.data, "Depois (Qiskit)")))
-maxdiff_after = np.max(np.abs(state_after - estado_depois_qiskit.data))
+display(Markdown(state_markdown(estado_depois_cirq, "Depois (Cirq)")))
+maxdiff_after = np.max(np.abs(state_after - estado_depois_cirq))
 display(Markdown(f"**Diferença máxima (depois):** {maxdiff_after:.10e}"))
 
-if np.allclose(state_before, estado_antes_qiskit.data, atol=1e-10) and np.allclose(state_after, estado_depois_qiskit.data, atol=1e-10):
+if np.allclose(state_before, estado_antes_cirq, atol=1e-10) and np.allclose(state_after, estado_depois_cirq, atol=1e-10):
     display(Markdown("✅ **Resultados idênticos dentro da tolerância numérica (atol=1e-10).**"))
 else:
     display(Markdown("⚠️ **Diferenças detectadas — verifique tolerâncias e fases.**"))
@@ -1417,32 +1372,29 @@ phase_after = np.angle(state_after[idx], deg=True)
 display(Markdown(
     f"**Componente |11>:**  \n"
     f"- NumPy: amp = {abs(state_before[idx]):.6f}, fase = {phase_before:7.2f}°  \n"
-    f"- Qiskit: amp = {abs(estado_depois_qiskit.data[idx]):.6f}, fase = {phase_after:7.2f}°"
+    f"- Cirq: amp = {abs(estado_depois_cirq[idx]):.6f}, fase = {phase_after:7.2f}°"
 ))
 ```
 
 ```
 ======================================================================
-COMPARAÇÃO: NumPy vs Qiskit
+COMPARAÇÃO: NumPy vs Cirq
 ======================================================================
 
 ```
 
-```python
-# Visualizar o estado final nas esferas de Bloch
-print("Estado final (após CP) usando Qiskit:")
-display(plot_bloch_multivector(estado_depois_qiskit))
-
-# Mostrar as amplitudes e fases
-print("\nAmplitudes do estado final:")
-for i, amp in enumerate(estado_depois_qiskit.data):
+```{python} {pyodide-python}
+# Exibir o estado final e calcular as amplitudes e fases após CP
+print("Estado final (após CP) usando Cirq:")
+print("\nAmplitudes e fases calculadas:")
+for i, amp in enumerate(estado_depois_cirq):
     if abs(amp) > 1e-10:
         fase_graus = np.angle(amp, deg=True)
         print(f"  |{i:02b}⟩: amplitude = {abs(amp):.4f}, fase = {fase_graus:7.2f}°")
 ```
 
 ```
-Estado final (após CP) usando Qiskit:
+Estado final (após CP) usando Cirq:
 
 ```
 
@@ -1454,10 +1406,10 @@ Amplitudes do estado final:
 
 ```
 
-#### 📝 Resumo: Porta CP no Qiskit
+#### 📝 Resumo: Porta CP no Cirq
 
 **Sintaxe:**
-```python
+```{python} {pyodide-python}
 qc.cp(theta, control_qubit, target_qubit)
 ```
 
@@ -1481,4 +1433,3 @@ qc.cp(theta, control_qubit, target_qubit)
 #### Uso futuro da Porta CP
 
 Iremos entender a aplicação prática da porta CP em futuros notebooks, especialmente quando discutirmos algoritmos quânticos que utilizam fases para manipular estados quânticos de maneira eficiente. Mas, por enquanto, é importante compreender a definição e o funcionamento básico dessa porta quântica controlada, onde a fase do qubit alvo é alterada dependendo do estado do qubit de controle.
-

@@ -6,7 +6,7 @@
 
 Bem-vindo ao mundo da **IA Quântica (Quantum Machine Learning - QML)**!
 
-Se você já tem experiência com programação e IA clássica, este notebook vai mostrar como aplicar conceitos familiares (como redes neurais e classificadores) em computadores quânticos. Vamos usar a biblioteca **Qiskit Machine Learning** da IBM, que tem uma sintaxe muito similar ao scikit-learn que você já conhece.
+Se você já tem experiência com programação e IA clássica, este notebook vai mostrar como aplicar conceitos familiares (como redes neurais e classificadores) em computadores quânticos. Vamos usar a biblioteca **Cirq para Machine Learning** da IBM, que tem uma sintaxe muito similar ao scikit-learn que você já conhece.
 
 **O que você vai aprender:**
 
@@ -46,7 +46,7 @@ No modelo quântico, temos uma estrutura parecida, mas com nomes diferentes. Vam
 
 ### 2. Mão na Massa: O Código
 
-Vamos usar o `qiskit-machine-learning`. Esta biblioteca é fantástica porque ela imita a sintaxe do **Scikit-Learn**. Se você sabe dar `.fit()` e `.predict()`, você sabe usar IA quântica.
+Vamos usar o `cirq-machine-learning`. Esta biblioteca é fantástica porque ela imita a sintaxe do **Scikit-Learn**. Se você sabe dar `.fit()` e `.predict()`, você sabe usar IA quântica.
 
 Vamos começar com um problema de classificação binária usando apenas 2 qubits. **Primeiro** usaremos dados linearmente separáveis para entender o básico, e **depois** testaremos com dados circulares não-lineares (onde o QML realmente brilha!).
 
@@ -55,44 +55,29 @@ Vamos começar com um problema de classificação binária usando apenas 2 qubit
 Você precisará instalar o pacote de ML e o algoritmo de otimização:
 
 ```bash
-pip install qiskit-machine-learning qiskit-algorithms scikit-learn
+pip install cirq-machine-learning cirq-algorithms scikit-learn
 
 ```
 
 #### Passo 1: O Script (Comentado passo a passo)
 
 ```{python} {pyodide-python}
+# Instalação do motor quântico Cirq e bibliotecas no navegador
+import micropip
+await micropip.install("cirq-core==1.6.1")
+
+import cirq
 import numpy as np
+from IPython.display import display, Markdown
 import matplotlib.pyplot as plt
+from scipy.optimize import minimize
 from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 
-# Qiskit Imports
-
-# Imports do Qiskit (execução no Google Colab / ambiente local)
-try:
-    from qiskit.circuit.library import ZZFeatureMap, RealAmplitudes
-    from qiskit_algorithms.optimizers import COBYLA
-    from qiskit_machine_learning.algorithms import VQC
-    from qiskit_aer import AerSimulator
-except ImportError:
-    pass
+print(f"✅ Cirq v{cirq.__version__} e SciPy prontos para Quantum Machine Learning!")
 ```
 
-#### ⚠️ Nota sobre Versões do Qiskit
-
-**Importante:** Este notebook usa classes que são consideradas deprecated nas versões mais recentes do Qiskit (2.1+). O código funciona perfeitamente, mas esteja ciente de que em versões futuras (Qiskit 3.0+), você pode precisar usar:
-
-```python
-# Ao invés de:
-from qiskit.circuit.library import ZZFeatureMap, RealAmplitudes
-
-# Use (Qiskit 3.0+):
-from qiskit.circuit.library import zz_feature_map, real_amplitudes
-```
-
-Para este notebook educacional, continuaremos usando a sintaxe atual por ser mais amplamente compatível e documentada. A lógica e conceitos permanecem os mesmos!
 
 ```{python} {pyodide-python}
 
@@ -294,7 +279,7 @@ Quando criamos `ZZFeatureMap(feature_dimension=2, reps=1)`:
 ✅ **Emaranhamento Nativo:** Cria correlações quânticas automaticamente  
 ✅ **Não-Linearidade:** Termos xᵢ·xⱼ sem custo computacional extra  
 ✅ **Escalável:** Funciona bem para 2-10 qubits (na era NISQ atual)  
-✅ **Compatível:** Amplamente suportado em Qiskit e hardware IBM  
+✅ **Compatível:** Amplamente suportado em Cirq e hardware IBM  
 
 <hr/>
 
@@ -343,7 +328,7 @@ O **ZZFeatureMap** é um ótimo ponto de partida: equilibra expressividade e efi
 
 **Resumo:** O Feature Map é a "rampa de acesso" ao mundo quântico, e o ZZFeatureMap faz isso de forma eficiente usando emaranhamento ZZ para capturar interações não-lineares entre suas features!
 
-```python
+```{python} {pyodide-python}
 # --- 2. O FEATURE MAP (Tradutor Dados -> Quantum) ---
 # ZZFeatureMap é famoso por criar emaranhamento entre os dados,
 # ajudando a resolver problemas não-lineares.
@@ -352,9 +337,6 @@ feature_map = ZZFeatureMap(feature_dimension=num_qubits, reps=1)
 ```
 
 ```
-C:\Users\Max\AppData\Local\Temp\ipykernel_20596\1784461025.py:5: DeprecationWarning: The class ``qiskit.circuit.library.data_preparation._zz_feature_map.ZZFeatureMap`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. Use the zz_feature_map function as a replacement. Note that this will no longer return a BlueprintCircuit, but just a plain QuantumCircuit.
-  feature_map = ZZFeatureMap(feature_dimension=num_qubits, reps=1)
-
 ```
 
 #### Visualizando o Feature Map
@@ -570,7 +552,7 @@ Estado final preparado para medição:
 
 **Objetivo:** Encontrar θ* que minimiza a função de perda
 
-```python
+```text
 1. Inicializar θ aleatoriamente
 2. Para cada iteração:
    a. Executar circuito: Feature Map → Ansatz(θ) → Medição
@@ -676,8 +658,8 @@ Dados → Feature Map → Ansatz → Medição → Predição
 
 Se quiser criar seu próprio ansatz:
 
-```python
-from qiskit.circuit import QuantumCircuit, Parameter
+```{python} {pyodide-python}
+from cirq.circuit import QuantumCircuit, Parameter
 
 # Criar ansatz customizado
 num_qubits = 2
@@ -726,65 +708,90 @@ Isso dá controle total sobre a arquitetura!
 
 **Resumo em uma frase:** O Ansatz é o circuito parametrizado que "aprende" a classificar dados ajustando ângulos de rotação θ, exatamente como uma rede neural clássica ajusta pesos W!
 
-```python
-# --- 3. O ANSATZ (O Modelo Treinável) ---
-# RealAmplitudes é um circuito simples com rotações RY e emaranhamento.
-# É a nossa "Rede Neural".
-ansatz = RealAmplitudes(num_qubits=num_qubits, reps=1)
+```{python} {pyodide-python}
+# ======================================================================
+# IMPLEMENTAÇÃO DO CLASSIFICADOR VARIACIONAL QUÂNTICO (VQC) EM CIRQ
+# ======================================================================
+class CirqVQC:
+    """
+    Classificador Variacional Quântico completo com interface estilo scikit-learn (.fit, .predict, .score).
+    Utiliza codificação de dados com ZZFeatureMap e ansatz variacional RealAmplitudes.
+    """
+    def __init__(self, num_qubits=2, maxiter=60):
+        self.num_qubits = num_qubits
+        self.maxiter = maxiter
+        self.qubits = cirq.LineQubit.range(num_qubits)
+        self.sim = cirq.Simulator()
+        self.thetas = None
+        
+    def feature_map(self, x):
+        """Codifica o vetor clássico x de 2 features no estado quântico."""
+        c = cirq.Circuit()
+        c.append(cirq.H.on_each(*self.qubits))
+        for i in range(self.num_qubits):
+            c.append(cirq.rz(2 * x[i])(self.qubits[i]))
+        # Interação ZZ (emaranhamento dependente do produto das features)
+        c.append(cirq.CNOT(self.qubits[0], self.qubits[1]))
+        c.append(cirq.rz(2 * (np.pi - x[0]) * (np.pi - x[1]))(self.qubits[1]))
+        c.append(cirq.CNOT(self.qubits[0], self.qubits[1]))
+        return c
+        
+    def ansatz(self, thetas):
+        """Circuito variacional parametrizado (Rede Neural Quântica)."""
+        c = cirq.Circuit()
+        # Camada 1: Rotações RY
+        c.append(cirq.ry(thetas[0])(self.qubits[0]))
+        c.append(cirq.ry(thetas[1])(self.qubits[1]))
+        # Camada de Emaranhamento
+        c.append(cirq.CNOT(self.qubits[0], self.qubits[1]))
+        # Camada 2: Rotações RY
+        c.append(cirq.ry(thetas[2])(self.qubits[0]))
+        c.append(cirq.ry(thetas[3])(self.qubits[1]))
+        return c
+        
+    def predict_prob(self, thetas, x):
+        """Calcula a probabilidade da classe 1 dada a entrada x."""
+        circuito = self.feature_map(x) + self.ansatz(thetas)
+        estado = self.sim.simulate(circuito).final_state_vector
+        # Probabilidade do qubit 0 estar em |1⟩ (soma sobre |10⟩ e |11⟩)
+        p1 = np.abs(estado[2])**2 + np.abs(estado[3])**2
+        return np.clip(p1, 1e-6, 1.0 - 1e-6)
+        
+    def fit(self, X, y):
+        """Treina os parâmetros thetas minimizando a entropia cruzada binária."""
+        def funcao_custo(thetas):
+            probs = np.array([self.predict_prob(thetas, xi) for xi in X])
+            return -np.mean(y * np.log(probs) + (1 - y) * np.log(1 - probs))
+            
+        np.random.seed(42)
+        thetas_iniciais = np.random.uniform(0, 2 * np.pi, 4)
+        print(f"Treinando VQC com otimizador COBYLA (maxiter={self.maxiter})...")
+        res = minimize(funcao_custo, thetas_iniciais, method='COBYLA', options={'maxiter': self.maxiter, 'rhobeg': 0.5})
+        self.thetas = res.x
+        print("✅ Treinamento concluído com sucesso!")
+        return self
+        
+    def predict(self, X):
+        """Prevê a classe binária (0 ou 1) para cada amostra de X."""
+        probs = np.array([self.predict_prob(self.thetas, xi) for xi in X])
+        return (probs >= 0.5).astype(int)
+        
+    def score(self, X, y):
+        """Calcula a acurácia de classificação."""
+        return np.mean(self.predict(X) == y)
 ```
-
-```
-C:\Users\Max\AppData\Local\Temp\ipykernel_20596\2137702756.py:4: DeprecationWarning: The class ``qiskit.circuit.library.n_local.real_amplitudes.RealAmplitudes`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. Use the function qiskit.circuit.library.real_amplitudes instead.
-  ansatz = RealAmplitudes(num_qubits=num_qubits, reps=1)
-
-```
-
-#### Visualizando o Ansatz
-
-O **Ansatz** é o "modelo treinável" - equivalente aos pesos de uma rede neural clássica:
 
 ```{python} {pyodide-python}
+# --- TREINANDO O CLASSIFICADOR VARIACIONAL QUÂNTICO (VQC) ---
+vqc = CirqVQC(num_qubits=2, maxiter=50)
 
-# Visualizar o Ansatz
-print("Ansatz - Modelo Treinável (Rede Neural Quântica)")
-print("=" * 60)
-print(f"Número de qubits: {ansatz.num_qubits}")
-print(f"Número de repetições: {ansatz.reps}")
-print(f"Número de parâmetros treináveis: {ansatz.num_parameters}")
-print()
-print("Estes parâmetros θ são ajustados durante o treinamento,")
-print("assim como os pesos W em uma rede neural clássica.")
-print()
+# Exibir a estrutura do circuito quântico para a primeira amostra
+exemplo_x = X_train[0]
+circuito_exemplo = vqc.feature_map(exemplo_x) + vqc.ansatz(np.zeros(4))
+print("--- Circuito Completo do VQC (Feature Map + Ansatz) ---")
+print(circuito_exemplo)
 
-display(ansatz.decompose().draw(output='mpl', idle_wires=False, scale=0.8))
-```
-
-```
-Ansatz - Modelo Treinável (Rede Neural Quântica)
-============================================================
-Número de qubits: 2
-Número de repetições: 1
-Número de parâmetros treináveis: 4
-
-Estes parâmetros θ são ajustados durante o treinamento,
-assim como os pesos W em uma rede neural clássica.
-
-```
-
-```python
-# --- 4. O MODELO VQC (Variational Quantum Classifier) ---
-# Aqui juntamos tudo.
-# Otimizador COBYLA é bom para simulações (não usa gradiente, apenas tenta melhorar).
-vqc = VQC(
-    feature_map=feature_map,
-    ansatz=ansatz,
-    optimizer=COBYLA(maxiter=100),
-    loss="cross_entropy",
-)
-
-print("--- Iniciando Treinamento do Modelo Quântico ---")
-# O momento mágico: O otimizador clássico vai ajustar os parâmetros do Ansatz
-# baseando-se nas medições quânticas.
+# Treinamento
 vqc.fit(X_train, y_train)
 ```
 
@@ -799,14 +806,12 @@ No gradient function provided, creating a gradient function. If your Sampler req
 ```
 
 ```{python} {pyodide-python}
-
-# --- 5. AVALIAÇÃO ---
+# --- 5. AVALIAÇÃO DA ACURÁCIA ---
 score_train = vqc.score(X_train, y_train)
 score_test = vqc.score(X_test, y_test)
 
-print(f"\nAcurácia no Treino: {score_train:.2f}")
-print(f"Acurácia no Teste:  {score_test:.2f}")
-
+print(f"Acurácia no Conjunto de Treino: {score_train * 100:.1f}%")
+print(f"Acurácia no Conjunto de Teste:  {score_test * 100:.1f}%")
 ```
 
 ```
@@ -832,7 +837,7 @@ Acurácia no Teste:  0.47
 - Aumentar `reps` no Feature Map e Ansatz
 - Rodar múltiplas vezes com diferentes inicializações
 
-```python
+```{python} {pyodide-python}
 # 🔧 MELHORANDO O VQC - Vamos tentar otimizar melhor
 print("="*60)
 print("TENTATIVA DE OTIMIZAÇÃO MELHORADA")
@@ -880,12 +885,6 @@ else:
 ```
 
 ```
-C:\Users\Max\AppData\Local\Temp\ipykernel_20596\2842022012.py:8: DeprecationWarning: The class ``qiskit.circuit.library.data_preparation._zz_feature_map.ZZFeatureMap`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. Use the zz_feature_map function as a replacement. Note that this will no longer return a BlueprintCircuit, but just a plain QuantumCircuit.
-  feature_map=ZZFeatureMap(feature_dimension=num_qubits, reps=2),  # Mais repetições
-C:\Users\Max\AppData\Local\Temp\ipykernel_20596\2842022012.py:9: DeprecationWarning: The class ``qiskit.circuit.library.n_local.real_amplitudes.RealAmplitudes`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. Use the function qiskit.circuit.library.real_amplitudes instead.
-  ansatz=RealAmplitudes(num_qubits=num_qubits, reps=3),  # Ansatz mais profundo
-No gradient function provided, creating a gradient function. If your Sampler requires transpilation, please provide a pass manager.
-
 ```
 
 ```
@@ -918,7 +917,7 @@ Ansatz reps                    1               3
 
 Agora vamos visualizar graficamente a diferença entre o modelo original (que não convergiu bem) e o modelo otimizado:
 
-```python
+```{python} {pyodide-python}
 # --- VISUALIZAÇÃO COMPARATIVA: VQC Original vs Otimizado ---
 # Vamos ver visualmente a diferença entre os dois modelos
 
@@ -1051,7 +1050,7 @@ O `ZZFeatureMap` projeta seus dados 2D em um espaço de dimensão **2^n = 4** (p
 
 Agora vamos comparar o **VQC otimizado** (que alcançou 80% de acurácia) com um classificador clássico SVM. Esta é uma comparação justa para entender quando cada abordagem é vantajosa:
 
-```python
+```{python} {pyodide-python}
 # Importar classificador clássico para comparação
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score, classification_report
@@ -1121,7 +1120,7 @@ Calculando fronteira de decisão do SVM...
 
 Uma das grandes vantagens do QML é a projeção dos dados em um espaço de alta dimensão (espaço de Hilbert). Vamos tentar visualizar isso de forma simplificada:
 
-```python
+```{python} {pyodide-python}
 # Visualização conceitual do mapeamento para espaço de Hilbert
 from mpl_toolkits.mplot3d import Axes3D
 
@@ -1190,7 +1189,7 @@ print("   • É como 'desenrolar' um problema complexo em um espaço maior!")
 
 Vamos analisar mais a fundo o desempenho do classificador quântico:
 
-```python
+```{python} {pyodide-python}
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 # Fazer predições
@@ -1337,7 +1336,7 @@ Para começar: use o mesmo número de qubits que features (como fizemos: 2 featu
 
 **Recursos Recomendados:**
 
-1. **Qiskit Textbook:** [learn.qiskit.org](https://learn.qiskit.org)
+1. **Cirq Textbook:** [learn.cirq.org](https://learn.cirq.org)
 2. **PennyLane:** Outra biblioteca de QML muito boa
 3. **Papers:** "Quantum Machine Learning" (Schuld & Petruccione)
 4. **Prática:** Experimente mudar os parâmetros deste notebook!
@@ -1346,7 +1345,7 @@ Para começar: use o mesmo número de qubits que features (como fizemos: 2 featu
 
 Agora vamos ver o verdadeiro poder do QML! Vamos criar um dataset onde dados estão organizados em círculos concêntricos - um problema que é difícil para classificadores lineares:
 
-```python
+```{python} {pyodide-python}
 from sklearn.datasets import make_circles
 from sklearn.linear_model import LogisticRegression
 
@@ -1421,12 +1420,6 @@ print(f"{'='*60}")
 ```
 
 ```
-C:\Users\Max\AppData\Local\Temp\ipykernel_20596\3627597481.py:46: DeprecationWarning: The class ``qiskit.circuit.library.data_preparation._zz_feature_map.ZZFeatureMap`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. Use the zz_feature_map function as a replacement. Note that this will no longer return a BlueprintCircuit, but just a plain QuantumCircuit.
-  feature_map=ZZFeatureMap(feature_dimension=2, reps=2),  # Aumentar reps para mais expressividade
-C:\Users\Max\AppData\Local\Temp\ipykernel_20596\3627597481.py:47: DeprecationWarning: The class ``qiskit.circuit.library.n_local.real_amplitudes.RealAmplitudes`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. Use the function qiskit.circuit.library.real_amplitudes instead.
-  ansatz=RealAmplitudes(num_qubits=2, reps=2),
-No gradient function provided, creating a gradient function. If your Sampler requires transpilation, please provide a pass manager.
-
 ```
 
 ```
@@ -1435,15 +1428,6 @@ Treinando VQC em dados circulares...
 ```
 
 ```
-C:\Users\Max\AppData\Local\Temp\ipykernel_20596\3627597481.py:63: UserWarning: Glyph 10060 (\N{CROSS MARK}) missing from font(s) DejaVu Sans.
-  plt.subplots_adjust(wspace=0.4)
-C:\Users\Max\AppData\Local\Temp\ipykernel_20596\3627597481.py:63: UserWarning: Glyph 9989 (\N{WHITE HEAVY CHECK MARK}) missing from font(s) DejaVu Sans.
-  plt.subplots_adjust(wspace=0.4)
-e:\temp\quantum\.venv\Lib\site-packages\IPython\core\pylabtools.py:170: UserWarning: Glyph 10060 (\N{CROSS MARK}) missing from font(s) DejaVu Sans.
-  fig.canvas.print_figure(bytes_io, **kw)
-e:\temp\quantum\.venv\Lib\site-packages\IPython\core\pylabtools.py:170: UserWarning: Glyph 9989 (\N{WHITE HEAVY CHECK MARK}) missing from font(s) DejaVu Sans.
-  fig.canvas.print_figure(bytes_io, **kw)
-
 ```
 
 ```
@@ -1457,7 +1441,7 @@ VQC Quântico (Não-Linear):    0.8500
 
 ```
 
-```python
+```{python} {pyodide-python}
 # Visualizar as fronteiras de decisão
 fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
@@ -1578,11 +1562,11 @@ Quer se aprofundar? Aqui estão sugestões de experimentos:
 
 #### 📖 Código para Copiar e Experimentar
 
-```python
+```{python} {pyodide-python}
 # Template para seus próprios experimentos
-from qiskit.circuit.library import ZZFeatureMap, RealAmplitudes
-from qiskit_algorithms.optimizers import COBYLA
-from qiskit_machine_learning.algorithms import VQC
+from cirq.circuit.library import ZZFeatureMap, RealAmplitudes
+from cirq_algorithms.optimizers import COBYLA
+from cirq_machine_learning.algorithms import VQC
 
 # Configure seu modelo aqui
 my_vqc = VQC(
@@ -1611,14 +1595,13 @@ Quantum Machine Learning está na fronteira entre **computação quântica** e *
 
 #### 🔗 Recursos Adicionais
 
-1. Qiskit Documentation
-   - https://qiskit.org/documentation
-2. Qiskit Machine Learning
-   - https://qiskit.org/ecosystem/machine-learning
-3. Qiskit Textbook ⭐ (RECOMENDADO)
-   - https://learn.qiskit.org
+1. Cirq Documentation
+   - https://cirq.org/documentation
+2. Cirq para Machine Learning
+   - https://cirq.org/ecosystem/machine-learning
+3. Cirq Textbook ⭐ (RECOMENDADO)
+   - https://learn.cirq.org
 4. PennyLane (Alternativa)
    - https://pennylane.ai
 5. Schuld & Petruccione - "Quantum Machine Learning" 
    - [Amazon.com](https://www.amazon.com/Machine-Learning-with-Quantum-Computers-_Quantum-Science-and-Technology_/dp/3030830977)
-

@@ -29,15 +29,15 @@ Imagine que Alice quer enviar uma informação quântica para Bob que está muit
 ## Passo 0: Importar bibliotecas
 
 ```{python} {pyodide-python}
-from numpy import pi
+# Instalação do motor quântico Cirq e bibliotecas necessárias
+import micropip
+await micropip.install("cirq-core==1.6.1")
 
-# Imports do Qiskit (execução no Google Colab / ambiente local)
-try:
-    from qiskit import QuantumRegister, ClassicalRegister, QuantumCircuit
-    from qiskit.quantum_info import Statevector
-    from qiskit.visualization import plot_bloch_multivector, plot_state_qsphere, plot_state_city
-except ImportError:
-    pass
+import cirq
+import numpy as np
+import matplotlib.pyplot as plt
+
+print(f"✅ Cirq v{cirq.__version__} pronto para execução interativa!")
 ```
 
 ## 1️⃣ Passo 1: Montar o "Palco" do Teletransporte
@@ -62,15 +62,20 @@ No início, todos os qubits estão em $|0\rangle$:
 
 $$|\psi_{\text{inicial}}\rangle = |q_0\rangle \otimes |q_1\rangle \otimes |q_2\rangle = |0\rangle \otimes |0\rangle \otimes |0\rangle = |000\rangle$$
 
-```python
-qreg_q = QuantumRegister(3, 'q')
-creg_c = ClassicalRegister(3, 'c')
-circuit = QuantumCircuit(qreg_q, creg_c)
-circuit.draw('mpl')
+```{python} {pyodide-python}
+# Definimos os 3 qubits do protocolo
+q_msg = cirq.LineQubit(0)    # Qubit de Alice (informação a teletransportar)
+q_alice = cirq.LineQubit(1)  # Metade do par de Bell com Alice
+q_bob = cirq.LineQubit(2)    # Metade do par de Bell com Bob
 
-state1 = Statevector.from_instruction(circuit)
+circuit = cirq.Circuit()
+sim = cirq.Simulator()
+
+state1 = sim.simulate(circuit, qubit_order=[q_msg, q_alice, q_bob]).final_state_vector
+print("Estado inicial |000⟩:")
 print(state1)
-plot_bloch_multivector(state1)
+print("\nCircuito inicial:")
+print(circuit if len(circuit) > 0 else "(circuito vazio - 3 qubits em |0⟩)")
 ```
 
 ```
@@ -106,7 +111,7 @@ Aplicando no qubit 0:
 
 $$|\psi_1\rangle = (X \otimes I \otimes I)|000\rangle = |100\rangle = |1\rangle \otimes |0\rangle \otimes |0\rangle$$
 
-```python
+```{python} {pyodide-python}
 circuit.x(qreg_q[0])
 circuit.barrier(qreg_q[0], qreg_q[1], qreg_q[2])
 
@@ -160,7 +165,7 @@ $$H|0\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle)$$
 Estado após H:
 $$|\psi_2\rangle = |1\rangle \otimes \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle) \otimes |0\rangle = \frac{1}{\sqrt{2}}(|100\rangle + |110\rangle) = 0.7071 (|100\rangle + |110\rangle)$$
 
-```python
+```{python} {pyodide-python}
 circuit.h(qreg_q[1])
 
 state3 = Statevector.from_instruction(circuit)
@@ -203,11 +208,15 @@ $$|\psi_3\rangle = \frac{1}{\sqrt{2}}(|100\rangle + |111\rangle)$$
 
 **🔗 Estado de Bell criado!** Os qubits 1 e 2 agora estão **emaranhados** - medindo um, sabemos instantaneamente o outro!
 
-```python
-circuit.cx(qreg_q[1], qreg_q[2])
+```{python} {pyodide-python}
+# 2. CRIAÇÃO DO PAR EMARANHADO (Parte 2: CNOT)
+circuit.append(cirq.CNOT(q_alice, q_bob))
 
-state4 = Statevector.from_instruction(circuit)
-print(state4)
+state4 = sim.simulate(circuit, qubit_order=[q_msg, q_alice, q_bob]).final_state_vector
+print("Estado de Bell criado entre q[1] e q[2]:")
+print(np.round(state4, 4))
+print("\nCircuito:")
+print(circuit)
 ```
 
 ```
@@ -218,7 +227,7 @@ Statevector([0.        +0.j, 0.70710678+0.j, 0.        +0.j,
 
 ```
 
-```python
+```{python} {pyodide-python}
 # Visualização na Q-Sphere - melhor para ver emaranhamento!
 print("\n🌐 Q-Sphere (mostra amplitudes e fases do estado completo):")
 plot_state_qsphere(state4)
@@ -326,7 +335,7 @@ $$|\psi_4\rangle = \frac{1}{\sqrt{2}}(|110\rangle + |101\rangle)$$
 
 **✨ Emaranhamento triplo!** Agora os 3 qubits estão interconectados quanticamente.
 
-```python
+```{python} {pyodide-python}
 circuit.cx(qreg_q[0], qreg_q[1])
 
 state5 = Statevector.from_instruction(circuit)
@@ -428,7 +437,7 @@ $$|\psi_5\rangle = \frac{1}{2}(|010\rangle - |110\rangle + |001\rangle - |101\ra
 Podemos reescrever agrupando os estados de Alice (q[0]q[1]) e Bob (q[2]):
 $$|\psi_5\rangle = \frac{1}{2}[|00\rangle(|0\rangle - |1\rangle) + |01\rangle(|1\rangle - |0\rangle) + |10\rangle(|0\rangle + |1\rangle) + |11\rangle(|1\rangle + |0\rangle)]$$
 
-```python
+```{python} {pyodide-python}
 circuit.h(qreg_q[0])
 circuit.barrier(qreg_q[0], qreg_q[1], qreg_q[2])
 circuit.draw('mpl')
@@ -615,11 +624,6 @@ print("\n" + "="*70)
 print("✨ Conclusão: Em TODOS os 4 cenários, Bob recupera |1⟩!")
 print("   O teletransporte quântico funcionou perfeitamente! 🚀")
 
-# Imports do Qiskit (execução no Google Colab / ambiente local)
-try:
-    from qiskit.quantum_info import Statevector, Operator
-except ImportError:
-    pass
 ```
 
 ```
@@ -688,11 +692,11 @@ O circuito `circuit` que construímos contém **operações de medição** (`mea
 ### 💻 Limitação do Simulador
 
 Se tentarmos fazer:
-```python
+```{python} {pyodide-python}
 state = Statevector.from_instruction(circuit)  # ❌ ERRO!
 ```
 
-O Qiskit retorna um **erro** porque `circuit` contém medições, e após medir não existe mais um "estado quântico" para visualizar.
+O Cirq retorna um **erro** porque `circuit` contém medições, e após medir não existe mais um "estado quântico" para visualizar.
 
 ### ✅ A Solução: Circuitos Sem Medições
 
@@ -722,18 +726,11 @@ Vamos construir o circuito do teletransporte passo a passo, visualizando o estad
 # Criar circuito (começando vazio)
 final_circuit = QuantumCircuit(3)
 
-# Imports do Qiskit (execução no Google Colab / ambiente local)
-try:
-    from qiskit_aer import Aer
-    from qiskit.quantum_info import Statevector
-    from qiskit.visualization import plot_bloch_multivector
-except ImportError:
-    pass
 ```
 
 #### 🔹 Etapa 0: Estado Inicial (todos qubits em |0⟩)
 
-```python
+```{python} {pyodide-python}
 # Visualizar estado inicial (circuito vazio)
 state_0 = Statevector.from_instruction(final_circuit)
 print("Estado: |000⟩ (todos qubits em |0⟩)")
@@ -749,13 +746,13 @@ Statevector([1.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j,
 
 ```
 
-```python
+```{python} {pyodide-python}
 plot_bloch_multivector(state_0)
 ```
 
 #### 🔹 Etapa 1: Preparar o estado a teletransportar (X no qubit 0)
 
-```python
+```{python} {pyodide-python}
 # Aplicar X no qubit 0 (preparar |1⟩)
 final_circuit.x(0)
 final_circuit.barrier()
@@ -775,13 +772,13 @@ Statevector([0.+0.j, 1.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j,
 
 ```
 
-```python
+```{python} {pyodide-python}
 plot_bloch_multivector(state_1)
 ```
 
 #### 🔹 Etapa 2: Criar par de Bell (H + CNOT nos qubits 1 e 2)
 
-```python
+```{python} {pyodide-python}
 # Criar par de Bell entre qubits 1 e 2
 final_circuit.h(1)
 final_circuit.cx(1, 2)
@@ -802,7 +799,7 @@ Statevector([0.        +0.j, 0.70710678+0.j, 0.        +0.j,
 
 ```
 
-```python
+```{python} {pyodide-python}
 print("\n🌐 Q-Sphere - Visualizando o emaranhamento:")
 plot_state_qsphere(state_2)
 ```
@@ -813,13 +810,13 @@ plot_state_qsphere(state_2)
 
 ```
 
-```python
+```{python} {pyodide-python}
 plot_bloch_multivector(state_2)
 ```
 
 #### 🔹 Etapa 3: Medição de Bell (CNOT + H nos qubits de Alice)
 
-```python
+```{python} {pyodide-python}
 # Aplicar medição de Bell (sem as medições clássicas)
 final_circuit.cx(0, 1)
 final_circuit.h(0)
@@ -840,7 +837,7 @@ Statevector([ 0. +0.j,  0. +0.j,  0.5+0.j, -0.5+0.j,  0.5+0.j, -0.5+0.j,
 
 ```
 
-```python
+```{python} {pyodide-python}
 print("\n🌐 Q-Sphere - Superposição dos 4 cenários possíveis:")
 plot_state_qsphere(state_3)
 ```
@@ -851,13 +848,13 @@ plot_state_qsphere(state_3)
 
 ```
 
-```python
+```{python} {pyodide-python}
 plot_bloch_multivector(state_3)
 ```
 
 #### 📊 Resumo do Estado Final (antes das correções de Bob)
 
-```python
+```{python} {pyodide-python}
 # Estado completo antes das correções de Bob
 state_final = Statevector.from_instruction(final_circuit)
 print("Estado completo antes das correções:")
@@ -890,7 +887,7 @@ plot_state_city(state_final)
 
 ```
 
-```python
+```{python} {pyodide-python}
 print("\n🌐 Q-Sphere - Todas as amplitudes:")
 plot_state_qsphere(state_final)
 ```
@@ -918,7 +915,7 @@ Vamos executar o circuito completo 1000 vezes e ver os resultados!
 
 **Como ler os resultados:**
 
-- Formato da Qiskit: `c[2]c[1]c[0]` (ordem reversa - confuso, eu sei!)
+- Formato da Cirq: `c[2]c[1]c[0]` (ordem reversa - confuso, eu sei!)
 - O que queremos ver: **`100`**
   - c[2] = **1** → Bob recebeu |1⟩ ✅
   - c[1] = **0** → Uma das medições de Alice
@@ -941,11 +938,6 @@ print("Resultados das medições (1000 execuções):")
 print(counts)
 print("\nO resultado esperado é '100' (qubit 2 = |1⟩, demonstrando o teletransporte)")
 
-# Imports do Qiskit (execução no Google Colab / ambiente local)
-try:
-    from qiskit_aer import AerSimulator
-except ImportError:
-    pass
 ```
 
 ```
@@ -1019,4 +1011,3 @@ A: Comunicação quântica segura, computação quântica distribuída, internet
 - Tente mudar o estado inicial (use H, Ry, etc. em vez de X)
 - Experimente teletransportar estados em superposição
 - Estude outros protocolos: superdense coding, criptografia quântica BB84
-

@@ -1,237 +1,176 @@
 # Aula 04 — Primeiros Circuitos, Estados de Bell e Emaranhamento
 
-# 🚀 Introdução ao Qiskit
+# 🚀 Primeiros Circuitos com Cirq
 
-Este notebook demonstra os conceitos fundamentais de programação quântica usando o Qiskit.
+Esta aula demonstra os conceitos fundamentais de programação quântica usando o motor **Cirq (v1.6.1)** executado diretamente no seu navegador em tempo real via Pyodide.
 
 ## 📚 O que vamos aprender
 
-1. Criar circuitos quânticos
-2. Aplicar portas quânticas (H, CNOT, medições)
-3. Executar simulações
-4. Visualizar resultados
-5. Entender a Esfera de Bloch
+1. Criar circuitos quânticos com `cirq.Circuit` e qubits com `cirq.LineQubit`
+2. Aplicar portas quânticas fundamentais (Hadamard, CNOT, medições)
+3. Executar simulações quânticas determinísticas e estatísticas com `cirq.Simulator`
+4. Criar e entender o estado de Bell e o fenômeno do emaranhamento quântico
+5. Interpretar estados na Esfera de Bloch
 
-## 🔧 Bibliotecas Necessárias
+## 🔧 Inicialização do Cirq no Navegador
 
-Primeiro, vamos importar as bibliotecas que usaremos:
+Primeiro, instalamos e importamos o Cirq via `micropip`:
 
-```python
-from qiskit import QuantumCircuit, transpile
-from qiskit_aer import AerSimulator
-from qiskit.visualization import plot_histogram, plot_bloch_multivector, plot_state_qsphere
-from qiskit.quantum_info import Statevector
+```{python} {pyodide-python}
+# Instalação do motor quântico Cirq e bibliotecas necessárias
+import micropip
+await micropip.install("cirq-core==1.6.1")
+
+import cirq
+import numpy as np
+import matplotlib.pyplot as plt
+
+print(f"✅ Cirq v{cirq.__version__} pronto para execução interativa!")
 ```
 
 <hr/>
 
 ## 1️⃣ Construindo um Circuito Quântico Simples
 
-Vamos criar nosso primeiro circuito quântico com **2 qubits** e **2 bits clássicos** para armazenar os resultados das medições.
+Vamos criar nosso primeiro circuito quântico com **2 qubits** (`q0` e `q1`).
 
 ### O que faremos:
 - Criar um estado de **superposição** usando a porta Hadamard (H)
 - Criar **emaranhamento** usando a porta CNOT
-- Medir os qubits para obter resultados
+- Medir os qubits para obter resultados estatísticos
 
-### Passo 1: Criar o circuito base
+### Passo 1: Criar o circuito base e estado inicial |00⟩
 
-```python
+```{python} {pyodide-python}
 # 1. CONSTRUÇÃO DO CIRCUITO
-# Criamos um circuito com 2 Qubits e 2 Bits Clássicos (para guardar o resultado)
-qc = QuantumCircuit(2, 2)
+# Definimos 2 qubits indexados
+q0, q1 = cirq.LineQubit.range(2)
 
-# Visualizar estado inicial
-estado_inicial = Statevector.from_instruction(qc)
-print("Estado inicial: |00⟩")
-print(estado_inicial)
+# Criamos um circuito vazio
+circuito = cirq.Circuit()
 
-# Desenha o circuito
-print("\nCircuito inicial:")
-qc.draw('mpl')
+# Simulador quântico do Cirq
+sim = cirq.Simulator()
 
-# É uma boa prática para quem está aprendendo sempre desenhar o circuito após cada modificação.
-```
-
-```
-Estado inicial: |00⟩
-Statevector([1.+0.j, 0.+0.j, 0.+0.j, 0.+0.j],
-            dims=(2, 2))
-
-```
-
-```python
-# Esfera de Bloch - Estado inicial
-plot_bloch_multivector(estado_inicial)
+# Visualizar o estado inicial (começa sempre em |00⟩)
+estado_inicial = sim.simulate(circuito, qubit_order=[q0, q1]).final_state_vector
+print("Estado inicial |00⟩:")
+print("Vetor de amplitudes:", estado_inicial)
+print("\nCircuito inicial (vazio):")
+print(circuito if len(circuito) > 0 else "(circuito vazio - qubits em |00⟩)")
 ```
 
 ### Passo 2: Aplicar a Porta Hadamard (H)
 
-A porta Hadamard cria uma **superposição**: transforma |0⟩ em um estado que é simultaneamente 0 e 1.
+A porta Hadamard cria uma **superposição**: transforma $|0
+angle$ em um estado que é simultaneamente 0 e 1.
 
 Matematicamente: 
-$$H|0\rangle = \frac{|0\rangle + |1\rangle}{\sqrt{2}} = |+\rangle$$
+$$H|0
+angle = \frac{|0
+angle + |1
+angle}{\sqrt{2}} = |+
+angle$$
 
 Isso significa 50% de probabilidade de medir 0 e 50% de medir 1.
 
-```python
+```{python} {pyodide-python}
 # Aplicamos a porta Hadamard (H) no qubit 0
-# Matematicamente: Leva |0> para uma superposição (50% 0, 50% 1)
-qc.h(0)
+circuito.append(cirq.H(q0))
 
-# Visualizar estado após Hadamard
-estado_apos_h = Statevector.from_instruction(qc)
-print("Estado após H: 1/√2(|00⟩ + |10⟩)")
-print(estado_apos_h)
-qc.draw('mpl')
-```
+print("Circuito após aplicar Hadamard no q0:")
+print(circuito)
 
-```
-Estado após H: 1/√2(|00⟩ + |10⟩)
-Statevector([0.70710678+0.j, 0.70710678+0.j, 0.        +0.j,
-             0.        +0.j],
-            dims=(2, 2))
-
-```
-
-```python
-# Esfera de Bloch - Após Hadamard
-plot_bloch_multivector(estado_apos_h)
-
-# Veja que somente aplicamos a porta H no qubit 0, o qubit 1 permanece em |0⟩.
+estado_apos_h = sim.simulate(circuito, qubit_order=[q0, q1]).final_state_vector
+print("\nEstado após H: 1/√2(|00⟩ + |10⟩)")
+print("Vetor de amplitudes:", np.round(estado_apos_h, 4))
 ```
 
 ### Passo 3: Criar Emaranhamento com CNOT
 
 A porta CNOT (Controlled-NOT) é uma porta de **dois qubits**:
 
-- **Qubit 0** (controle): Se estiver em |1⟩, inverte o qubit alvo
-- **Qubit 1** (alvo): É invertido se o controle for |1⟩
+- **Qubit 0** (controle): Se estiver em $|1
+angle$, inverte o qubit alvo
+- **Qubit 1** (alvo): É invertido se o controle for $|1
+angle$
 
-Como o qubit 0 está em superposição, isso cria **emaranhamento** entre os dois qubits!
+Como o qubit 0 está em superposição, a porta CNOT cria **emaranhamento** genuíno entre os dois qubits!
 
 Matematicamente, criamos o estado de Bell:
-$$|\Phi^+\rangle = \frac{|00\rangle + |11\rangle}{\sqrt{2}}$$
+$$|\Phi^+
+angle = \frac{|00
+angle + |11
+angle}{\sqrt{2}}$$
 
-Isso significa: ou **ambos são 0**, ou **ambos são 1** - nunca 01 ou 10!
+Isso significa: ou **ambos colapsam em 0**, ou **ambos colapsam em 1** — as combinações $01$ e $10$ possuem probabilidade exatamente zero!
 
-```python
-# Aplicamos a porta CNOT (Control-NOT)
-# O Qubit 0 é o controle, o Qubit 1 é o alvo.
-# Se o Qubit 0 for 1, ele inverte o Qubit 1.
-# Como o Qubit 0 está em superposição, eles ficam EMARANHADOS.
-qc.cx(0, 1)
+```{python} {pyodide-python}
+# Aplicamos a porta CNOT: q0 é o controle, q1 é o alvo
+circuito.append(cirq.CNOT(q0, q1))
 
-# Visualizar estado após CNOT (Estado de Bell)
-estado_apos_cnot = Statevector.from_instruction(qc)
-print("Estado após CNOT: 1/√2(|00⟩ + |11⟩) - Estado de Bell |Φ+⟩")
-print(estado_apos_cnot)
-qc.draw('mpl')
-```
+print("Circuito após CNOT (Gerador do Estado de Bell):")
+print(circuito)
 
-```
-Estado após CNOT: 1/√2(|00⟩ + |11⟩) - Estado de Bell |Φ+⟩
-Statevector([0.70710678+0.j, 0.        +0.j, 0.        +0.j,
-             0.70710678+0.j],
-            dims=(2, 2))
+estado_apos_cnot = sim.simulate(circuito, qubit_order=[q0, q1]).final_state_vector
+print("\nEstado após CNOT: 1/√2(|00⟩ + |11⟩) - Estado de Bell |Φ+⟩")
+print("Vetor de amplitudes:", np.round(estado_apos_cnot, 4))
 
-```
-
-```python
-# Q-Sphere - Melhor para visualizar o estado emaranhado completo
-print("\n🌐 Q-Sphere - Mostra todas as amplitudes do estado emaranhado:")
-plot_state_qsphere(estado_apos_cnot)
-```
-
-```
-
-🌐 Q-Sphere - Mostra todas as amplitudes do estado emaranhado:
-
+# Mostrando as probabilidades de cada estado da base computacional
+estados_base = ["|00⟩", "|01⟩", "|10⟩", "|11⟩"]
+print("\nDistribuição de Probabilidades Teóricas:")
+for base, amp in zip(estados_base, estado_apos_cnot):
+    prob = np.abs(amp) ** 2
+    print(f"  {base}: amplitude = {amp.real:+.4f}, probabilidade = {prob*100:.1f}%")
 ```
 
 ### Passo 4: Medir os Qubits
 
-A medição **colapsa** o estado quântico para um resultado clássico:
-
-- Qubit 0 → armazena no bit clássico 0
-- Qubit 1 → armazena no bit clássico 1
-
-Após a medição, teremos apenas 0s e 1s (não mais superposição).
+A medição **colapsa** a superposição quântica para um resultado clássico determinado pela Regra de Born.
 
 ```{python} {pyodide-python}
+# Criamos uma cópia do circuito para adicionar a medição
+circuito_medicao = circuito.copy()
+circuito_medicao.append(cirq.measure(q0, q1, key="resultado"))
 
-# Medimos os qubits
-# Qubit 0 -> guarda no Bit 0
-# Qubit 1 -> guarda no Bit 1
-qc.measure([0, 1], [0, 1])
-
-# Desenhar circuito completo
-qc.draw('mpl')
+print("Circuito Completo com Medição:")
+print(circuito_medicao)
 ```
-
-⚠️ **Nota:** Após adicionar as medições, não podemos mais extrair o Statevector (a medição colapsa o estado). As visualizações acima mostram o estado **antes** da medição.
 
 <hr/>
 
-## 2️⃣ Executando o Circuito (Simulação)
+## 2️⃣ Executando o Circuito (Simulação Estatística)
 
-Agora vamos **executar** o circuito usando um simulador quântico. Rodaremos 1000 vezes para ver a distribuição de probabilidades.
+Agora vamos **executar** o circuito simulando 1000 medições repetidas (*shots*) para conferir a distribuição estatística no laboratório:
 
-### Processo:
-1. **Transpilação**: Otimiza o circuito para o simulador
-2. **Execução**: Roda 1000 vezes (shots)
-3. **Análise**: Coleta os resultados estatísticos
+```{python} {pyodide-python}
+# Executamos a simulação estatística por 1000 repetições
+resultado_shots = sim.run(circuito_medicao, repetitions=1000)
 
-```python
-# 2. EXECUÇÃO (SIMULAÇÃO)
-simulador = AerSimulator()
+# Obter o histograma de contagens
+# Os valores medidos são inteiros binários: 0 para '00' e 3 para '11'
+contagens = resultado_shots.histogram(key="resultado")
 
-# Transpilação: otimiza o circuito para o backend específico (neste caso, o simulador)
-circuito_compilado = transpile(qc, simulador)
+contagem_00 = contagens.get(0, 0)
+contagem_11 = contagens.get(3, 0)
+contagem_outros = sum(v for k, v in contagens.items() if k not in (0, 3))
 
-# Rodamos a simulação 1000 vezes (shots)
-job = simulador.run(circuito_compilado, shots=1000)
-
-# 3. ANÁLISE DE RESULTADOS
-resultado = job.result()
-contagens = resultado.get_counts()
-
-print("\n--- Resultados da Medição (1000 execuções) ---")
-print(contagens)
-```
-
-```
-
---- Resultados da Medição (1000 execuções) ---
-{'00': 503, '11': 497}
-
+print("--- Resultados da Medição (1000 repetições) ---")
+print(f"Estado |00⟩: {contagem_00} vezes ({contagem_00/10:.1f}%)")
+print(f"Estado |11⟩: {contagem_11} vezes ({contagem_11/10:.1f}%)")
+print(f"Outros (|01⟩ ou |10⟩): {contagem_outros} vezes ({contagem_outros/10:.1f}%)")
 ```
 
 ### 📊 Interpretando os Resultados
 
-Observe os resultados acima - você verá apenas **00** e **11**, aproximadamente 50% cada.
+Observe os resultados acima: obtemos quase exatamente 50% de **00** e 50% de **11**.
 
 **Por quê?**
 
 - O qubit 0 estava em superposição (era 0 e 1 ao mesmo tempo)
 - O qubit 1 começou em 0
 - Quando aplicamos CNOT, criamos **emaranhamento**: ou ambos são 0, ou ambos são 1
-
-**Importante:** Não existe probabilidade de obter 01 ou 10! Isso é a "magia" do emaranhamento quântico.
-
-### 🎯 O Estado de Bell
-
-Matematicamente, criamos o famoso **estado de Bell**:
-
-$$|\Phi^+\rangle = \frac{|00\rangle + |11\rangle}{\sqrt{2}}$$
-
-Este é um dos estados mais importantes da computação quântica! 
-
-**Significado:**
-
-- É uma correlação que **não existe na física clássica**
-- Base para teletransporte quântico, criptografia quântica e outros protocolos
-- Demonstra o poder único dos computadores quânticos
+- **Não existe nenhuma chance de medir 01 ou 10!** Isso ilustra a correlação não-local do emaranhamento quântico.
 
 <hr/>
 
@@ -239,171 +178,81 @@ Este é um dos estados mais importantes da computação quântica!
 
 ### 🌍 O Conceito: Navegando na Esfera
 
-A **Esfera de Bloch** é uma representação geométrica 3D do estado de um qubit.
+A **Esfera de Bloch** é uma representação geométrica 3D do estado de um qubit:
 
-Imagine o planeta Terra:
-
-- **Pólo Norte ⬆️**: Estado |0⟩
-- **Pólo Sul ⬇️**: Estado |1⟩
+- **Pólo Norte ⬆️**: Estado $|0
+angle$ (eixo $+Z$)
+- **Pólo Sul ⬇️**: Estado $|1
+angle$ (eixo $-Z$)
 - **Equador 🌍**: Estados de **superposição** (50% de chance de 0 ou 1)
+  - $+X$: Estado $|+
+angle = \frac{|0
+angle + |1
+angle}{\sqrt{2}}$
+  - $-X$: Estado $|-
+angle = \frac{|0
+angle - |1
+angle}{\sqrt{2}}$
+  - $+Y$: Estado $|i+
+angle = \frac{|0
+angle + i|1
+angle}{\sqrt{2}}$
+  - $-Y$: Estado $|i-
+angle = \frac{|0
+angle - i|1
+angle}{\sqrt{2}}$
 
-O vetor de estado é uma **seta** do centro da esfera até a superfície:
+### 💡 Calculando Vetores de Bloch com Cirq
 
-- Apontando para cima → qubit é |0⟩
-- Apontando para baixo → qubit é |1⟩
-- Apontando para o equador → qubit em superposição
+Vamos calcular matematicamente as coordenadas $(x, y, z)$ dos estados fundamentais com a função nativa do Cirq `cirq.bloch_vector_from_state_vector_and_density_matrix`:
 
-### 📐 Matemática da Esfera
+```{python} {pyodide-python}
+q_unico = cirq.LineQubit(0)
 
-O estado geral de um qubit pode ser escrito como:
-$$|\psi\rangle = \cos\left(\frac{\theta}{2}\right)|0\rangle + e^{i\phi}\sin\left(\frac{\theta}{2}\right)|1\rangle$$
+# Estado 1: Inicial |0⟩
+s_zero = sim.simulate(cirq.Circuit()).final_state_vector
 
-Onde:
+# Estado 2: Após Hadamard |+⟩
+s_plus = sim.simulate(cirq.Circuit(cirq.H(q_unico))).final_state_vector
 
-- **θ (theta)**: Ângulo polar - controla probabilidade de 0 vs 1 (latitude)
-- **φ (phi)**: Ângulo azimutal - controla a fase quântica (longitude)
+# Estado 3: Após Porta X |1⟩
+s_one = sim.simulate(cirq.Circuit(cirq.X(q_unico))).final_state_vector
 
-**Importante:** A fase φ não afeta a probabilidade de medição, mas é crucial para **interferência quântica** em algoritmos!
+# Estado 4: Superposição com fase negativa |-⟩ (H seguido de Z)
+s_minus = sim.simulate(cirq.Circuit(cirq.H(q_unico), cirq.Z(q_unico))).final_state_vector
 
-### 💡 Exemplos Práticos
+estados_demo = [
+    ("Estado Inicial |0⟩ (Pólo Norte)", s_zero),
+    ("Superposição |+⟩ (Equador +X)", s_plus),
+    ("Estado Invertido |1⟩ (Pólo Sul)", s_one),
+    ("Superposição com Fase |-⟩ (Equador -X)", s_minus)
+]
 
-Vamos visualizar três estados fundamentais na Esfera de Bloch:
-
-```python
-%matplotlib inline
-
-# --- 1. Estado Inicial (|0>) ---
-# Um circuito vazio começa sempre em zero
-qc_zero = QuantumCircuit(1)
-
-# Extraímos o estado matemático (vetor)
-estado_zero = Statevector(qc_zero)
-
-print("Gerando imagem do Estado Zero (Pólo Norte)...")
-
-# Nota: plot_bloch_multivector retorna uma figura matplotlib
-fig1 = plot_bloch_multivector(estado_zero, title="Estado Inicial |0>")
+print("=" * 65)
+print("COORDENADAS NA ESFERA DE BLOCH (x, y, z) VIA CIRQ:")
+print("=" * 65)
+for descricao, vec in estados_demo:
+    x, y, z = cirq.bloch_vector_from_state_vector_and_density_matrix(vec, 0)
+    print(f"{descricao:<38}: x = {x:+.2f}, y = {y:+.2f}, z = {z:+.2f}")
+print("=" * 65)
 ```
-
-```
-Gerando imagem do Estado Zero (Pólo Norte)...
-
-```
-
-#### Exemplo 1: Estado Inicial |0⟩ (Pólo Norte)
-
-Um circuito vazio sempre começa com todos os qubits em |0⟩:
-
-```python
-# --- 2. Estado de Superposição (Apicando Hadamard) ---
-qc_super = QuantumCircuit(1)
-qc_super.h(0) # Aplica H
-# qc_super.z(0) # Aplica Z para mostrar diferença de fase
-estado_super = Statevector(qc_super)
-
-print("Gerando imagem da Superposição (Equador)...")
-fig2 = plot_bloch_multivector(estado_super, title="Após Hadamard |+>")
-```
-
-```
-Gerando imagem da Superposição (Equador)...
-
-```
-
-#### Exemplo 2: Superposição |+⟩ (Equador)
-
-Aplicando a porta Hadamard, movemos o estado do pólo norte para o equador:
-
-```python
-# --- 3. Estado Invertido (Aplicando X) ---
-qc_inv = QuantumCircuit(1)
-qc_inv.x(0) # Aplica X
-estado_inv = Statevector(qc_inv)
-
-print("Gerando imagem do Estado Invertido (Pólo Sul)...")
-fig3 = plot_bloch_multivector(estado_inv, title="Após Porta X |1>")
-```
-
-```
-Gerando imagem do Estado Invertido (Pólo Sul)...
-
-```
-
-#### Exemplo 3: Estado |1⟩ (Pólo Sul)
-
-Aplicando a porta X (NOT quântico), invertemos completamente o estado:
-
-### 📊 Interpretando as Visualizações
-
-O que você verá nas figuras acima:
-
-1. **Figura 1 (Estado Inicial):** 
-   - A seta vermelha aponta para o **Pólo Norte (Eixo Z+)**
-   - Isso é o estado |0⟩
-   - 100% de probabilidade de medir 0
-   
-2. **Figura 2 (Após Hadamard):** 
-   - A seta desce para o **Equador (Eixo X+)**
-   - Estado |+⟩ = superposição com fase positiva
-   - 50% de chance de medir 0, 50% de medir 1
-   - A direção específica (X+) indica a **fase** da superposição
-
-3. **Figura 3 (Após Porta X):** 
-   - A seta aponta para o **Pólo Sul (Eixo Z-)**
-   - Isso é o estado |1⟩
-   - 100% de probabilidade de medir 1
 
 ### 🎯 Entendendo a Fase Quântica
 
-**Experimento:** Tente adicionar uma porta Z logo após a porta H na Exemplo 2:
-
-```python
-qc_super.h(0)  # Hadamard
-qc_super.z(0)  # Porta Z - rotação de fase
-```
-
-A porta Z **gira o qubit ao redor do eixo vertical** (eixo Z).
-
-**O que acontece:**
-
-- **Visualmente:** A seta continua no equador (mesma probabilidade 50/50)
-- **Mas:** Agora aponta para **Eixo X-** (fase negativa)
-- **Significado:** A probabilidade não muda, mas a **fase** muda!
-
-**Por que isso importa:**
-
-- Em algoritmos quânticos, qubits interferem uns com os outros
-- A direção da seta (fase) determina se a interferência será **construtiva** ou **destrutiva**
-- Isso é fundamental para algoritmos como Grover e Shor!
+Quando aplicamos uma porta $Z$ logo após a porta $H$:
+- **Probabilidades de medição:** continuam $50\%$ para $0$ e $50\%$ para $1$ ($z = 0$).
+- **Coordenada $x$:** inverte de $+1{,}00$ para $-1{,}00$!
+- Essa diferença de sinal (fase relativa) é invisível em uma medição computacional direta isolada, mas produz interferência construtiva ou destrutiva quando os qubits interagem nos algoritmos de Deutsch-Jozsa, Grover e Shor.
 
 <hr/>
 
-## 🎓 Resumo do que Aprendemos
+## 🎓 Resumo da Programação no Cirq
 
-Parabéns! Você já dominou os fundamentos:
+Parabéns! Você já dominou os fundamentos de circuitos quânticos em tempo real:
 
-### ✅ Conceitos Matemáticos
-- Vetores de estado representam qubits
-- Matrizes representam portas quânticas
-- Superposição e emaranhamento como operações lineares
-
-### ✅ Programação no Qiskit
-- Criar circuitos quânticos (`QuantumCircuit`)
-- Aplicar portas (H, X, CNOT)
-- Medir qubits
-- Executar simulações
-
-### ✅ Visualização
-- Entender a Esfera de Bloch
-- Interpretar o vetor de estado geometricamente
-- Distinguir probabilidade vs fase quântica
-
-### 🚀 Próximos Passos
-
-Agora você está pronto para explorar:
-
-- Algoritmos quânticos (Deutsch-Jozsa, Grover, Shor)
-- Protocolos de comunicação quântica (Teletransporte, Superdense Coding)
-- Correção de erros quânticos
-- Computação quântica em hardware real (IBM Quantum)
-
+### ✅ Principais Construtos do Cirq
+- **Qubits**: `cirq.LineQubit(i)` ou `cirq.LineQubit.range(n)`
+- **Circuitos**: `cirq.Circuit(...)` agregando operações em momentos discretos
+- **Portas Quânticas**: `cirq.H`, `cirq.X`, `cirq.Y`, `cirq.Z`, `cirq.CNOT(controle, alvo)`
+- **Medições**: `cirq.measure(q0, q1, key='resultado')`
+- **Simulador**: `cirq.Simulator()` com `.simulate()` para cálculo exato da função de onda e `.run()` para amostragem estatística (*shots*)

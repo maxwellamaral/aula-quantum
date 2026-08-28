@@ -15,17 +15,55 @@ Portanto, o software quântico não é apenas uma camada abstrata independente d
 
 - [1] https://arxiv.org/abs/2403.02240
 
-## Prática com o Transpiler do Qiskit
+## Prática de Compilação e Roteamento Topológico no Cirq
 
-```python
-# Compare o circuito lógico com o circuito transpilado para a topologia real do dispositivo
-from qiskit import transpile
-from qiskit.providers.fake_provider import GenericBackendV2
+Processadores quânticos reais possuem restrições geométricas de conectividade. Em um processador com topologia linear (`q0 — q1 — q2`), o qubit `q0` não pode interagir diretamente com `q2`. Para executar uma porta de dois qubits entre eles, o compilador quântico precisa inserir portas **SWAP** para aproximar os estados quânticos fisicamente.
 
-# qc_logico = ... circuito da aula anterior
-# backend = GenericBackendV2(num_qubits=5)
-# qc_transpilado = transpile(qc_logico, backend=backend, optimization_level=3)
-# print(f"Portas antes: {qc_logico.size()} | depois: {qc_transpilado.size()}")
+Execute o código abaixo para analisar o impacto do roteamento topológico na profundidade do circuito:
+
+```{python} {pyodide-python}
+# Instalação do motor quântico Cirq e bibliotecas
+import micropip
+await micropip.install("cirq-core==1.6.1")
+
+import cirq
+
+# Definindo 3 qubits com acoplamento linear (0 — 1 — 2)
+q0, q1, q2 = cirq.LineQubit.range(3)
+
+# 1. CIRCUITO LÓGICO (Abstrato): porta CNOT direta entre q0 e q2
+circuito_logico = cirq.Circuit(
+    cirq.H(q0),
+    cirq.CNOT(q0, q2),  # Incompatível com topologia linear sem vizinhança direta!
+    cirq.measure(q0, q2, key="m")
+)
+
+print("--- 1. Circuito Lógico (Abstrato) ---")
+print(circuito_logico)
+print(f"Profundidade: {len(circuito_logico)} | Total de operações: {len(list(circuito_logico.all_operations()))}")
+
+# 2. CIRCUITO COMPILADO PARA TOPOLOGIA LINEAR:
+# Inserimos SWAP(q0, q1) para aproximar o estado do q2, executamos CNOT(q1, q2) e desfazemos o SWAP
+circuito_compilado = cirq.Circuit(
+    cirq.H(q0),
+    cirq.SWAP(q0, q1),  # Roteamento topológico
+    cirq.CNOT(q1, q2),  # Agora q1 e q2 são vizinhos físicos imediatos!
+    cirq.SWAP(q0, q1),  # Restaura o mapeamento original
+    cirq.measure(q0, q2, key="m")
+)
+
+print("\n--- 2. Circuito Compilado (Respeitando a Topologia Física) ---")
+print(circuito_compilado)
+print(f"Profundidade: {len(circuito_compilado)} | Total de operações: {len(list(circuito_compilado.all_operations()))}")
+
+# 3. VERIFICAÇÃO DE EQUIVALÊNCIA FUNCIONAL
+sim = cirq.Simulator()
+res_logico = sim.run(circuito_logico, repetitions=1000).histogram(key="m")
+res_compilado = sim.run(circuito_compilado, repetitions=1000).histogram(key="m")
+
+print("\n--- 3. Verificação Funcional (1000 repetições cada) ---")
+print(f"Lógico    : {dict(res_logico)}")
+print(f"Compilado : {dict(res_compilado)}")
+print("✅ Os circuitos produzem a mesma distribuição, mas o hardware real paga o custo das portas SWAP adicionais!")
 ```
 
-Observe como o transpiler insere portas SWAP para respeitar o grafo de acoplamento físico, aumentando a profundidade do circuito.

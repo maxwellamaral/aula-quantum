@@ -625,6 +625,7 @@ window.Quarto = {
 <ul>
 <li>📄 <a href="../apostila.pdf" target="_blank">Baixar Apostila Completa em PDF</a></li>
 <li>🧪 <a href="../../assets/simuladores/" target="_blank">Galeria de Simuladores Interativos</a></li>
+<li>🚀 <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/06-grover.ipynb" target="_blank">Executar no Google Colab</a></li>
 </ul>
 </div>
 </div>
@@ -645,8 +646,8 @@ window.Quarto = {
 <p>Diferente do Deutsch-Jozsa, o Grover não dá a resposta 100% “limpa” de primeira para sistemas grandes, mas ele aumenta drasticamente a probabilidade da resposta certa. Para 2 qubits, porém, ele é perfeito e acerta em 100%.</p>
 <p>O processo tem dois passos repetidos (chamados de <strong>Operador de Grover</strong>):</p>
 <ol type="1">
-<li><strong>O Oráculo (Marcação):</strong> Identifica o item correto e inverte a fase dele (multiplica por -1). Se a resposta é <code>11</code>, o oráculo transforma <span class="math inline">\(|11\rangle\)</span> em <span class="math inline">\(-|11\rangle\)</span>. <em>Visualmente:</em> A barra da probabilidade aponta para baixo no gráfico.</li>
-<li><strong>O Difusor (Inversão sobre a Média):</strong> Esta é a parte genial. Ele espelha todas as amplitudes em relação à média geral.</li>
+<li><p><strong>O Oráculo (Marcação):</strong> Identifica o item correto e inverte a fase dele (multiplica por -1). Se a resposta é <code>11</code>, o oráculo transforma <span class="math inline">\(|11\rangle\)</span> em <span class="math inline">\(-|11\rangle\)</span>. <em>Visualmente:</em> A barra da probabilidade aponta para baixo no gráfico.</p></li>
+<li><p><strong>O Difusor (Inversão sobre a Média):</strong> Esta é a parte genial. Ele espelha todas as amplitudes em relação à média geral.</p></li>
 </ol>
 <ul>
 <li>Como a amplitude da resposta certa ficou negativa (bem abaixo da média) e as erradas ficaram positivas (pouco acima da média), quando espelhamos, a resposta certa “salta” para cima, ficando gigante, e as erradas diminuem.</li>
@@ -664,153 +665,88 @@ window.Quarto = {
 <h4 class="anchored" data-anchor-id="passo-2-construir-o-difusor">Passo 2: Construir o Difusor</h4>
 <p>O difusor é um padrão fixo: aplica H, aplica X, aplica H no último qubit com controle… É uma receita de bolo que significa “inverter em torno da média”.</p>
 <p>Aqui está o código completo comentado:</p>
-<pre class="{python} {pyodide-python}"><code>import matplotlib.pyplot as plt</code></pre>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Nota</span>🔒 Imports do Qiskit (requerem execução local)
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-2" class="callout-2-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Estes módulos não estão disponíveis no navegador. Execute localmente com <code>uv run jupyter lab</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit <span class="im">import</span> QuantumCircuit, transpile</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit_aer <span class="im">import</span> AerSimulator</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.visualization <span class="im">import</span> plot_histogram</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-3" class="callout-3-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/06-grover.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a></span>
+<pre class="{python} {pyodide-python}"><code>import matplotlib.pyplot as plt
+
+# Imports do Qiskit (execução no Google Colab / ambiente local)
+try:
+    from qiskit import QuantumCircuit, transpile
+    from qiskit_aer import AerSimulator
+    from qiskit.visualization import plot_histogram
+except ImportError:
+    pass</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> oraculo_para_11():</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Marca o estado |11&gt; invertendo sua fase.</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Nosso 'segredo' é 11.</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    qc <span class="op">=</span> QuantumCircuit(<span class="dv">2</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># A porta CZ (Controlled-Z) inverte a fase APENAS do estado |11&gt;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># |00&gt; -&gt; |00&gt;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># |01&gt; -&gt; |01&gt;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># |10&gt; -&gt; |10&gt;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># |11&gt; -&gt; -|11&gt;  &lt;-- A fase negativa (marcado)</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    qc.cz(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Nota: Se quiséssemos marcar |00&gt;, teríamos que inverter (X)</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># os inputs antes e depois do CZ.</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> qc</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> difusor_grover(n_qubits):</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co">    Amplifica a probabilidade do estado marcado.</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co">    Receita padrão para 2 qubits.</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    qc <span class="op">=</span> QuantumCircuit(n_qubits)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 1. Aplicar H em todos</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    qc.h(<span class="bu">range</span>(n_qubits))</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2. Aplicar X em todos</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    qc.x(<span class="bu">range</span>(n_qubits))</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 3. Aplicar H no último qubit (preparação para CZ)</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    qc.cz(<span class="dv">0</span>, <span class="dv">1</span>) <span class="co"># Funciona como um H-CNOT-H simplificado para 2 qubits</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 4. Desfazer X e H</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    qc.x(<span class="bu">range</span>(n_qubits))</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    qc.h(<span class="bu">range</span>(n_qubits))</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> qc</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- MONTAGEM DO ALGORITMO ---</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> oraculo_para_11():</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">    Marca o estado |11&gt; invertendo sua fase.</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">    Nosso 'segredo' é 11.</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    qc <span class="op">=</span> QuantumCircuit(<span class="dv">2</span>)</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># A porta CZ (Controlled-Z) inverte a fase APENAS do estado |11&gt;</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># |00&gt; -&gt; |00&gt;</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># |01&gt; -&gt; |01&gt;</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># |10&gt; -&gt; |10&gt;</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># |11&gt; -&gt; -|11&gt;  &lt;-- A fase negativa (marcado)</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    qc.cz(<span class="dv">0</span>, <span class="dv">1</span>)</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Nota: Se quiséssemos marcar |00&gt;, teríamos que inverter (X)</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># os inputs antes e depois do CZ.</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> qc</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> difusor_grover(n_qubits):</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co">    Amplifica a probabilidade do estado marcado.</span></span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co">    Receita padrão para 2 qubits.</span></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    qc <span class="op">=</span> QuantumCircuit(n_qubits)</span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 1. Aplicar H em todos</span></span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    qc.h(<span class="bu">range</span>(n_qubits))</span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2. Aplicar X em todos</span></span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    qc.x(<span class="bu">range</span>(n_qubits))</span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 3. Aplicar H no último qubit (preparação para CZ)</span></span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>    qc.cz(<span class="dv">0</span>, <span class="dv">1</span>) <span class="co"># Funciona como um H-CNOT-H simplificado para 2 qubits</span></span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 4. Desfazer X e H</span></span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>    qc.x(<span class="bu">range</span>(n_qubits))</span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>    qc.h(<span class="bu">range</span>(n_qubits))</span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> qc</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-4" class="callout-4-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/06-grover.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># --- MONTAGEM DO ALGORITMO ---</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Inicialização</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Precisamos de uma superposição igual para começar (todas as respostas possíveis)</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">2</span>, <span class="dv">2</span>)</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>qc.h([<span class="dv">0</span>, <span class="dv">1</span>])</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co"># O estado agora é: 25% |00&gt;, 25% |01&gt;, 25% |10&gt;, 25% |11&gt;</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>qc.barrier()</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Aplicar o Oráculo (Marca a resposta certa)</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> qc.compose(oraculo_para_11())</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>qc.barrier()</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Aplicar o Difusor (Aumenta a probabilidade da resposta certa)</span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Nota: Para 2 qubits, basta aplicar 1 vez.</span></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Para N maior, precisa repetir raiz(N) vezes.</span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> qc.compose(difusor_grover(<span class="dv">2</span>))</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>qc.barrier()</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Medição</span></span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>qc.measure([<span class="dv">0</span>, <span class="dv">1</span>], [<span class="dv">0</span>, <span class="dv">1</span>])</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="co"># --- EXECUÇÃO ---</span></span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"--- Circuito de Grover (Procurando '11') ---"</span>)</span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>qc.draw(<span class="st">'mpl'</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Inicialização</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Precisamos de uma superposição igual para começar (todas as respostas possíveis)</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>qc.h([<span class="dv">0</span>, <span class="dv">1</span>])</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># O estado agora é: 25% |00&gt;, 25% |01&gt;, 25% |10&gt;, 25% |11&gt;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>qc.barrier()</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Aplicar o Oráculo (Marca a resposta certa)</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> qc.compose(oraculo_para_11())</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>qc.barrier()</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Aplicar o Difusor (Aumenta a probabilidade da resposta certa)</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Nota: Para 2 qubits, basta aplicar 1 vez.</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Para N maior, precisa repetir raiz(N) vezes.</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> qc.compose(difusor_grover(<span class="dv">2</span>))</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>qc.barrier()</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Medição</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>qc.measure([<span class="dv">0</span>, <span class="dv">1</span>], [<span class="dv">0</span>, <span class="dv">1</span>])</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co"># --- EXECUÇÃO ---</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"--- Circuito de Grover (Procurando '11') ---"</span>)</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>qc.draw(<span class="st">'mpl'</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>--- Circuito de Grover (Procurando '11') ---
 </code></pre>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-5" class="callout-5-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/06-grover.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>simulador <span class="op">=</span> AerSimulator()</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>job <span class="op">=</span> simulador.run(transpile(qc, simulador), shots<span class="op">=</span><span class="dv">1024</span>)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>resultado <span class="op">=</span> job.result().get_counts()</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">--- Resultado da Busca ---"</span>)</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Contagens: </span><span class="sc">{</span>resultado<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Deve ser 100% (ou muito próximo) em '11'</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>simulador <span class="op">=</span> AerSimulator()</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>job <span class="op">=</span> simulador.run(transpile(qc, simulador), shots<span class="op">=</span><span class="dv">1024</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>resultado <span class="op">=</span> job.result().get_counts()</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">--- Resultado da Busca ---"</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Contagens: </span><span class="sc">{</span>resultado<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Deve ser 100% (ou muito próximo) em '11'</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>
 --- Resultado da Busca ---
 Contagens: {'11': 1024}
@@ -837,66 +773,32 @@ Contagens: {'11': 1024}
 <section id="desafio-para-você" class="level3">
 <h3 class="anchored" data-anchor-id="desafio-para-você">Desafio para você:</h3>
 <p>Tente modificar a função <code>oraculo_para_11</code> para encontrar o estado <strong><code>00</code></strong> em vez de <code>11</code>.</p>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-6" class="callout-6-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/06-grover.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> oraculo_para_00():</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Marca o estado |00&gt; invertendo sua fase.</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">    Nosso 'segredo' é 00.</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    qc <span class="op">=</span> QuantumCircuit(<span class="dv">2</span>)</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Enganamos o CZ aplicando X antes e depois</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    qc.x([<span class="dv">0</span>, <span class="dv">1</span>])  <span class="co"># Inverter os bits</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    qc.cz(<span class="dv">0</span>, <span class="dv">1</span>)   <span class="co"># Aplicar CZ (marca |11&gt;, que é o |00&gt; original)</span></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    qc.x([<span class="dv">0</span>, <span class="dv">1</span>])  <span class="co"># Reverter os bits de volta</span></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> qc</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-7" class="callout-7-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/06-grover.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">2</span>, <span class="dv">2</span>)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>qc.h([<span class="dv">0</span>, <span class="dv">1</span>])</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>qc.barrier()</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> qc.compose(oraculo_para_00())</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>qc.barrier()</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> qc.compose(difusor_grover(<span class="dv">2</span>))</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>qc.barrier()</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>qc.measure([<span class="dv">0</span>, <span class="dv">1</span>], [<span class="dv">0</span>, <span class="dv">1</span>])</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>simulador <span class="op">=</span> AerSimulator()</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>job <span class="op">=</span> simulador.run(transpile(qc, simulador), shots<span class="op">=</span><span class="dv">1024</span>)   </span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>resultado <span class="op">=</span> job.result().get_counts()</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">--- Resultado da Busca por '00' ---"</span>)</span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Contagens: </span><span class="sc">{</span>resultado<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Deve ser 100% (ou muito próximo) em '00'</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> oraculo_para_00():</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Marca o estado |00&gt; invertendo sua fase.</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Nosso 'segredo' é 00.</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    qc <span class="op">=</span> QuantumCircuit(<span class="dv">2</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Enganamos o CZ aplicando X antes e depois</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    qc.x([<span class="dv">0</span>, <span class="dv">1</span>])  <span class="co"># Inverter os bits</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    qc.cz(<span class="dv">0</span>, <span class="dv">1</span>)   <span class="co"># Aplicar CZ (marca |11&gt;, que é o |00&gt; original)</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    qc.x([<span class="dv">0</span>, <span class="dv">1</span>])  <span class="co"># Reverter os bits de volta</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> qc</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>qc.h([<span class="dv">0</span>, <span class="dv">1</span>])</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>qc.barrier()</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> qc.compose(oraculo_para_00())</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>qc.barrier()</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> qc.compose(difusor_grover(<span class="dv">2</span>))</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>qc.barrier()</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>qc.measure([<span class="dv">0</span>, <span class="dv">1</span>], [<span class="dv">0</span>, <span class="dv">1</span>])</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>simulador <span class="op">=</span> AerSimulator()</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>job <span class="op">=</span> simulador.run(transpile(qc, simulador), shots<span class="op">=</span><span class="dv">1024</span>)   </span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>resultado <span class="op">=</span> job.result().get_counts()</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">--- Resultado da Busca por '00' ---"</span>)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Contagens: </span><span class="sc">{</span>resultado<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Deve ser 100% (ou muito próximo) em '00'</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>
 --- Resultado da Busca por '00' ---
 Contagens: {'00': 1024}
@@ -911,50 +813,28 @@ Contagens: {'00': 1024}
 
 def visualize_state(qc):
     state = Statevector.from_instruction(qc)
-    return plot_bloch_multivector(state)</code></pre>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Nota</span>🔒 Imports do Qiskit (requerem execução local)
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-8" class="callout-8-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Estes módulos não estão disponíveis no navegador. Execute localmente com <code>uv run jupyter lab</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.visualization <span class="im">import</span> plot_bloch_multivector</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.quantum_info <span class="im">import</span> Statevector</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+    return plot_bloch_multivector(state)
+
+# Imports do Qiskit (execução no Google Colab / ambiente local)
+try:
+    from qiskit.visualization import plot_bloch_multivector
+    from qiskit.quantum_info import Statevector
+except ImportError:
+    pass</code></pre>
 <section id="passo-1-preparação-do-estado-inicial" class="level4">
 <h4 class="anchored" data-anchor-id="passo-1-preparação-do-estado-inicial">Passo 1: Preparação do Estado Inicial</h4>
 <p>Iniciamos com todos os estados igualmente prováveis, representados por amplitudes iguais. O objetivo do Algoritmo de Grover é aumentar a amplitude do estado desejado (a resposta correta) enquanto diminui as amplitudes dos outros estados.</p>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-9" class="callout-9-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/06-grover.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">2</span>, <span class="dv">2</span>)</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>qc.h([<span class="dv">0</span>, <span class="dv">1</span>])</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>qc.barrier()</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>qc.draw(<span class="st">'mpl'</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
-<p>O estado agora é de superposição uniforme: - 25% para |00⟩ - 25% para |01⟩ - 25% para |10⟩ - 25% para |11⟩</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(<span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>qc.h([<span class="dv">0</span>, <span class="dv">1</span>])</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>qc.barrier()</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>qc.draw(<span class="st">'mpl'</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<p>O estado agora é de superposição uniforme:</p>
+<ul>
+<li>25% para |00⟩</li>
+<li>25% para |01⟩</li>
+<li>25% para |10⟩</li>
+<li>25% para |11⟩</li>
+</ul>
 <pre class="{python} {pyodide-python}"><code>
 visualize_state(qc)</code></pre>
 </section>
@@ -972,26 +852,9 @@ O = \begin{pmatrix}
 \]</span></p>
 <p><em>O mesmo visto no notebook <a href="./00-math.ipynb">00-math.ipynb</a> para Controled Z</em></p>
 <p>Perceba que CZ é executado para “filtrar” somente o estado desejado, indicado para |11⟩. Em outros estados (00, 01, 10), o oráculo não faz nenhuma alteração.</p>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-10" class="callout-10-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/06-grover.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>oraculo <span class="op">=</span> QuantumCircuit(<span class="dv">2</span>)</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>oraculo.cz(<span class="dv">0</span>, <span class="dv">1</span>)</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>oraculo.draw(<span class="st">'mpl'</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>oraculo <span class="op">=</span> QuantumCircuit(<span class="dv">2</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>oraculo.cz(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>oraculo.draw(<span class="st">'mpl'</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <blockquote class="blockquote">
 <p><strong>Observação adicional:</strong> - Se estivermos procurando o estado <code>00</code>, o oráculo precisará ser ajustado para inverter a fase desse estado específico. Isso pode ser feito aplicando portas X (NOT) antes e depois da aplicação do CZ, efetivamente “invertendo” os bits para que o CZ atue sobre o estado <code>00</code> como se fosse <code>11</code>. - Se estivermos procurando o estado <code>01</code>, aplicamos uma porta X no segundo qubit antes e depois do CZ. Para <code>10</code>, aplicamos uma porta X no primeiro qubit antes e depois do CZ. - Assim, percebe-se que o oráculo pode ser adaptado para qualquer estado alvo, garantindo que a fase seja invertida corretamente para o estado desejado, desde que você faça as manipulações necessárias com portas X ou outras portas lógicas apropriadas. - Perceba com isso que, se você fosse implementar uma “busca” na computação clássica, você precisaria de uma função que verificasse cada item um por um, utilizando um loop ou similar, o que é ineficiente para grandes conjuntos de dados.</p>
 </blockquote>
@@ -1109,30 +972,13 @@ qc.draw('mpl')</code></pre>
 </ul>
 <p>Portanto, o vetor intermediário seria: <span class="math inline">\((-\frac{1}{4}, -\frac{1}{4}, -\frac{1}{4}, \frac{3}{4})\)</span></p>
 <p>Porém, a implementação física do difusor com as portas H-X-CZ-X-H realiza essa operação junto com uma normalização que leva ao resultado final: <span class="math inline">\((0, 0, 0, 1)\)</span>.</p>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-11" class="callout-11-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/06-grover.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>difusor <span class="op">=</span> QuantumCircuit(<span class="dv">2</span>)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>difusor.h([<span class="dv">0</span>, <span class="dv">1</span>])</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>difusor.x([<span class="dv">0</span>, <span class="dv">1</span>])</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>difusor.cz(<span class="dv">0</span>, <span class="dv">1</span>)</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>difusor.x([<span class="dv">0</span>, <span class="dv">1</span>])</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>difusor.h([<span class="dv">0</span>, <span class="dv">1</span>])</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>difusor.draw(<span class="st">'mpl'</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>difusor <span class="op">=</span> QuantumCircuit(<span class="dv">2</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>difusor.h([<span class="dv">0</span>, <span class="dv">1</span>])</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>difusor.x([<span class="dv">0</span>, <span class="dv">1</span>])</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>difusor.cz(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>difusor.x([<span class="dv">0</span>, <span class="dv">1</span>])</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>difusor.h([<span class="dv">0</span>, <span class="dv">1</span>])</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>difusor.draw(<span class="st">'mpl'</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <pre class="{python} {pyodide-python}"><code>
 qc = qc.compose(difusor)
 qc.barrier()
@@ -1151,31 +997,14 @@ qc.draw('mpl')</code></pre>
 <section id="passo-5-execução-do-circuito" class="level4">
 <h4 class="anchored" data-anchor-id="passo-5-execução-do-circuito">Passo 5: Execução do Circuito</h4>
 <p>Aqui o circuito é executado no simulador quântico, coletando os resultados das medições para verificar se o algoritmo funcionou conforme esperado.</p>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-12" class="callout-12-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/06-grover.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># --- EXECUÇÃO ---</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>simulador <span class="op">=</span> AerSimulator()</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>job <span class="op">=</span> simulador.run(transpile(qc, simulador), shots<span class="op">=</span><span class="dv">1024</span>)   </span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>resultado <span class="op">=</span> job.result().get_counts()</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">--- Resultado da Busca ---"</span>)</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Contagens: </span><span class="sc">{</span>resultado<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Deve ser 100% (ou muito próximo) em '11'</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- EXECUÇÃO ---</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>simulador <span class="op">=</span> AerSimulator()</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>job <span class="op">=</span> simulador.run(transpile(qc, simulador), shots<span class="op">=</span><span class="dv">1024</span>)   </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>resultado <span class="op">=</span> job.result().get_counts()</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">--- Resultado da Busca ---"</span>)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Contagens: </span><span class="sc">{</span>resultado<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Deve ser 100% (ou muito próximo) em '11'</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>
 --- Resultado da Busca ---
 Contagens: {'11': 1024}
@@ -1640,25 +1469,26 @@ Contagens: {'11': 1024}
     }
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Código fonte</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Aula 08 — Algoritmo de Grover — Busca Quântica"</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Fundamentos de Computação Quântica — Curso de Extensão"</span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Prof. Me. Maxwell Anderson Ielpo do Amaral"</span></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="an">institute:</span><span class="co"> "Instituto Federal de Educação, Ciência e Tecnologia da Paraíba (IFPB) — Campus João Pessoa"</span></span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2026-10-27"</span></span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="an">lang:</span><span class="co"> pt-BR</span></span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📽️ Material da Aula</span></span>
-<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>📄 <span class="co">[</span><span class="ot">Baixar Apostila Completa em PDF</span><span class="co">](../apostila.pdf)</span>{target="_blank"}</span>
-<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>🧪 <span class="co">[</span><span class="ot">Galeria de Simuladores Interativos</span><span class="co">](/assets/simuladores/)</span>{target="_blank"}</span>
-<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>{{&lt; include _content.qmd &gt;}}</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Aula 08 — Algoritmo de Grover — Busca Quântica"</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Fundamentos de Computação Quântica — Curso de Extensão"</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Prof. Me. Maxwell Anderson Ielpo do Amaral"</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="an">institute:</span><span class="co"> "Instituto Federal de Educação, Ciência e Tecnologia da Paraíba (IFPB) — Campus João Pessoa"</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2026-10-27"</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="an">lang:</span><span class="co"> pt-BR</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📽️ Material da Aula</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>📄 <span class="co">[</span><span class="ot">Baixar Apostila Completa em PDF</span><span class="co">](../apostila.pdf)</span>{target="_blank"}</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>🧪 <span class="co">[</span><span class="ot">Galeria de Simuladores Interativos</span><span class="co">](/assets/simuladores/)</span>{target="_blank"}</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>🚀 <span class="co">[</span><span class="ot">Executar no Google Colab</span><span class="co">](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/06-grover.ipynb)</span>{target="_blank"}</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>{{&lt; include _content.qmd &gt;}}</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <script type="module">

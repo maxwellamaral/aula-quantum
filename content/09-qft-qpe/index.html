@@ -631,6 +631,7 @@ window.Quarto = {
 <ul>
 <li>📄 <a href="../apostila.pdf" target="_blank">Baixar Apostila Completa em PDF</a></li>
 <li>🧪 <a href="../../assets/simuladores/" target="_blank">Galeria de Simuladores Interativos</a></li>
+<li>🚀 <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/07-quantum-fourier-transform.ipynb" target="_blank">Executar no Google Colab</a></li>
 </ul>
 </div>
 </div>
@@ -672,122 +673,58 @@ window.Quarto = {
 <p>Vamos usar o Qiskit para ver isso acontecer. Vamos pegar o número 6 (<code>110</code>), aplicar a QFT e ver como as Esferas de Bloch mudam.</p>
 <p>Para facilitar, usaremos a biblioteca pronta de QFT do Qiskit (<code>qiskit.circuit.library</code>), assim focamos no efeito e não na montagem manual das portas agora.</p>
 <pre class="{python} {pyodide-python}"><code>import numpy as np
-import matplotlib.pyplot as plt</code></pre>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Nota</span>🔒 Imports do Qiskit (requerem execução local)
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-2" class="callout-2-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Estes módulos não estão disponíveis no navegador. Execute localmente com <code>uv run jupyter lab</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit <span class="im">import</span> QuantumCircuit, transpile</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.circuit.library <span class="im">import</span> QFT</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.quantum_info <span class="im">import</span> Statevector</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.visualization <span class="im">import</span> plot_bloch_multivector</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-3" class="callout-3-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/07-quantum-fourier-transform.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. PREPARAÇÃO: Codificar o número 6 (Binário 110)</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Em Qiskit (Little Endian): q0 é o menos significativo.</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 6 = 0 * (2^0) + 1 * (2^1) + 1 * (2^2) -&gt; q0=0, q1=1, q2=1</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>num_qubits <span class="op">=</span> <span class="dv">3</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(num_qubits)</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Codificando o '6' (Portas X onde o bit é 1)</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># qc.x(0) # q0 = 0 (não fazemos nada)</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>qc.x(<span class="dv">1</span>) <span class="co"># q1 = 1</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>qc.x(<span class="dv">2</span>) <span class="co"># q2 = 1</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Vamos salvar o estado visual ANTES da QFT</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>estado_antes <span class="op">=</span> Statevector(qc)</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"--- Estado Antes (Binário 110) ---"</span>)</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Vai mostrar setas para baixo (1) e para cima (0)</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+import matplotlib.pyplot as plt
+
+# Imports do Qiskit (execução no Google Colab / ambiente local)
+try:
+    from qiskit import QuantumCircuit, transpile
+    from qiskit.circuit.library import QFT
+    from qiskit.quantum_info import Statevector
+    from qiskit.visualization import plot_bloch_multivector
+except ImportError:
+    pass</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. PREPARAÇÃO: Codificar o número 6 (Binário 110)</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Em Qiskit (Little Endian): q0 é o menos significativo.</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 6 = 0 * (2^0) + 1 * (2^1) + 1 * (2^2) -&gt; q0=0, q1=1, q2=1</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>num_qubits <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(num_qubits)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Codificando o '6' (Portas X onde o bit é 1)</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># qc.x(0) # q0 = 0 (não fazemos nada)</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>qc.x(<span class="dv">1</span>) <span class="co"># q1 = 1</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>qc.x(<span class="dv">2</span>) <span class="co"># q2 = 1</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Vamos salvar o estado visual ANTES da QFT</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>estado_antes <span class="op">=</span> Statevector(qc)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"--- Estado Antes (Binário 110) ---"</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Vai mostrar setas para baixo (1) e para cima (0)</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>--- Estado Antes (Binário 110) ---
 </code></pre>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-4" class="callout-4-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/07-quantum-fourier-transform.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. A MÁGICA: Aplicar a QFT</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># A biblioteca cria o circuito complexo de Hadamards e Rotações para nós</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>qc_qft <span class="op">=</span> QFT(num_qubits, do_swaps<span class="op">=</span><span class="va">False</span>).to_gate()</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>qc.append(qc_qft, <span class="bu">range</span>(num_qubits))</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Vamos salvar o estado visual DEPOIS da QFT</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>estado_depois <span class="op">=</span> Statevector(qc)</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Desenha o circuito completo</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>qc.draw(<span class="st">'mpl'</span>) </span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. A MÁGICA: Aplicar a QFT</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># A biblioteca cria o circuito complexo de Hadamards e Rotações para nós</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>qc_qft <span class="op">=</span> QFT(num_qubits, do_swaps<span class="op">=</span><span class="va">False</span>).to_gate()</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>qc.append(qc_qft, <span class="bu">range</span>(num_qubits))</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Vamos salvar o estado visual DEPOIS da QFT</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>estado_depois <span class="op">=</span> Statevector(qc)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Desenha o circuito completo</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>qc.draw(<span class="st">'mpl'</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>C:\Users\Max\AppData\Local\Temp\ipykernel_18328\3244769350.py:3: DeprecationWarning: The class ``qiskit.circuit.library.basis_change.qft.QFT`` is deprecated as of Qiskit 2.1. It will be removed in Qiskit 3.0. ('Use qiskit.circuit.library.QFTGate or qiskit.synthesis.qft.synth_qft_full instead, for access to all previous arguments.',)
   qc_qft = QFT(num_qubits, do_swaps=False).to_gate()
 </code></pre>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-5" class="callout-5-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/07-quantum-fourier-transform.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> display</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. VISUALIZAÇÃO</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">--- Gerando Esferas de Bloch... ---"</span>)</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot 1: Binário Puro</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>fig1 <span class="op">=</span> plot_bloch_multivector(estado_antes, title<span class="op">=</span><span class="st">"Antes: Número 6 (Base Computacional)"</span>)</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>display(fig1)</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot 2: Fourier</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>fig2 <span class="op">=</span> plot_bloch_multivector(estado_depois, title<span class="op">=</span><span class="st">"Depois: Número 6 (Base de Fourier)"</span>)</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>display(fig2)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> display</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. VISUALIZAÇÃO</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">--- Gerando Esferas de Bloch... ---"</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot 1: Binário Puro</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>fig1 <span class="op">=</span> plot_bloch_multivector(estado_antes, title<span class="op">=</span><span class="st">"Antes: Número 6 (Base Computacional)"</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>display(fig1)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot 2: Fourier</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>fig2 <span class="op">=</span> plot_bloch_multivector(estado_depois, title<span class="op">=</span><span class="st">"Depois: Número 6 (Base de Fourier)"</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>display(fig2)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>
 --- Gerando Esferas de Bloch... ---
 </code></pre>
@@ -850,7 +787,6 @@ Amplitudes:
   |110⟩: +1.00000000 +0.00000000j  (|amp| = 1.00000000)
 </code></pre>
 <pre class="{python} {pyodide-python}"><code>
-
 print("\n" + "="*60)
 print("\n=== ESTADO DEPOIS DA QFT (Base de Fourier) ===")
 print(f"Informação codificada nas fases (rotações)")
@@ -917,51 +853,23 @@ Estado |111⟩: Fase =   90.00°
 <p>Vamos criar uma porta que gira o qubit em exatamente <span class="math inline">\(1/8\)</span> <strong>de volta</strong> (fase de <span class="math inline">\(45^\circ\)</span> ou <span class="math inline">\(\frac{\pi}{4}\)</span>). Vamos fingir que não sabemos esse valor e pedir para o algoritmo QPE descobrir.</p>
 <p>O resultado esperado em binário fracionário:</p>
 <p>Em binário: (O terceiro bit é 1).</p>
-<pre class="{python} {pyodide-python}"><code>import numpy as np</code></pre>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Nota</span>🔒 Imports do Qiskit (requerem execução local)
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-6" class="callout-6-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Estes módulos não estão disponíveis no navegador. Execute localmente com <code>uv run jupyter lab</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit <span class="im">import</span> QuantumCircuit, transpile</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit_aer <span class="im">import</span> AerSimulator</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.circuit.library <span class="im">import</span> QFT, PhaseGate</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.visualization <span class="im">import</span> plot_histogram</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-7" class="callout-7-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/07-quantum-fourier-transform.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 1. CONFIGURAÇÃO ---</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Precisamos de qubits para "contar" a fase (precisão) e 1 (q3) para sofrer a ação</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>num_qubits_contagem <span class="op">=</span> <span class="dv">3</span> </span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>num_qubits_total <span class="op">=</span> num_qubits_contagem <span class="op">+</span> <span class="dv">1</span> <span class="co"># +1 para o alvo</span></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(num_qubits_total, num_qubits_contagem)</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>qc.draw(<span class="st">'mpl'</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<pre class="{python} {pyodide-python}"><code>import numpy as np
+
+# Imports do Qiskit (execução no Google Colab / ambiente local)
+try:
+    from qiskit import QuantumCircuit, transpile
+    from qiskit_aer import AerSimulator
+    from qiskit.circuit.library import QFT, PhaseGate
+    from qiskit.visualization import plot_histogram
+except ImportError:
+    pass</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 1. CONFIGURAÇÃO ---</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Precisamos de qubits para "contar" a fase (precisão) e 1 (q3) para sofrer a ação</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>num_qubits_contagem <span class="op">=</span> <span class="dv">3</span> </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>num_qubits_total <span class="op">=</span> num_qubits_contagem <span class="op">+</span> <span class="dv">1</span> <span class="co"># +1 para o alvo</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> QuantumCircuit(num_qubits_total, num_qubits_contagem)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>qc.draw(<span class="st">'mpl'</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <pre class="{python} {pyodide-python}"><code>
 # --- 2. PREPARAÇÃO ---
 # Colocar os qubits de contagem em superposição (para receberem o kickback)
@@ -973,7 +881,6 @@ for qubit in range(num_qubits_contagem):
 qc.x(num_qubits_contagem)
 qc.draw('mpl')</code></pre>
 <pre class="{python} {pyodide-python}"><code>
-
 # --- 3. APLICAÇÃO DA PORTA "MISTERIOSA" (U) ---
 # Vamos definir nossa fase secreta: 1/8 de volta
 # Fase = 2 * pi * (1/8)
@@ -993,7 +900,6 @@ for counting_qubit in range(num_qubits_contagem):
 qc.barrier()
 qc.draw('mpl')</code></pre>
 <pre class="{python} {pyodide-python}"><code>
-
 # --- 4. O DECODIFICADOR (QFT INVERSA) ---
 # Até aqui, a informação do ângulo está escondida na fase dos qubits de contagem.
 # A QFT Inversa traduz isso para bits legíveis (0 ou 1).
@@ -1004,34 +910,14 @@ qc.draw('mpl')</code></pre>
   qc_iqft = QFT(num_qubits_contagem, inverse=True).to_gate()
 </code></pre>
 <pre class="{python} {pyodide-python}"><code>
-
 # --- 5. MEDIÇÃO ---
 qc.measure(range(num_qubits_contagem), range(num_qubits_contagem))
 </code></pre>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-8" class="callout-8-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/07-quantum-fourier-transform.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co"># --- EXECUÇÃO ---</span></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>simulador <span class="op">=</span> AerSimulator()</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>job <span class="op">=</span> simulador.run(transpile(qc, simulador), shots<span class="op">=</span><span class="dv">1024</span>)</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>contagens <span class="op">=</span> job.result().get_counts()</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- EXECUÇÃO ---</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>simulador <span class="op">=</span> AerSimulator()</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>job <span class="op">=</span> simulador.run(transpile(qc, simulador), shots<span class="op">=</span><span class="dv">1024</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>contagens <span class="op">=</span> job.result().get_counts()</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <pre class="{python} {pyodide-python}"><code>
-
 # --- INTERPRETAÇÃO ---
 # A saída será um binário, ex: '001'.
 # Isso deve ser lido como fração binária: 0.001
@@ -1542,25 +1428,26 @@ Fase Real Esperada: 0.125
     }
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Código fonte</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Aula 09 — Transformada de Fourier Quântica e Estimação de Fase"</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Fundamentos de Computação Quântica — Curso de Extensão"</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Prof. Me. Maxwell Anderson Ielpo do Amaral"</span></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="an">institute:</span><span class="co"> "Instituto Federal de Educação, Ciência e Tecnologia da Paraíba (IFPB) — Campus João Pessoa"</span></span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2026-11-03"</span></span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="an">lang:</span><span class="co"> pt-BR</span></span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
-<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
-<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📽️ Material da Aula</span></span>
-<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>📄 <span class="co">[</span><span class="ot">Baixar Apostila Completa em PDF</span><span class="co">](../apostila.pdf)</span>{target="_blank"}</span>
-<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>🧪 <span class="co">[</span><span class="ot">Galeria de Simuladores Interativos</span><span class="co">](/assets/simuladores/)</span>{target="_blank"}</span>
-<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>{{&lt; include _content.qmd &gt;}}</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Aula 09 — Transformada de Fourier Quântica e Estimação de Fase"</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Fundamentos de Computação Quântica — Curso de Extensão"</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Prof. Me. Maxwell Anderson Ielpo do Amaral"</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="an">institute:</span><span class="co"> "Instituto Federal de Educação, Ciência e Tecnologia da Paraíba (IFPB) — Campus João Pessoa"</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2026-11-03"</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="an">lang:</span><span class="co"> pt-BR</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📽️ Material da Aula</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>📄 <span class="co">[</span><span class="ot">Baixar Apostila Completa em PDF</span><span class="co">](../apostila.pdf)</span>{target="_blank"}</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>🧪 <span class="co">[</span><span class="ot">Galeria de Simuladores Interativos</span><span class="co">](/assets/simuladores/)</span>{target="_blank"}</span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>🚀 <span class="co">[</span><span class="ot">Executar no Google Colab</span><span class="co">](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/07-quantum-fourier-transform.ipynb)</span>{target="_blank"}</span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>{{&lt; include _content.qmd &gt;}}</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <script type="module">

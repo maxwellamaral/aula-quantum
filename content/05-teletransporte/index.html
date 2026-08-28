@@ -673,6 +673,7 @@ window.Quarto = {
 <ul>
 <li>📄 <a href="../apostila.pdf" target="_blank">Baixar Apostila Completa em PDF</a></li>
 <li>🧪 <a href="../../assets/simuladores/" target="_blank">Galeria de Simuladores Interativos</a></li>
+<li>🚀 <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb" target="_blank">Executar no Google Colab</a></li>
 </ul>
 </div>
 </div>
@@ -684,7 +685,12 @@ window.Quarto = {
 <section id="a-ideia-básica" class="level2">
 <h2 class="anchored" data-anchor-id="a-ideia-básica">💡 A Ideia Básica</h2>
 <p>Imagine que Alice quer enviar uma informação quântica para Bob que está muito longe.</p>
-<p><strong>Analogia:</strong> É como enviar uma foto pelo celular, mas para informação quântica: - Alice não pode simplesmente “copiar” o estado quântico (lei da mecânica quântica!) - Mas se Alice e Bob compartilharem algo especial (emaranhamento), ela pode <strong>transferir</strong> o estado - O estado original de Alice é destruído no processo</p>
+<p><strong>Analogia:</strong> É como enviar uma foto pelo celular, mas para informação quântica:</p>
+<ul>
+<li>Alice não pode simplesmente “copiar” o estado quântico (lei da mecânica quântica!)</li>
+<li>Mas se Alice e Bob compartilharem algo especial (emaranhamento), ela pode <strong>transferir</strong> o estado</li>
+<li>O estado original de Alice é destruído no processo</li>
+</ul>
 </section>
 <section id="os-personagens" class="level2">
 <h2 class="anchored" data-anchor-id="os-personagens">👥 Os Personagens</h2>
@@ -707,26 +713,15 @@ window.Quarto = {
 </section>
 <section id="passo-0-importar-bibliotecas" class="level2">
 <h2 class="anchored" data-anchor-id="passo-0-importar-bibliotecas">Passo 0: Importar bibliotecas</h2>
-<pre class="{python} {pyodide-python}"><code>from numpy import pi</code></pre>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Nota</span>🔒 Imports do Qiskit (requerem execução local)
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-2" class="callout-2-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Estes módulos não estão disponíveis no navegador. Execute localmente com <code>uv run jupyter lab</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit <span class="im">import</span> QuantumRegister, ClassicalRegister, QuantumCircuit</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.quantum_info <span class="im">import</span> Statevector</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.visualization <span class="im">import</span> plot_bloch_multivector, plot_state_qsphere, plot_state_city</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<pre class="{python} {pyodide-python}"><code>from numpy import pi
+
+# Imports do Qiskit (execução no Google Colab / ambiente local)
+try:
+    from qiskit import QuantumRegister, ClassicalRegister, QuantumCircuit
+    from qiskit.quantum_info import Statevector
+    from qiskit.visualization import plot_bloch_multivector, plot_state_qsphere, plot_state_city
+except ImportError:
+    pass</code></pre>
 </section>
 <section id="passo-1-montar-o-palco-do-teletransporte" class="level2">
 <h2 class="anchored" data-anchor-id="passo-1-montar-o-palco-do-teletransporte">1️⃣ Passo 1: Montar o “Palco” do Teletransporte</h2>
@@ -745,32 +740,14 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="estado-matemático-inicial">📐 Estado Matemático Inicial</h3>
 <p>No início, todos os qubits estão em <span class="math inline">\(|0\rangle\)</span>:</p>
 <p><span class="math display">\[|\psi_{\text{inicial}}\rangle = |q_0\rangle \otimes |q_1\rangle \otimes |q_2\rangle = |0\rangle \otimes |0\rangle \otimes |0\rangle = |000\rangle\]</span></p>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-3" class="callout-3-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>qreg_q <span class="op">=</span> QuantumRegister(<span class="dv">3</span>, <span class="st">'q'</span>)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>creg_c <span class="op">=</span> ClassicalRegister(<span class="dv">3</span>, <span class="st">'c'</span>)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>circuit <span class="op">=</span> QuantumCircuit(qreg_q, creg_c)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>circuit.draw(<span class="st">'mpl'</span>)</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>state1 <span class="op">=</span> Statevector.from_instruction(circuit)</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(state1)</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>plot_bloch_multivector(state1)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>qreg_q <span class="op">=</span> QuantumRegister(<span class="dv">3</span>, <span class="st">'q'</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>creg_c <span class="op">=</span> ClassicalRegister(<span class="dv">3</span>, <span class="st">'c'</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>circuit <span class="op">=</span> QuantumCircuit(qreg_q, creg_c)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>circuit.draw(<span class="st">'mpl'</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>state1 <span class="op">=</span> Statevector.from_instruction(circuit)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(state1)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>plot_bloch_multivector(state1)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>Statevector([1.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j,
              0.+0.j],
             dims=(2, 2, 2))
@@ -792,31 +769,13 @@ window.Quarto = {
 <p><span class="math display">\[X = \begin{pmatrix} 0 &amp; 1 \\ 1 &amp; 0 \end{pmatrix}\]</span></p>
 <p>Aplicando no qubit 0:</p>
 <p><span class="math display">\[|\psi_1\rangle = (X \otimes I \otimes I)|000\rangle = |100\rangle = |1\rangle \otimes |0\rangle \otimes |0\rangle\]</span></p>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-4" class="callout-4-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>circuit.x(qreg_q[<span class="dv">0</span>])</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>circuit.barrier(qreg_q[<span class="dv">0</span>], qreg_q[<span class="dv">1</span>], qreg_q[<span class="dv">2</span>])</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>circuit.draw(<span class="st">'mpl'</span>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>state2 <span class="op">=</span> Statevector.from_instruction(circuit)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(state2)</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>plot_bloch_multivector(state2)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>circuit.x(qreg_q[<span class="dv">0</span>])</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>circuit.barrier(qreg_q[<span class="dv">0</span>], qreg_q[<span class="dv">1</span>], qreg_q[<span class="dv">2</span>])</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>circuit.draw(<span class="st">'mpl'</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>state2 <span class="op">=</span> Statevector.from_instruction(circuit)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(state2)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>plot_bloch_multivector(state2)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>Statevector([0.+0.j, 1.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j,
              0.+0.j],
             dims=(2, 2, 2))
@@ -856,28 +815,11 @@ window.Quarto = {
 <p>A porta Hadamard é: <span class="math display">\[H = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 &amp; 1 \\ 1 &amp; -1 \end{pmatrix}\]</span></p>
 <p>Aplicando <span class="math inline">\(H\)</span> no qubit 1: <span class="math display">\[H|0\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle)\]</span></p>
 <p>Estado após H: <span class="math display">\[|\psi_2\rangle = |1\rangle \otimes \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle) \otimes |0\rangle = \frac{1}{\sqrt{2}}(|100\rangle + |110\rangle) = 0.7071 (|100\rangle + |110\rangle)\]</span></p>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-5" class="callout-5-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>circuit.h(qreg_q[<span class="dv">1</span>])</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>state3 <span class="op">=</span> Statevector.from_instruction(circuit)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(state3)</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>plot_bloch_multivector(state3)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>circuit.h(qreg_q[<span class="dv">1</span>])</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>state3 <span class="op">=</span> Statevector.from_instruction(circuit)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(state3)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>plot_bloch_multivector(state3)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>Statevector([0.        +0.j, 0.70710678+0.j, 0.        +0.j,
              0.70710678+0.j, 0.        +0.j, 0.        +0.j,
              0.        +0.j, 0.        +0.j],
@@ -928,53 +870,18 @@ window.Quarto = {
 <p>A porta CNOT inverte o qubit alvo se o controle for |1⟩: <span class="math display">\[CNOT|00\rangle = |00\rangle, \quad CNOT|10\rangle = |11\rangle\]</span></p>
 <p>Aplicando CNOT(q[1], q[2]): <span class="math display">\[|\psi_3\rangle = \frac{1}{\sqrt{2}}(|100\rangle + |111\rangle)\]</span></p>
 <p><strong>🔗 Estado de Bell criado!</strong> Os qubits 1 e 2 agora estão <strong>emaranhados</strong> - medindo um, sabemos instantaneamente o outro!</p>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-6" class="callout-6-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>circuit.cx(qreg_q[<span class="dv">1</span>], qreg_q[<span class="dv">2</span>])</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>state4 <span class="op">=</span> Statevector.from_instruction(circuit)</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(state4)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>circuit.cx(qreg_q[<span class="dv">1</span>], qreg_q[<span class="dv">2</span>])</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>state4 <span class="op">=</span> Statevector.from_instruction(circuit)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(state4)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>Statevector([0.        +0.j, 0.70710678+0.j, 0.        +0.j,
              0.        +0.j, 0.        +0.j, 0.        +0.j,
              0.        +0.j, 0.70710678+0.j],
             dims=(2, 2, 2))
 </code></pre>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-7" class="callout-7-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualização na Q-Sphere - melhor para ver emaranhamento!</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">🌐 Q-Sphere (mostra amplitudes e fases do estado completo):"</span>)</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>plot_state_qsphere(state4)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualização na Q-Sphere - melhor para ver emaranhamento!</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">🌐 Q-Sphere (mostra amplitudes e fases do estado completo):"</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>plot_state_qsphere(state4)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>
 🌐 Q-Sphere (mostra amplitudes e fases do estado completo):
 </code></pre>
@@ -1053,7 +960,11 @@ fig = plot_qsphere_interactive(state4)</code></pre>
 </ul></li>
 </ul>
 <p><strong>Por que isso é emaranhamento?</strong></p>
-<p>Observe que só aparecem os estados |100⟩ e |111⟩: - Se medirmos q[1] e obtivermos 0 → q[2] também será 0 (estado |100⟩) - Se medirmos q[1] e obtivermos 1 → q[2] também será 1 (estado |111⟩)</p>
+<p>Observe que só aparecem os estados |100⟩ e |111⟩:</p>
+<ul>
+<li>Se medirmos q[1] e obtivermos 0 → q[2] também será 0 (estado |100⟩)</li>
+<li>Se medirmos q[1] e obtivermos 1 → q[2] também será 1 (estado |111⟩)</li>
+</ul>
 <p>Os qubits 1 e 2 estão <strong>perfeitamente correlacionados</strong> - essa é a assinatura visual do <strong>emaranhamento quântico</strong>! 🔗✨</p>
 <p>A Q-Sphere nos permite ver essa correlação de forma clara: apenas configurações onde q[1] = q[2] aparecem (00 ou 11 nos últimos dois qubits).</p>
 </section>
@@ -1063,31 +974,14 @@ fig = plot_qsphere_interactive(state4)</code></pre>
 <p><strong>Passo 3c - Aplicar CNOT entre q[0] e q[1]:</strong></p>
 <p>Agora q[0] é o controle e q[1] é o alvo: <span class="math display">\[|\psi_4\rangle = \frac{1}{\sqrt{2}}(|110\rangle + |101\rangle)\]</span></p>
 <p><strong>✨ Emaranhamento triplo!</strong> Agora os 3 qubits estão interconectados quanticamente.</p>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-8" class="callout-8-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>circuit.cx(qreg_q[<span class="dv">0</span>], qreg_q[<span class="dv">1</span>])</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>state5 <span class="op">=</span> Statevector.from_instruction(circuit)</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(state5)</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualização "City" - mostra a matriz densidade</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">🏙️ State City (visualização 3D da matriz densidade):"</span>)</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>plot_state_city(state5)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>circuit.cx(qreg_q[<span class="dv">0</span>], qreg_q[<span class="dv">1</span>])</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>state5 <span class="op">=</span> Statevector.from_instruction(circuit)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(state5)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualização "City" - mostra a matriz densidade</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">🏙️ State City (visualização 3D da matriz densidade):"</span>)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>plot_state_city(state5)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>Statevector([0.        +0.j, 0.        +0.j, 0.        +0.j,
              0.70710678+0.j, 0.        +0.j, 0.70710678+0.j,
              0.        +0.j, 0.        +0.j],
@@ -1152,7 +1046,12 @@ fig = plot_qsphere_interactive(state4)</code></pre>
 </ul></li>
 </ul>
 <p><strong>Por que isso mostra emaranhamento triplo?</strong></p>
-<p>Os elementos fora da diagonal conectam estados diferentes (|110⟩ ↔︎ |101⟩), mostrando que: - Os qubits não podem ser descritos individualmente - Existe uma <strong>correlação quântica genuína</strong> entre os 3 qubits - Medindo um qubit, afetamos instantaneamente o estado dos outros</p>
+<p>Os elementos fora da diagonal conectam estados diferentes (|110⟩ ↔︎ |101⟩), mostrando que:</p>
+<ul>
+<li>Os qubits não podem ser descritos individualmente</li>
+<li>Existe uma <strong>correlação quântica genuína</strong> entre os 3 qubits</li>
+<li>Medindo um qubit, afetamos instantaneamente o estado dos outros</li>
+</ul>
 <p><strong>State City vs outras visualizações:</strong></p>
 <table class="caption-top table">
 <colgroup>
@@ -1194,33 +1093,16 @@ fig = plot_qsphere_interactive(state4)</code></pre>
 <p>Expandindo <span class="math inline">\(H\)</span> em cada componente: <span class="math display">\[H|1\rangle = \frac{1}{\sqrt{2}}(|0\rangle - |1\rangle)\]</span></p>
 <p>Estado final antes da medição: <span class="math display">\[|\psi_5\rangle = \frac{1}{2}(|010\rangle - |110\rangle + |001\rangle - |101\rangle)\]</span></p>
 <p>Podemos reescrever agrupando os estados de Alice (q[0]q[1]) e Bob (q[2]): <span class="math display">\[|\psi_5\rangle = \frac{1}{2}[|00\rangle(|0\rangle - |1\rangle) + |01\rangle(|1\rangle - |0\rangle) + |10\rangle(|0\rangle + |1\rangle) + |11\rangle(|1\rangle + |0\rangle)]\]</span></p>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-9" class="callout-9-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>circuit.h(qreg_q[<span class="dv">0</span>])</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>circuit.barrier(qreg_q[<span class="dv">0</span>], qreg_q[<span class="dv">1</span>], qreg_q[<span class="dv">2</span>])</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>circuit.draw(<span class="st">'mpl'</span>)</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>state6 <span class="op">=</span> Statevector.from_instruction(circuit)</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(state6)</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualização combinada para o estado mais complexo</span></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">🌐 Q-Sphere - Estado completo antes da medição:"</span>)</span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>plot_state_qsphere(state6)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>circuit.h(qreg_q[<span class="dv">0</span>])</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>circuit.barrier(qreg_q[<span class="dv">0</span>], qreg_q[<span class="dv">1</span>], qreg_q[<span class="dv">2</span>])</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>circuit.draw(<span class="st">'mpl'</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>state6 <span class="op">=</span> Statevector.from_instruction(circuit)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(state6)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualização combinada para o estado mais complexo</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">🌐 Q-Sphere - Estado completo antes da medição:"</span>)</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>plot_state_qsphere(state6)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>Statevector([ 0. +0.j,  0. +0.j,  0.5+0.j, -0.5+0.j,  0.5+0.j, -0.5+0.j,
               0. +0.j,  0. +0.j],
             dims=(2, 2, 2))
@@ -1239,7 +1121,11 @@ fig = plot_qsphere_interactive(state4)</code></pre>
 <li>Alice envia esses 2 bits clássicos para Bob (por telefone, internet, pombo-correio…)</li>
 </ul>
 <p>⚠️ <strong>Importante:</strong> Sem essa comunicação clássica, Bob não consegue recuperar o estado!</p>
-<p>🎯 <strong>O que esses números dizem a Bob:</strong> - Eles informam QUAL correção Bob precisa fazer no qubit dele (q[2]) - São como “instruções de montagem”</p>
+<p>🎯 <strong>O que esses números dizem a Bob:</strong></p>
+<ul>
+<li>Eles informam QUAL correção Bob precisa fazer no qubit dele (q[2])</li>
+<li>São como “instruções de montagem”</li>
+</ul>
 <section id="análise-matemática-da-medição" class="level3">
 <h3 class="anchored" data-anchor-id="análise-matemática-da-medição">📐 Análise Matemática da Medição</h3>
 <p>Do estado <span class="math inline">\(|\psi_5\rangle = \frac{1}{2}(|010\rangle - |110\rangle + |001\rangle - |101\rangle)\)</span>, quando Alice mede seus qubits, há 4 possíveis resultados:</p>
@@ -1285,7 +1171,12 @@ fig = plot_qsphere_interactive(state4)</code></pre>
 </tr>
 </tbody>
 </table>
-<p><strong>Como interpretar:</strong> - Cada termo do estado corresponde a um possível resultado de medição - A medição colapsa o estado para um dos 4 cenários com igual probabilidade - O estado de Bob está “embaralhado” - precisa das correções para recuperar <span class="math inline">\(|1\rangle\)</span></p>
+<p><strong>Como interpretar:</strong></p>
+<ul>
+<li>Cada termo do estado corresponde a um possível resultado de medição</li>
+<li>A medição colapsa o estado para um dos 4 cenários com igual probabilidade</li>
+<li>O estado de Bob está “embaralhado” - precisa das correções para recuperar <span class="math inline">\(|1\rangle\)</span></li>
+</ul>
 <pre class="{python} {pyodide-python}"><code>
 circuit.measure(qreg_q[0], creg_c[0])
 circuit.measure(qreg_q[1], creg_c[1])
@@ -1440,24 +1331,13 @@ for medicao, estado_bob in cenarios:
 
 print("\n" + "="*70)
 print("✨ Conclusão: Em TODOS os 4 cenários, Bob recupera |1⟩!")
-print("   O teletransporte quântico funcionou perfeitamente! 🚀")</code></pre>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Nota</span>🔒 Imports do Qiskit (requerem execução local)
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-10" class="callout-10-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Estes módulos não estão disponíveis no navegador. Execute localmente com <code>uv run jupyter lab</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.quantum_info <span class="im">import</span> Statevector, Operator</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+print("   O teletransporte quântico funcionou perfeitamente! 🚀")
+
+# Imports do Qiskit (execução no Google Colab / ambiente local)
+try:
+    from qiskit.quantum_info import Statevector, Operator
+except ImportError:
+    pass</code></pre>
 <pre><code>🔬 Simulando os 4 cenários de teletransporte:
 
 ======================================================================
@@ -1522,12 +1402,17 @@ print("   O teletransporte quântico funcionou perfeitamente! 🚀")</code></pre
 <section id="limitação-do-simulador" class="level3">
 <h3 class="anchored" data-anchor-id="limitação-do-simulador">💻 Limitação do Simulador</h3>
 <p>Se tentarmos fazer:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>state <span class="op">=</span> Statevector.from_instruction(circuit)  <span class="co"># ❌ ERRO!</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>state <span class="op">=</span> Statevector.from_instruction(circuit)  <span class="co"># ❌ ERRO!</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <p>O Qiskit retorna um <strong>erro</strong> porque <code>circuit</code> contém medições, e após medir não existe mais um “estado quântico” para visualizar.</p>
 </section>
 <section id="a-solução-circuitos-sem-medições" class="level3">
 <h3 class="anchored" data-anchor-id="a-solução-circuitos-sem-medições">✅ A Solução: Circuitos Sem Medições</h3>
-<p>Para <strong>“espiar”</strong> os estados intermediários, precisamos: - Reconstruir o circuito <strong>passo a passo</strong> - <strong>SEM</strong> incluir as medições - Usar apenas portas quânticas (X, H, CNOT, etc.)</p>
+<p>Para <strong>“espiar”</strong> os estados intermediários, precisamos:</p>
+<ul>
+<li>Reconstruir o circuito <strong>passo a passo</strong></li>
+<li><strong>SEM</strong> incluir as medições</li>
+<li>Usar apenas portas quânticas (X, H, CNOT, etc.)</li>
+</ul>
 <p>Assim podemos usar <code>Statevector.from_instruction()</code> e <code>plot_bloch_multivector()</code> para ver o que está acontecendo “por dentro”!</p>
 </section>
 <section id="na-realidade-vs.-no-simulador" class="level3">
@@ -1564,303 +1449,105 @@ print("   O teletransporte quântico funcionou perfeitamente! 🚀")</code></pre
 <h3 class="anchored" data-anchor-id="construindo-o-circuito-passo-a-passo">Construindo o Circuito Passo a Passo</h3>
 <p>Vamos construir o circuito do teletransporte passo a passo, visualizando o estado quântico após cada operação:</p>
 <pre class="{python} {pyodide-python}"><code># Criar circuito (começando vazio)
-final_circuit = QuantumCircuit(3)</code></pre>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Nota</span>🔒 Imports do Qiskit (requerem execução local)
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-11" class="callout-11-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Estes módulos não estão disponíveis no navegador. Execute localmente com <code>uv run jupyter lab</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit_aer <span class="im">import</span> Aer</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.quantum_info <span class="im">import</span> Statevector</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.visualization <span class="im">import</span> plot_bloch_multivector</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+final_circuit = QuantumCircuit(3)
+
+# Imports do Qiskit (execução no Google Colab / ambiente local)
+try:
+    from qiskit_aer import Aer
+    from qiskit.quantum_info import Statevector
+    from qiskit.visualization import plot_bloch_multivector
+except ImportError:
+    pass</code></pre>
 <section id="etapa-0-estado-inicial-todos-qubits-em-0" class="level4">
 <h4 class="anchored" data-anchor-id="etapa-0-estado-inicial-todos-qubits-em-0">🔹 Etapa 0: Estado Inicial (todos qubits em |0⟩)</h4>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-12" class="callout-12-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar estado inicial (circuito vazio)</span></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>state_0 <span class="op">=</span> Statevector.from_instruction(final_circuit)</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Estado: |000⟩ (todos qubits em |0⟩)"</span>)</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(state_0)</span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>final_circuit.draw(<span class="st">'mpl'</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar estado inicial (circuito vazio)</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>state_0 <span class="op">=</span> Statevector.from_instruction(final_circuit)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Estado: |000⟩ (todos qubits em |0⟩)"</span>)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(state_0)</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>final_circuit.draw(<span class="st">'mpl'</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>Estado: |000⟩ (todos qubits em |0⟩)
 Statevector([1.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j,
              0.+0.j],
             dims=(2, 2, 2))
 </code></pre>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-13" class="callout-13-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>plot_bloch_multivector(state_0)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>plot_bloch_multivector(state_0)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="etapa-1-preparar-o-estado-a-teletransportar-x-no-qubit-0" class="level4">
 <h4 class="anchored" data-anchor-id="etapa-1-preparar-o-estado-a-teletransportar-x-no-qubit-0">🔹 Etapa 1: Preparar o estado a teletransportar (X no qubit 0)</h4>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-14" class="callout-14-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplicar X no qubit 0 (preparar |1⟩)</span></span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>final_circuit.x(<span class="dv">0</span>)</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>final_circuit.barrier()</span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar estado após X</span></span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>state_1 <span class="op">=</span> Statevector.from_instruction(final_circuit)</span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Estado: |100⟩ (qubit 0 preparado em |1⟩)"</span>)</span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(state_1)</span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>final_circuit.draw(<span class="st">'mpl'</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplicar X no qubit 0 (preparar |1⟩)</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>final_circuit.x(<span class="dv">0</span>)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>final_circuit.barrier()</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar estado após X</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>state_1 <span class="op">=</span> Statevector.from_instruction(final_circuit)</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Estado: |100⟩ (qubit 0 preparado em |1⟩)"</span>)</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(state_1)</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>final_circuit.draw(<span class="st">'mpl'</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>Estado: |100⟩ (qubit 0 preparado em |1⟩)
 Statevector([0.+0.j, 1.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j, 0.+0.j,
              0.+0.j],
             dims=(2, 2, 2))
 </code></pre>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-15-contents" aria-controls="callout-15" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-15" class="callout-15-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>plot_bloch_multivector(state_1)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>plot_bloch_multivector(state_1)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="etapa-2-criar-par-de-bell-h-cnot-nos-qubits-1-e-2" class="level4">
 <h4 class="anchored" data-anchor-id="etapa-2-criar-par-de-bell-h-cnot-nos-qubits-1-e-2">🔹 Etapa 2: Criar par de Bell (H + CNOT nos qubits 1 e 2)</h4>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-16-contents" aria-controls="callout-16" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-16" class="callout-16-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Criar par de Bell entre qubits 1 e 2</span></span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>final_circuit.h(<span class="dv">1</span>)</span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>final_circuit.cx(<span class="dv">1</span>, <span class="dv">2</span>)</span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar estado após criar par de Bell</span></span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>state_2 <span class="op">=</span> Statevector.from_instruction(final_circuit)</span>
-<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Estado: 1/√2(|100⟩ + |111⟩) - qubits 1 e 2 emaranhados"</span>)</span>
-<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(state_2)</span>
-<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>final_circuit.draw(<span class="st">'mpl'</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Criar par de Bell entre qubits 1 e 2</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>final_circuit.h(<span class="dv">1</span>)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>final_circuit.cx(<span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar estado após criar par de Bell</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>state_2 <span class="op">=</span> Statevector.from_instruction(final_circuit)</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Estado: 1/√2(|100⟩ + |111⟩) - qubits 1 e 2 emaranhados"</span>)</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(state_2)</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>final_circuit.draw(<span class="st">'mpl'</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>Estado: 1/√2(|100⟩ + |111⟩) - qubits 1 e 2 emaranhados
 Statevector([0.        +0.j, 0.70710678+0.j, 0.        +0.j,
              0.        +0.j, 0.        +0.j, 0.        +0.j,
              0.        +0.j, 0.70710678+0.j],
             dims=(2, 2, 2))
 </code></pre>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-17-contents" aria-controls="callout-17" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-17" class="callout-17-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">🌐 Q-Sphere - Visualizando o emaranhamento:"</span>)</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>plot_state_qsphere(state_2)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">🌐 Q-Sphere - Visualizando o emaranhamento:"</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>plot_state_qsphere(state_2)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>
 🌐 Q-Sphere - Visualizando o emaranhamento:
 </code></pre>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-18-contents" aria-controls="callout-18" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-18" class="callout-18-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>plot_bloch_multivector(state_2)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>plot_bloch_multivector(state_2)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="etapa-3-medição-de-bell-cnot-h-nos-qubits-de-alice" class="level4">
 <h4 class="anchored" data-anchor-id="etapa-3-medição-de-bell-cnot-h-nos-qubits-de-alice">🔹 Etapa 3: Medição de Bell (CNOT + H nos qubits de Alice)</h4>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-19-contents" aria-controls="callout-19" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-19" class="callout-19-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplicar medição de Bell (sem as medições clássicas)</span></span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>final_circuit.cx(<span class="dv">0</span>, <span class="dv">1</span>)</span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>final_circuit.h(<span class="dv">0</span>)</span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>final_circuit.barrier()</span>
-<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar estado após medição de Bell</span></span>
-<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>state_3 <span class="op">=</span> Statevector.from_instruction(final_circuit)</span>
-<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Estado: 1/2(|010⟩ - |110⟩ + |001⟩ - |101⟩) - 3 qubits emaranhados"</span>)</span>
-<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(state_3)</span>
-<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>final_circuit.draw(<span class="st">'mpl'</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplicar medição de Bell (sem as medições clássicas)</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>final_circuit.cx(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>final_circuit.h(<span class="dv">0</span>)</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>final_circuit.barrier()</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizar estado após medição de Bell</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>state_3 <span class="op">=</span> Statevector.from_instruction(final_circuit)</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Estado: 1/2(|010⟩ - |110⟩ + |001⟩ - |101⟩) - 3 qubits emaranhados"</span>)</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(state_3)</span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>final_circuit.draw(<span class="st">'mpl'</span>)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>Estado: 1/2(|010⟩ - |110⟩ + |001⟩ - |101⟩) - 3 qubits emaranhados
 Statevector([ 0. +0.j,  0. +0.j,  0.5+0.j, -0.5+0.j,  0.5+0.j, -0.5+0.j,
               0. +0.j,  0. +0.j],
             dims=(2, 2, 2))
 </code></pre>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-20-contents" aria-controls="callout-20" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-20" class="callout-20-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">🌐 Q-Sphere - Superposição dos 4 cenários possíveis:"</span>)</span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>plot_state_qsphere(state_3)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">🌐 Q-Sphere - Superposição dos 4 cenários possíveis:"</span>)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>plot_state_qsphere(state_3)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>
 🌐 Q-Sphere - Superposição dos 4 cenários possíveis:
 </code></pre>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-21-contents" aria-controls="callout-21" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-21" class="callout-21-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>plot_bloch_multivector(state_3)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>plot_bloch_multivector(state_3)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="resumo-do-estado-final-antes-das-correções-de-bob" class="level4">
 <h4 class="anchored" data-anchor-id="resumo-do-estado-final-antes-das-correções-de-bob">📊 Resumo do Estado Final (antes das correções de Bob)</h4>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-22-contents" aria-controls="callout-22" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-22" class="callout-22-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Estado completo antes das correções de Bob</span></span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>state_final <span class="op">=</span> Statevector.from_instruction(final_circuit)</span>
-<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Estado completo antes das correções:"</span>)</span>
-<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(state_final)</span>
-<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Este estado representa os 4 cenários possíveis com igual probabilidade (25</span><span class="sc">% c</span><span class="st">ada)"</span>)</span>
-<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Bloch sphere</span></span>
-<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>plot_bloch_multivector(state_final)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Estado completo antes das correções de Bob</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>state_final <span class="op">=</span> Statevector.from_instruction(final_circuit)</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Estado completo antes das correções:"</span>)</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(state_final)</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Este estado representa os 4 cenários possíveis com igual probabilidade (25</span><span class="sc">% c</span><span class="st">ada)"</span>)</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Bloch sphere</span></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>plot_bloch_multivector(state_final)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>Estado completo antes das correções:
 Statevector([ 0. +0.j,  0. +0.j,  0.5+0.j, -0.5+0.j,  0.5+0.j, -0.5+0.j,
               0. +0.j,  0. +0.j],
@@ -1874,25 +1561,8 @@ plot_state_city(state_final)</code></pre>
 <pre><code>
 🏙️ State City - Estrutura completa do estado emaranhado:
 </code></pre>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-23-contents" aria-controls="callout-23" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Aviso</span>⚛️ Célula Qiskit — execute no Colab ou localmente
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-23" class="callout-23-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Esta célula usa Qiskit (não disponível no navegador). <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb">▶ Abrir notebook no Google Colab</a> ou rode <code>uv run jupyter lab</code> localmente.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">🌐 Q-Sphere - Todas as amplitudes:"</span>)</span>
-<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>plot_state_qsphere(state_final)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">🌐 Q-Sphere - Todas as amplitudes:"</span>)</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>plot_state_qsphere(state_final)</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>
 🌐 Q-Sphere - Todas as amplitudes:
 </code></pre>
@@ -1908,7 +1578,16 @@ plot_state_city(state_final)</code></pre>
 <section id="teste-final-funcionou" class="level3">
 <h3 class="anchored" data-anchor-id="teste-final-funcionou">🎯 Teste Final: Funcionou?</h3>
 <p>Vamos executar o circuito completo 1000 vezes e ver os resultados!</p>
-<p><strong>Como ler os resultados:</strong> - Formato da Qiskit: <code>c[2]c[1]c[0]</code> (ordem reversa - confuso, eu sei!) - O que queremos ver: <strong><code>100</code></strong> - c[2] = <strong>1</strong> → Bob recebeu |1⟩ ✅ - c[1] = <strong>0</strong> → Uma das medições de Alice - c[0] = <strong>0</strong> → Outra medição de Alice</p>
+<p><strong>Como ler os resultados:</strong></p>
+<ul>
+<li>Formato da Qiskit: <code>c[2]c[1]c[0]</code> (ordem reversa - confuso, eu sei!)</li>
+<li>O que queremos ver: <strong><code>100</code></strong>
+<ul>
+<li>c[2] = <strong>1</strong> → Bob recebeu |1⟩ ✅</li>
+<li>c[1] = <strong>0</strong> → Uma das medições de Alice</li>
+<li>c[0] = <strong>0</strong> → Outra medição de Alice</li>
+</ul></li>
+</ul>
 <p>💡 <strong>Se você ver principalmente ‘100’:</strong> PARABÉNS! O teletransporte funcionou!</p>
 <pre class="{python} {pyodide-python}"><code># Executar o circuito completo e verificar os resultados
 
@@ -1922,24 +1601,13 @@ counts = result.get_counts()
 
 print("Resultados das medições (1000 execuções):")
 print(counts)
-print("\nO resultado esperado é '100' (qubit 2 = |1⟩, demonstrando o teletransporte)")</code></pre>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-24-contents" aria-controls="callout-24" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Nota</span>🔒 Imports do Qiskit (requerem execução local)
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-24" class="callout-24-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Estes módulos não estão disponíveis no navegador. Execute localmente com <code>uv run jupyter lab</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit_aer <span class="im">import</span> AerSimulator</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+print("\nO resultado esperado é '100' (qubit 2 = |1⟩, demonstrando o teletransporte)")
+
+# Imports do Qiskit (execução no Google Colab / ambiente local)
+try:
+    from qiskit_aer import AerSimulator
+except ImportError:
+    pass</code></pre>
 <pre><code>Resultados das medições (1000 execuções):
 {'110': 255, '101': 248, '111': 259, '100': 238}
 
@@ -1974,7 +1642,12 @@ O resultado esperado é '100' (qubit 2 = |1⟩, demonstrando o teletransporte)
 <li><strong>Após correções de Bob</strong>: <span class="math inline">\(|1\rangle\)</span> (estado original teletransportado!)</li>
 </ol>
 <p><strong>A “mágica” está no emaranhamento:</strong></p>
-<p>O estado de Bell <span class="math inline">\(|\Phi^+\rangle = \frac{1}{\sqrt{2}}(|00\rangle + |11\rangle)\)</span> cria correlações quânticas que permitem que: - A informação seja “distribuída” entre os 3 qubits - Alice extraia informação clássica através da medição - Bob use essa informação para reconstruir o estado original</p>
+<p>O estado de Bell <span class="math inline">\(|\Phi^+\rangle = \frac{1}{\sqrt{2}}(|00\rangle + |11\rangle)\)</span> cria correlações quânticas que permitem que:</p>
+<ul>
+<li>A informação seja “distribuída” entre os 3 qubits</li>
+<li>Alice extraia informação clássica através da medição</li>
+<li>Bob use essa informação para reconstruir o estado original</li>
+</ul>
 <p><strong>Propriedade-chave:</strong> Para qualquer estado inicial <span class="math inline">\(|\psi\rangle = \alpha|0\rangle + \beta|1\rangle\)</span>, o protocolo funciona SEM que Alice ou Bob conheçam <span class="math inline">\(\alpha\)</span> e <span class="math inline">\(\beta\)</span>!</p>
 </section>
 <section id="perguntas-frequentes" class="level2">
@@ -1986,7 +1659,12 @@ O resultado esperado é '100' (qubit 2 = |1⟩, demonstrando o teletransporte)
 </section>
 <section id="o-truque-fundamental" class="level2">
 <h2 class="anchored" data-anchor-id="o-truque-fundamental">🎯 O Truque Fundamental</h2>
-<p><strong>Emaranhamento quântico</strong> = A “mágica” que permite isso - Qubits emaranhados ficam correlacionados instantaneamente - Mas ainda precisamos de comunicação clássica para completar o protocolo - É a combinação de ambos que torna o teletransporte possível!</p>
+<p><strong>Emaranhamento quântico</strong> = A “mágica” que permite isso</p>
+<ul>
+<li>Qubits emaranhados ficam correlacionados instantaneamente</li>
+<li>Mas ainda precisamos de comunicação clássica para completar o protocolo</li>
+<li>É a combinação de ambos que torna o teletransporte possível!</li>
+</ul>
 <hr>
 <section id="próximos-passos" class="level3">
 <h3 class="anchored" data-anchor-id="próximos-passos">🚀 Próximos Passos</h3>
@@ -2455,25 +2133,26 @@ O resultado esperado é '100' (qubit 2 = |1⟩, demonstrando o teletransporte)
     }
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Código fonte</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb53" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Aula 05 — Protocolo de Teletransporte Quântico"</span></span>
-<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Fundamentos de Computação Quântica — Curso de Extensão"</span></span>
-<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Prof. Me. Maxwell Anderson Ielpo do Amaral"</span></span>
-<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a><span class="an">institute:</span><span class="co"> "Instituto Federal de Educação, Ciência e Tecnologia da Paraíba (IFPB) — Campus João Pessoa"</span></span>
-<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2026-10-06"</span></span>
-<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a><span class="an">lang:</span><span class="co"> pt-BR</span></span>
-<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
-<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
-<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
-<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
-<span id="cb53-14"><a href="#cb53-14" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📽️ Material da Aula</span></span>
-<span id="cb53-15"><a href="#cb53-15" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>📄 <span class="co">[</span><span class="ot">Baixar Apostila Completa em PDF</span><span class="co">](../apostila.pdf)</span>{target="_blank"}</span>
-<span id="cb53-16"><a href="#cb53-16" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>🧪 <span class="co">[</span><span class="ot">Galeria de Simuladores Interativos</span><span class="co">](/assets/simuladores/)</span>{target="_blank"}</span>
-<span id="cb53-17"><a href="#cb53-17" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb53-18"><a href="#cb53-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-19"><a href="#cb53-19" aria-hidden="true" tabindex="-1"></a>{{&lt; include _content.qmd &gt;}}</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Aula 05 — Protocolo de Teletransporte Quântico"</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Fundamentos de Computação Quântica — Curso de Extensão"</span></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Prof. Me. Maxwell Anderson Ielpo do Amaral"</span></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a><span class="an">institute:</span><span class="co"> "Instituto Federal de Educação, Ciência e Tecnologia da Paraíba (IFPB) — Campus João Pessoa"</span></span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2026-10-06"</span></span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a><span class="an">lang:</span><span class="co"> pt-BR</span></span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
+<span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📽️ Material da Aula</span></span>
+<span id="cb49-15"><a href="#cb49-15" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>📄 <span class="co">[</span><span class="ot">Baixar Apostila Completa em PDF</span><span class="co">](../apostila.pdf)</span>{target="_blank"}</span>
+<span id="cb49-16"><a href="#cb49-16" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>🧪 <span class="co">[</span><span class="ot">Galeria de Simuladores Interativos</span><span class="co">](/assets/simuladores/)</span>{target="_blank"}</span>
+<span id="cb49-17"><a href="#cb49-17" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>🚀 <span class="co">[</span><span class="ot">Executar no Google Colab</span><span class="co">](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/02-teletransport.ipynb)</span>{target="_blank"}</span>
+<span id="cb49-18"><a href="#cb49-18" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb49-19"><a href="#cb49-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-20"><a href="#cb49-20" aria-hidden="true" tabindex="-1"></a>{{&lt; include _content.qmd &gt;}}</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <script type="module">

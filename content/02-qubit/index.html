@@ -645,6 +645,7 @@ window.Quarto = {
 <ul>
 <li>📄 <a href="../apostila.pdf" target="_blank">Baixar Apostila Completa em PDF</a></li>
 <li>🧪 <a href="../../assets/simuladores/" target="_blank">Galeria de Simuladores Interativos</a></li>
+<li>🚀 <a href="https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/00a-math.ipynb" target="_blank">Executar no Google Colab</a></li>
 </ul>
 </div>
 </div>
@@ -665,12 +666,16 @@ window.Quarto = {
 </section>
 <section id="para-quem-é-este-notebook" class="level2">
 <h2 class="anchored" data-anchor-id="para-quem-é-este-notebook">💡 Para quem é este notebook?</h2>
-<p>Se você conhece: - ✅ Álgebra linear básica (vetores e matrizes) - ✅ Números complexos (pelo menos saber que existem 😊) - ✅ Python básico</p>
+<p>Se você conhece:</p>
+<ul>
+<li>✅ Álgebra linear básica (vetores e matrizes)</li>
+<li>✅ Números complexos (pelo menos saber que existem 😊)</li>
+<li>✅ Python básico</li>
+</ul>
 <p>Então você está pronto para começar! Não se preocupe se alguns conceitos parecerem estranhos no início - isso é normal em computação quântica.</p>
-<hr>
 <p><strong>Dica</strong>: Execute cada célula na ordem para acompanhar os exemplos interativos!</p>
 <blockquote class="blockquote">
-<p>Observação As células com borda verde executam <strong>direto no seu navegador</strong> (Pyodide/WASM). &gt; As células Qiskit requerem execução local: abra um terminal e rode <code>uv sync</code> na raiz deste repositório, depois <code>uv run jupyter lab</code>.</p>
+<p>Observação As células com borda verde executam <strong>direto no seu navegador</strong> (Pyodide/WASM) ou podem ser executadas no <strong>Google Colab</strong> (link no topo da página).</p>
 </blockquote>
 <pre class="{python} {pyodide-python}"><code># Importando as bibliotecas necessárias
 # Não se preocupe se não entender todas agora - vamos usá-las ao longo do notebook
@@ -679,30 +684,24 @@ import numpy as np                      # Para operações com matrizes e vetore
 import sympy as sp                      # Para matemática simbólica (fórmulas bonitas)
 from sympy import Matrix, symbols       # Para criar matrizes e símbolos matemáticos
 from IPython.display import Markdown    # Para exibir fórmulas formatadas
-from matplotlib import pyplot as plt    # Para criar gráficos</code></pre>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Nota</span>🔒 Imports do Qiskit (requerem execução local)
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-2" class="callout-2-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Estes módulos não estão disponíveis no navegador. Execute localmente com <code>uv run jupyter lab</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.quantum_info <span class="im">import</span> Statevector  <span class="co"># Para trabalhar com estados quânticos</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qiskit.visualization <span class="im">import</span> plot_bloch_multivector, plot_state_qsphere  <span class="co"># Visualizações quânticas</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
+from matplotlib import pyplot as plt    # Para criar gráficos
+
+# Imports do Qiskit (execução no Google Colab / ambiente local)
+try:
+    from qiskit.quantum_info import Statevector  # Para trabalhar com estados quânticos
+    from qiskit.visualization import plot_bloch_multivector, plot_state_qsphere  # Visualizações quânticas
+except ImportError:
+    Statevector = None</code></pre>
 </section>
 <section id="estados-quânticos-básicos" class="level2">
 <h2 class="anchored" data-anchor-id="estados-quânticos-básicos">🔬 Estados Quânticos Básicos</h2>
 <p>Na computação clássica, trabalhamos com <strong>bits</strong> que podem ser 0 ou 1.</p>
-<p>Na computação quântica, trabalhamos com <strong>qubits</strong> que podem estar em: - <strong>Estado |0⟩</strong> (lê-se “ket zero”) - equivalente ao bit clássico 0 - <strong>Estado |1⟩</strong> (lê-se “ket um”) - equivalente ao bit clássico 1 - <strong>Superposição de |0⟩ e |1⟩</strong> - aqui está a mágica! O qubit pode estar em “ambos” estados simultaneamente</p>
+<p>Na computação quântica, trabalhamos com <strong>qubits</strong> que podem estar em:</p>
+<ul>
+<li><strong>Estado |0⟩</strong> (lê-se “ket zero”) - equivalente ao bit clássico 0</li>
+<li><strong>Estado |1⟩</strong> (lê-se “ket um”) - equivalente ao bit clássico 1</li>
+<li><strong>Superposição de |0⟩ e |1⟩</strong> - aqui está a mágica! O qubit pode estar em “ambos” estados simultaneamente</li>
+</ul>
 <section id="notação-matemática" class="level3">
 <h3 class="anchored" data-anchor-id="notação-matemática">📌 Notação matemática:</h3>
 <p>Representamos esses estados como <strong>vetores coluna</strong> em “ket psi”. Em geral:</p>
@@ -723,7 +722,13 @@ from matplotlib import pyplot as plt    # Para criar gráficos</code></pre>
 <li>➡️ Interpretação: 0% de probabilidade de medir 0, 100% de probabilidade de medir 1</li>
 </ul></li>
 </ul>
-<p><strong>Regra geral</strong>: Para qualquer qubit <span class="math inline">\(|\psi⟩ = \begin{bmatrix} \alpha \\ \beta \end{bmatrix}\)</span>: - O valor <strong><span class="math inline">\(\alpha\)</span></strong> (primeira linha) representa a amplitude do estado |0⟩ - O valor <strong><span class="math inline">\(\beta\)</span></strong> (segunda linha) representa a amplitude do estado |1⟩ - As probabilidades são: P(0) = |<span class="math inline">\(\alpha\)</span>|² e P(1) = |<span class="math inline">\(\beta\)</span>|² - Sempre vale: |<span class="math inline">\(\alpha\)</span>|² + |<span class="math inline">\(\beta\)</span>|² = 1 (normalização)</p>
+<p><strong>Regra geral</strong>: Para qualquer qubit <span class="math inline">\(|\psi⟩ = \begin{bmatrix} \alpha \\ \beta \end{bmatrix}\)</span>:</p>
+<ul>
+<li>O valor <strong><span class="math inline">\(\alpha\)</span></strong> (primeira linha) representa a amplitude do estado |0⟩</li>
+<li>O valor <strong><span class="math inline">\(\beta\)</span></strong> (segunda linha) representa a amplitude do estado |1⟩</li>
+<li>As probabilidades são: P(0) = |<span class="math inline">\(\alpha\)</span>|² e P(1) = |<span class="math inline">\(\beta\)</span>|²</li>
+<li>Sempre vale: |<span class="math inline">\(\alpha\)</span>|² + |<span class="math inline">\(\beta\)</span>|² = 1 (normalização)</li>
+</ul>
 <p><strong>Por que vetores?</strong> Porque podemos aplicar transformações matemáticas (matrizes) neles, e isso é exatamente o que as portas quânticas naturalmente fazem!</p>
 <pre class="{python} {pyodide-python}"><code>
 # Vamos criar esses estados básicos usando SymPy (biblioteca de matemática simbólica)
@@ -784,7 +789,12 @@ print("\n💡 Dica: Esses vetores representam a 'probabilidade' de medir cada re
 <h2 class="anchored" data-anchor-id="superposição-o-coração-da-computação-quântica">🌟 Superposição: o coração da Computação Quântica</h2>
 <p>Aqui está onde a mágica acontece! Um qubit pode estar em uma <strong>combinação</strong> dos estados |0⟩ e |1⟩:</p>
 <p><span class="math display">\[|ψ⟩ = 𝛼|0⟩ + 𝛽|1⟩\]</span></p>
-<p>Onde: - <strong>|ψ⟩</strong> (lê-se “ket psi”) é o estado do qubit - <strong>𝛼</strong> (alpha) e <strong>𝛽</strong> (beta) são <strong>números complexos</strong> chamados de <strong>amplitudes</strong> - <strong>Regra de ouro</strong>: <span class="math inline">\(|𝛼|² + |𝛽|²= 1\)</span> (aqui também essas probabilidades precisam somar 100%!)</p>
+<p>Onde:</p>
+<ul>
+<li><strong>|ψ⟩</strong> (lê-se “ket psi”) é o estado do qubit</li>
+<li><strong>𝛼</strong> (alpha) e <strong>𝛽</strong> (beta) são <strong>números complexos</strong> chamados de <strong>amplitudes</strong></li>
+<li><strong>Regra de ouro</strong>: <span class="math inline">\(|𝛼|² + |𝛽|²= 1\)</span> (aqui também essas probabilidades precisam somar 100%!)</li>
+</ul>
 <section id="como-interpretar-as-amplitudes" class="level3">
 <h3 class="anchored" data-anchor-id="como-interpretar-as-amplitudes">🎲 Como interpretar as amplitudes:</h3>
 <ul>
@@ -884,8 +894,16 @@ print("   - Antes da medição, o qubit está em AMBOS os estados!")
 </section>
 <section id="porta-x-not-quântico" class="level3">
 <h3 class="anchored" data-anchor-id="porta-x-not-quântico">🚪 Porta X (NOT Quântico)</h3>
-<p>É a versão quântica do NOT clássico. Funciona assim: - Se o qubit está em |0⟩ → vira |1⟩ - Se o qubit está em |1⟩ → vira |0⟩</p>
-<p>Se fossemos usar vetores, seria: - Se o qubit está em <span class="math inline">\(\begin{bmatrix} 1 \\ 0 \end{bmatrix}\)</span> → vira <span class="math inline">\(\begin{bmatrix} 0 \\ 1 \end{bmatrix}\)</span> - Se o qubit está em <span class="math inline">\(\begin{bmatrix} 0 \\ 1 \end{bmatrix}\)</span> → vira <span class="math inline">\(\begin{bmatrix} 1 \\ 0 \end{bmatrix}\)</span></p>
+<p>É a versão quântica do NOT clássico. Funciona assim:</p>
+<ul>
+<li>Se o qubit está em |0⟩ → vira |1⟩</li>
+<li>Se o qubit está em |1⟩ → vira |0⟩</li>
+</ul>
+<p>Se fossemos usar vetores, seria:</p>
+<ul>
+<li>Se o qubit está em <span class="math inline">\(\begin{bmatrix} 1 \\ 0 \end{bmatrix}\)</span> → vira <span class="math inline">\(\begin{bmatrix} 0 \\ 1 \end{bmatrix}\)</span></li>
+<li>Se o qubit está em <span class="math inline">\(\begin{bmatrix} 0 \\ 1 \end{bmatrix}\)</span> → vira <span class="math inline">\(\begin{bmatrix} 1 \\ 0 \end{bmatrix}\)</span></li>
+</ul>
 <p><strong>Matriz da Porta X:</strong></p>
 <p><span class="math display">\[X = \begin{bmatrix} 0 &amp; 1 \\ 1 &amp; 0 \end{bmatrix}\]</span></p>
 <p><strong>Como funciona:</strong></p>
@@ -1391,7 +1409,6 @@ Esperamos -|01&gt;, obtivemos:
 <h2 class="anchored" data-anchor-id="o-colapso-probabilidade">O Colapso (Probabilidade)</h2>
 <p>Ao final, calculamos o quadrado desses números (0.707² ≈ 0.5). Isso diz ao computador: “Jogue uma moeda. Tem 50% de chance de dar Cara (0) e 50% de dar Coroa (1)”. É aqui que a computação quântica deixa de ser determinística (como a clássica) e passa a ser probabilística.</p>
 <pre class="{python} {pyodide-python}"><code>
-
 # A Medição (O Colapso)
 # Na teoria: A probabilidade de medir 0 ou 1 é o quadrado da amplitude (módulo ao quadrado).
 
@@ -1888,25 +1905,26 @@ Resultado da Medição (Colapso): |0&gt;
     }
   });
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Código fonte</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Aula 02 — O Qubit: Fundamentos Matemáticos"</span></span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Fundamentos de Computação Quântica — Curso de Extensão"</span></span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Prof. Me. Maxwell Anderson Ielpo do Amaral"</span></span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="an">institute:</span><span class="co"> "Instituto Federal de Educação, Ciência e Tecnologia da Paraíba (IFPB) — Campus João Pessoa"</span></span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2026-09-15"</span></span>
-<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="an">lang:</span><span class="co"> pt-BR</span></span>
-<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
-<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
-<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
-<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
-<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📽️ Material da Aula</span></span>
-<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>📄 <span class="co">[</span><span class="ot">Baixar Apostila Completa em PDF</span><span class="co">](../apostila.pdf)</span>{target="_blank"}</span>
-<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>🧪 <span class="co">[</span><span class="ot">Galeria de Simuladores Interativos</span><span class="co">](/assets/simuladores/)</span>{target="_blank"}</span>
-<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a>{{&lt; include _content.qmd &gt;}}</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Aula 02 — O Qubit: Fundamentos Matemáticos"</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Fundamentos de Computação Quântica — Curso de Extensão"</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Prof. Me. Maxwell Anderson Ielpo do Amaral"</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="an">institute:</span><span class="co"> "Instituto Federal de Educação, Ciência e Tecnologia da Paraíba (IFPB) — Campus João Pessoa"</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2026-09-15"</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="an">lang:</span><span class="co"> pt-BR</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📽️ Material da Aula</span></span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>📄 <span class="co">[</span><span class="ot">Baixar Apostila Completa em PDF</span><span class="co">](../apostila.pdf)</span>{target="_blank"}</span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>🧪 <span class="co">[</span><span class="ot">Galeria de Simuladores Interativos</span><span class="co">](/assets/simuladores/)</span>{target="_blank"}</span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>🚀 <span class="co">[</span><span class="ot">Executar no Google Colab</span><span class="co">](https://colab.research.google.com/github/maxwellamaral/aula-quantum/blob/main/notebooks/00a-math.ipynb)</span>{target="_blank"}</span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>{{&lt; include _content.qmd &gt;}}</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <script type="module">

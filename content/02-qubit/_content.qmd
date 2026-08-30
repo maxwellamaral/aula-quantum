@@ -23,9 +23,6 @@ Então você está pronto para começar! Não se preocupe se alguns conceitos pa
 
 **Dica**: Execute cada célula na ordem para acompanhar os exemplos interativos!
 
-> Observação
-> As células com borda verde executam **direto no seu navegador** (Pyodide/WASM) ou podem ser executadas no **Google Colab** (link no topo da página).
-
 ```{python} {pyodide-python}
 # Importando as bibliotecas necessárias e o motor quântico Cirq
 import micropip
@@ -102,7 +99,7 @@ print("\n✅ Estados básicos criados com sucesso!")
 
 ```
 
-✅ Estados básicos criados com sucesso!
+O que existe acima é só uma forma bonita de representar matematicamente os estados |0⟩ e |1⟩.
 
 ```
 
@@ -133,13 +130,6 @@ print("\n💡 Dica: Esses vetores representam a 'probabilidade' de medir cada re
 ```
 
 ```
-=== Estado |0⟩ ===
-[[1]
- [0]]
-
-=== Estado |1⟩ ===
-[[0]
- [1]]
 
 💡 Dica: Esses vetores representam a 'probabilidade' de medir cada resultado!
 
@@ -205,20 +195,6 @@ print("\n💡 Isso significa:")
 print("   - Com probabilidade |α|², medimos 0")
 print("   - Com probabilidade |β|², medimos 1")
 print("   - Antes da medição, o qubit está em AMBOS os estados!")
-
-```
-
-```
-Estado quântico genérico criado:
-
-```
-
-```
-
-💡 Isso significa:
-   - Com probabilidade |α|², medimos 0
-   - Com probabilidade |β|², medimos 1
-   - Antes da medição, o qubit está em AMBOS os estados!
 
 ```
 
@@ -347,24 +323,6 @@ display(Markdown(f"$$X \\ket{{1}} = {sp.latex(result_1)}$$ ✅"))
 print("\n💡 A porta X realmente inverte os estados, como esperado!")
 ```
 
-```
-🔄 Aplicando a Porta X...
-
-Teste 1: X|0⟩ deve dar |1⟩
-
-```
-
-```
-
-Teste 2: X|1⟩ deve dar |0⟩
-
-```
-
-```
-
-💡 A porta X realmente inverte os estados, como esperado!
-
-```
 
 ```{python} {pyodide-python}
 
@@ -381,14 +339,6 @@ print("\n✅ Pronta para usar em cálculos numéricos!")
 
 ```
 
-```
-Porta X definida com NumPy:
-[[0 1]
- [1 0]]
-
-✅ Pronta para usar em cálculos numéricos!
-
-```
 
 ```{python} {pyodide-python}
 
@@ -407,22 +357,6 @@ print(novo_estado)
 
 print("\n✅ Esperávamos |1⟩ (vetor [0, 1]), e foi isso que obtivemos!")
 print("💡 A porta X funcionou como um 'interruptor' que inverte o qubit!")
-
-```
-
-```
-=== Aplicando Porta X ao estado |0⟩ ===
-
-Estado inicial |0⟩:
-[[1]
- [0]]
-
-Após aplicar a porta X:
-[[0]
- [1]]
-
-✅ Esperávamos |1⟩ (vetor [0, 1]), e foi isso que obtivemos!
-💡 A porta X funcionou como um 'interruptor' que inverte o qubit!
 
 ```
 
@@ -492,30 +426,6 @@ print("\nResultado detalhado:")
 display(Markdown(f"$${sp.latex(result_h1)} = \\frac{{1}}{{\\sqrt{{2}}}} \\ket{{0}} - \\frac{{1}}{{\\sqrt{{2}}}} \\ket{{1}}$$"))
 ```
 
-```
-=== Aplicando Porta H (Hadamard) ===
-
-A porta H cria superposição dos estados |0⟩ e |1⟩.
-
-```
-
-```
-
-Resultado detalhado:
-
-```
-
-```
-
-Agora aplicando H ao estado |1⟩:
-
-```
-
-```
-
-Resultado detalhado:
-
-```
 
 ```{python} {pyodide-python}
 
@@ -537,14 +447,6 @@ print(f"Estado de Superposição:\n{estado_superposicao}")
 
 ```
 
-```
-
---- Após aplicar a Porta Hadamard (H) ---
-Estado de Superposição:
-[[0.70710678]
- [0.70710678]]
-
-```
 
 **A Superposição**
 
@@ -712,23 +614,6 @@ print(f"Esperamos |11>, obtivemos:\n{novo_estado_cnot_10}")
 
 ```
 
-```
-
---- Após aplicar a Porta CNOT em |11> ---
-Esperamos |10>, obtivemos:
-[[0]
- [0]
- [1]
- [0]]
-
---- Após aplicar a Porta CNOT em |10> ---
-Esperamos |11>, obtivemos:
-[[0]
- [0]
- [0]
- [1]]
-
-```
 
 ### Porta Controled Z (CZ)
 
@@ -811,26 +696,6 @@ print(f"Esperamos |10>, obtivemos:\n{novo_estado_cz_10}")
 print("\n✅ A porta CZ funcionou como esperado! (a porta só inverte o sinal de |11>)")
 ```
 
-```
-
---- Após aplicar a Porta CZ em |11> ---
-Esperamos -|11>, obtivemos:
-[[ 0]
- [ 0]
- [ 0]
- [-1]]
-
---- Após aplicar a Porta CZ em |10> ---
-Esperamos |10>, obtivemos:
-[[0]
- [0]
- [1]
- [0]]
-
-✅ A porta CZ funcionou como esperado! (a porta só inverte o sinal de |11>)
-
-```
-
 ### Porta ZZ 
 
 A porta ZZ é uma porta lógica quântica que atua em dois qubits e aplica uma operação de fase condicional baseada nos estados dos qubits. A operação da porta ZZ é a seguinte:
@@ -903,19 +768,6 @@ print(f"Esperamos -|01>, obtivemos:\n{novo_estado_zz}")
 print("\n✅ A porta ZZ funcionou como esperado! (inverte o sinal de |01> e |10>)")
 ```
 
-```
-
---- Após aplicar a Porta ZZ em |01> ---
-Esperamos -|01>, obtivemos:
-[[ 0]
- [-1]
- [ 0]
- [ 0]]
-
-✅ A porta ZZ funcionou como esperado! (inverte o sinal de |01> e |10>)
-
-```
-
 ## O Colapso (Probabilidade)
  
 Ao final, calculamos o quadrado desses números (0.707² ≈ 0.5). Isso diz ao computador: "Jogue uma moeda. Tem 50% de chance de dar Cara (0) e 50% de dar Coroa (1)". É aqui que a computação quântica deixa de ser determinística (como a clássica) e passa a ser probabilística.
@@ -944,14 +796,6 @@ def medir_qubit(estado_vetor):
 # Vamos medir nosso estado de superposição
 leitura = medir_qubit(estado_superposicao)
 print(f"Resultado da Medição (Colapso): |{leitura}>")
-```
-
-```
-
-Probabilidade calculada de ser 0: 0.50
-Probabilidade calculada de ser 1: 0.50
-Resultado da Medição (Colapso): |0>
-
 ```
 
 Por que não usar apenas NumPy sempre? Se é tão simples, por que precisamos de frameworks quânticos como o Cirq?
